@@ -129,6 +129,18 @@
         </button>
         <input type="file" id="image-file-input" accept="image/*" class="hidden" />
 
+        <!-- Resize / Crop Image Button -->
+        <button
+          id="btn-crop-image-tool"
+          class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
+          title="Resize / Crop Image"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
+          </svg>
+          <span class="hidden md:inline">Crop / Resize</span>
+        </button>
+
         <!-- Stamp Modal Trigger -->
         <button
           id="btn-open-stamp-modal"
@@ -199,13 +211,25 @@
       <!-- Rotate Page Button -->
       <button
         id="btn-rotate-page"
-        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all"
+        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer"
         title="Rotate Current Page (90° CW)"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
         <span class="hidden md:inline">Rotate</span>
+      </button>
+
+      <!-- Crop Page Button (Crop/Resize Uploaded PDF Page) -->
+      <button
+        id="btn-crop-page"
+        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer"
+        title="Crop / Resize Uploaded PDF Page"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
+        </svg>
+        <span class="hidden md:inline">Crop Page</span>
       </button>
 
       <!-- Page Sidebar Toggle -->
@@ -261,8 +285,41 @@
       </select>
     </div>
 
+    <!-- Image Resize & Crop Controls Group -->
+    <div id="prop-image-group" class="hidden flex items-center gap-2">
+      <button
+        id="btn-prop-crop-modal"
+        type="button"
+        class="flex h-7 items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-2.5 text-[11px] font-semibold text-white shadow-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer"
+        title="Open Crop & Resize Studio"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
+        </svg>
+        <span>Crop / Resize</span>
+      </button>
+
+      <!-- Quick Numeric Dimensions -->
+      <div class="flex items-center gap-1 text-[11px] font-mono text-mute">
+        <span>W:</span>
+        <input type="number" id="prop-img-w" min="20" max="2000" class="h-7 w-16 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500" title="Image Width in pixels" />
+        <span>H:</span>
+        <input type="number" id="prop-img-h" min="20" max="2000" class="h-7 w-16 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500" title="Image Height in pixels" />
+        <button id="btn-prop-img-lock" type="button" class="flex h-7 px-1.5 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-ink text-[11px] font-mono transition-colors cursor-pointer" title="Proportional Aspect Ratio Lock">
+          <span id="prop-img-lock-icon">🔒</span>
+        </button>
+      </div>
+
+      <!-- Quick Resize Presets -->
+      <div class="hidden sm:flex items-center gap-1 border-l border-hairline/80 pl-2">
+        <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="0.5">50%</button>
+        <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="1">100%</button>
+        <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="1.5">150%</button>
+      </div>
+    </div>
+
     <!-- Color Palette -->
-    <div class="flex items-center gap-1.5">
+    <div id="prop-color-group" class="flex items-center gap-1.5">
       <span class="text-mute text-[11px] font-medium">Color:</span>
       <input type="color" id="prop-color-picker" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
       <div class="flex items-center gap-1 ml-0.5">

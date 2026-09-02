@@ -5,6 +5,7 @@ import ThumbnailSidebar from './ThumbnailSidebar.astro';
 import SignatureModal from './SignatureModal.astro';
 import StampModal from './StampModal.astro';
 import WatermarkModal from './WatermarkModal.astro';
+import ImageCropModal from './ImageCropModal.astro';
 ---
 
 <div id="editor-anchor" class="w-full relative flex flex-col bg-canvas rounded-2xl border border-hairline shadow-floating overflow-hidden">
@@ -94,6 +95,12 @@ import WatermarkModal from './WatermarkModal.astro';
           </svg>
           <span>Rotate</span>
         </button>
+        <button id="btn-floating-crop" class="flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Crop & Resize Current Page">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
+          </svg>
+          <span>Crop Page</span>
+        </button>
       </div>
 
       <!-- Loading Spinner Overlay -->
@@ -110,6 +117,7 @@ import WatermarkModal from './WatermarkModal.astro';
   <SignatureModal />
   <StampModal />
   <WatermarkModal />
+  <ImageCropModal />
 </div>
 
 <!-- Core Client-Side Logic Script -->
@@ -122,6 +130,7 @@ import WatermarkModal from './WatermarkModal.astro';
       totalPages: 0,
       currentPage: 1,
       pageRotations: {}, // pageNum -> degrees (0, 90, 180, 270)
+      pageCrops: {}, // pageNum -> { x, y, width, height, croppedSrc, newWidth, newHeight }
       annotations: {}, // pageNum -> Array of annotations
       activeTool: 'select', // 'select', 'text', 'draw', 'highlight', 'shape', 'redact'
       activeShape: 'rect',
@@ -285,7 +294,33 @@ import WatermarkModal from './WatermarkModal.astro';
         const ctx = renderCanvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport }).promise;
 
-        renderAnnotationsLayer(viewport.width / 1.5, viewport.height / 1.5);
+        // If page has a crop applied
+        if (state.pageCrops && state.pageCrops[state.currentPage]) {
+          const crop = state.pageCrops[state.currentPage];
+          const croppedImg = new Image();
+          await new Promise((res) => {
+            croppedImg.onload = () => {
+              renderCanvas.width = croppedImg.width;
+              renderCanvas.height = croppedImg.height;
+              const dispW = (crop.newWidth || Math.round(croppedImg.width / 1.5));
+              const dispH = (crop.newHeight || Math.round(croppedImg.height / 1.5));
+              renderCanvas.style.width = dispW + 'px';
+              renderCanvas.style.height = dispH + 'px';
+
+              drawCanvas.width = croppedImg.width;
+              drawCanvas.height = croppedImg.height;
+              drawCanvas.style.width = dispW + 'px';
+              drawCanvas.style.height = dispH + 'px';
+
+              ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
+              ctx.drawImage(croppedImg, 0, 0);
+              res();
+            };
+            croppedImg.src = crop.croppedSrc;
+          });
+        }
+
+        renderAnnotationsLayer(parseFloat(renderCanvas.style.width) || (viewport.width / 1.5), parseFloat(renderCanvas.style.height) || (viewport.height / 1.5));
         renderDrawingsOnCanvas();
         highlightActiveThumbnail();
       } catch (err) {
@@ -354,8 +389,22 @@ import WatermarkModal from './WatermarkModal.astro';
           el.innerHTML = `
             <div class="relative cursor-move group-hover:outline group-hover:outline-1 group-hover:outline-link select-none">
               <img src="${annot.src}" style="width:${w}px; height:${h}px; object-fit:contain;" draggable="false" />
-              <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30">&times;</button>
+              <!-- Action Buttons: Delete & Crop -->
+              <div class="absolute -top-3.5 right-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-30 pointer-events-auto">
+                <button type="button" class="annot-crop-btn flex items-center gap-1 h-5 px-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:opacity-90 text-white text-[10px] font-medium shadow-sm transition-all cursor-pointer" title="Crop & Resize image">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
+                  </svg>
+                  <span>Crop</span>
+                </button>
+                <button type="button" class="annot-del-btn h-5 w-5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs flex items-center justify-center shadow-sm transition-all cursor-pointer" title="Delete image">&times;</button>
+              </div>
+
+              <!-- Corner Resize Handles (SE, SW, NE, NW) -->
               <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
+              <div class="annot-resize-handle-sw absolute -bottom-1.5 -left-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-sw-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
+              <div class="annot-resize-handle-ne absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-ne-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
+              <div class="annot-resize-handle-nw absolute -top-1.5 -left-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-nw-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
             </div>
           `;
         } else if (annot.type === 'redact') {
@@ -419,8 +468,12 @@ import WatermarkModal from './WatermarkModal.astro';
         if (e.target.classList.contains('annot-text-content') || e.target.closest('.annot-text-content') || e.target.isContentEditable) {
           return;
         }
-        if (e.target.classList.contains('annot-resize-handle') || e.target.closest('.annot-resize-handle')) return;
+        if (e.target.classList.contains('annot-resize-handle') || e.target.closest('.annot-resize-handle') ||
+            e.target.classList.contains('annot-resize-handle-sw') || e.target.closest('.annot-resize-handle-sw') ||
+            e.target.classList.contains('annot-resize-handle-ne') || e.target.closest('.annot-resize-handle-ne') ||
+            e.target.classList.contains('annot-resize-handle-nw') || e.target.closest('.annot-resize-handle-nw')) return;
         if (e.target.classList.contains('annot-del-btn') || e.target.closest('.annot-del-btn')) return;
+        if (e.target.classList.contains('annot-crop-btn') || e.target.closest('.annot-crop-btn')) return;
 
         isDragging = true;
         startX = e.clientX;
@@ -453,16 +506,28 @@ import WatermarkModal from './WatermarkModal.astro';
         document.addEventListener('mouseup', onMouseUp);
       });
 
-      // Resize handle logic
-      const resizeHandle = el.querySelector('.annot-resize-handle');
-      if (resizeHandle) {
-        resizeHandle.addEventListener('mousedown', (e) => {
+      // Quick Crop Button
+      const cropBtn = el.querySelector('.annot-crop-btn');
+      if (cropBtn) {
+        cropBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectAnnotation(annot);
+          openCropModalForAnnotation(annot);
+        });
+      }
+
+      // Multi-corner resize handling
+      function setupResize(handleEl, direction) {
+        if (!handleEl) return;
+        handleEl.addEventListener('mousedown', (e) => {
           e.stopPropagation();
           e.preventDefault();
           const rStartX = e.clientX;
           const rStartY = e.clientY;
           const startWidth = annot.width || (annot.type === 'shape' ? 120 : (annot.type === 'redact' ? 140 : 160));
           const startHeight = annot.height || (annot.type === 'shape' ? 60 : (annot.type === 'redact' ? 30 : 70));
+          const startX = annot.x;
+          const startY = annot.y;
           const isProportional = (annot.type === 'signature' || annot.type === 'image');
           const aspectRatio = startWidth / (startHeight || 1);
 
@@ -472,16 +537,35 @@ import WatermarkModal from './WatermarkModal.astro';
             const dx = moveEv.clientX - rStartX;
             const dy = moveEv.clientY - rStartY;
 
-            let newWidth = Math.max(30, Math.round(startWidth + dx));
-            let newHeight;
-            if (isProportional) {
-              newHeight = Math.max(20, Math.round(newWidth / aspectRatio));
-            } else {
-              newHeight = Math.max(15, Math.round(startHeight + dy));
+            let newWidth = startWidth;
+            let newHeight = startHeight;
+            let newX = startX;
+            let newY = startY;
+
+            if (direction === 'se') {
+              newWidth = Math.max(30, Math.round(startWidth + dx));
+              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight + dy));
+            } else if (direction === 'sw') {
+              newWidth = Math.max(30, Math.round(startWidth - dx));
+              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight + dy));
+              newX = startX + (startWidth - newWidth);
+            } else if (direction === 'ne') {
+              newWidth = Math.max(30, Math.round(startWidth + dx));
+              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight - dy));
+              newY = startY + (startHeight - newHeight);
+            } else if (direction === 'nw') {
+              newWidth = Math.max(30, Math.round(startWidth - dx));
+              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight - dy));
+              newX = startX + (startWidth - newWidth);
+              newY = startY + (startHeight - newHeight);
             }
 
             annot.width = newWidth;
             annot.height = newHeight;
+            annot.x = Math.max(0, newX);
+            annot.y = Math.max(0, newY);
+            el.style.left = annot.x + 'px';
+            el.style.top = annot.y + 'px';
 
             // Update DOM element directly for high performance
             if (annot.type === 'signature' || annot.type === 'image') {
@@ -490,6 +574,10 @@ import WatermarkModal from './WatermarkModal.astro';
                 img.style.width = newWidth + 'px';
                 img.style.height = newHeight + 'px';
               }
+              const propW = document.getElementById('prop-img-w');
+              const propH = document.getElementById('prop-img-h');
+              if (propW && state.selectedAnnotationId === annot.id) propW.value = newWidth;
+              if (propH && state.selectedAnnotationId === annot.id) propH.value = newHeight;
             } else if (annot.type === 'redact') {
               const box = el.querySelector('.annot-redact-box');
               if (box) {
@@ -519,6 +607,11 @@ import WatermarkModal from './WatermarkModal.astro';
           document.addEventListener('mouseup', onResizeMouseUp);
         });
       }
+
+      setupResize(el.querySelector('.annot-resize-handle'), 'se');
+      setupResize(el.querySelector('.annot-resize-handle-sw'), 'sw');
+      setupResize(el.querySelector('.annot-resize-handle-ne'), 'ne');
+      setupResize(el.querySelector('.annot-resize-handle-nw'), 'nw');
     }
 
     function selectAnnotation(annot) {
@@ -532,11 +625,15 @@ import WatermarkModal from './WatermarkModal.astro';
       const fontGroup = document.getElementById('prop-font-group');
       const strokeGroup = document.getElementById('prop-stroke-group');
       const opacityGroup = document.getElementById('prop-opacity-group');
+      const imageGroup = document.getElementById('prop-image-group');
+      const colorGroup = document.getElementById('prop-color-group');
 
       if (annot.type === 'text') {
         if (fontGroup) fontGroup.classList.remove('hidden');
         if (strokeGroup) strokeGroup.classList.add('hidden');
         if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (colorGroup) colorGroup.classList.remove('hidden');
         const fontFamSel = document.getElementById('prop-font-family');
         if (fontFamSel && annot.fontFamily) fontFamSel.value = annot.fontFamily;
         const fontSizeSel = document.getElementById('prop-font-size');
@@ -545,6 +642,8 @@ import WatermarkModal from './WatermarkModal.astro';
         if (fontGroup) fontGroup.classList.add('hidden');
         if (strokeGroup) strokeGroup.classList.remove('hidden');
         if (opacityGroup) opacityGroup.classList.remove('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (colorGroup) colorGroup.classList.remove('hidden');
         const strokeInput = document.getElementById('prop-stroke-width');
         if (strokeInput) strokeInput.value = annot.strokeWidth || 2;
         const strokeVal = document.getElementById('prop-stroke-val');
@@ -553,10 +652,28 @@ import WatermarkModal from './WatermarkModal.astro';
         if (opInput) opInput.value = annot.opacity !== undefined ? annot.opacity : 1.0;
         const opVal = document.getElementById('prop-opacity-val');
         if (opVal) opVal.textContent = Math.round((annot.opacity !== undefined ? annot.opacity : 1.0) * 100) + '%';
+      } else if (annot.type === 'image' || annot.type === 'signature' || annot.type === 'stamp') {
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.remove('hidden');
+        if (imageGroup) imageGroup.classList.remove('hidden');
+        if (colorGroup) colorGroup.classList.add('hidden');
+
+        const propImgW = document.getElementById('prop-img-w');
+        const propImgH = document.getElementById('prop-img-h');
+        if (propImgW) propImgW.value = Math.round(annot.width || 160);
+        if (propImgH) propImgH.value = Math.round(annot.height || 100);
+
+        const opInput = document.getElementById('prop-opacity');
+        if (opInput) opInput.value = annot.opacity !== undefined ? annot.opacity : 1.0;
+        const opVal = document.getElementById('prop-opacity-val');
+        if (opVal) opVal.textContent = Math.round((annot.opacity !== undefined ? annot.opacity : 1.0) * 100) + '%';
       } else {
         if (fontGroup) fontGroup.classList.add('hidden');
         if (strokeGroup) strokeGroup.classList.add('hidden');
         if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (colorGroup) colorGroup.classList.remove('hidden');
       }
 
       const colorInput = document.getElementById('prop-color-picker');
@@ -1433,6 +1550,16 @@ import WatermarkModal from './WatermarkModal.astro';
           const scaleX = pWidth / displayWidth;
           const scaleY = pHeight / displayHeight;
 
+          // Apply page crop box if cropped
+          if (state.pageCrops && state.pageCrops[pNum]) {
+            const crop = state.pageCrops[pNum];
+            const cropPdfX = crop.x * scaleX;
+            const cropPdfW = crop.width * scaleX;
+            const cropPdfH = crop.height * scaleY;
+            const cropPdfY = pHeight - ((crop.y + crop.height) * scaleY);
+            page.setCropBox(cropPdfX, cropPdfY, cropPdfW, cropPdfH);
+          }
+
           // 1. Embed Freehand drawings and highlights layer for this page
           const drawAnnots = pageAnnots.filter(a => a.type === 'draw');
           if (drawAnnots.length > 0) {
@@ -1936,15 +2063,538 @@ import WatermarkModal from './WatermarkModal.astro';
             src: ev.target.result,
             x: 100,
             y: 100,
-            width: 160,
-            height: 100,
+            width: 200,
+            height: 140,
           };
           state.annotations[state.currentPage].push(newImg);
           saveHistory();
           renderAnnotationsLayer();
+          selectAnnotation(newImg);
         };
         reader.readAsDataURL(file);
+        // Reset input so same file can be chosen again
+        imageInput.value = '';
       }
+    });
+
+    // ==========================================
+    // Image Crop & Resize Studio Modal Logic
+    // ==========================================
+    let cropActiveAnnot = null;
+    let cropIsNewImage = false;
+    let cropOriginalSrc = '';
+    let cropCurrentSrc = '';
+    let cropBoxState = { x: 0, y: 0, w: 100, h: 100 };
+    let cropActiveRatio = 'free';
+    let cropIsRatioLocked = true;
+
+    const cropModal = document.getElementById('image-crop-modal');
+    const cropImg = document.getElementById('crop-image');
+    const cropBox = document.getElementById('crop-box');
+    const cropBadge = document.getElementById('crop-box-badge');
+    const cropOutDim = document.getElementById('crop-output-dimensions');
+    const cropInputW = document.getElementById('crop-input-w');
+    const cropInputH = document.getElementById('crop-input-h');
+    const cropCloseBtn = document.getElementById('btn-close-crop-modal');
+    const cropCancelBtn = document.getElementById('btn-cancel-crop');
+    const cropApplyBtn = document.getElementById('btn-apply-crop');
+    const cropResetBtn = document.getElementById('btn-crop-reset');
+
+    function closeCropModal() {
+      cropModal?.classList.add('hidden');
+      cropActiveAnnot = null;
+      cropIsNewImage = false;
+    }
+
+    cropCloseBtn?.addEventListener('click', closeCropModal);
+    cropCancelBtn?.addEventListener('click', closeCropModal);
+
+    function openCropModalForAnnotation(annot, isNew = false) {
+      if (!annot || !annot.src) return;
+      cropActiveAnnot = annot;
+      cropIsNewImage = isNew;
+      cropOriginalSrc = annot.src;
+      cropCurrentSrc = annot.src;
+      cropActiveRatio = 'free';
+      cropIsRatioLocked = true;
+
+      // Reset aspect ratio buttons
+      document.querySelectorAll('.crop-ratio-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.ratio === 'free');
+      });
+
+      const lockIcon = document.getElementById('crop-ratio-lock-icon');
+      if (lockIcon) lockIcon.textContent = '🔒 Proportional';
+
+      // Load image into crop frame
+      cropImg.onload = () => {
+        setupCropBoxInitial();
+      };
+      cropImg.src = cropCurrentSrc;
+      cropModal?.classList.remove('hidden');
+    }
+
+    function setupCropBoxInitial() {
+      const rW = cropImg.clientWidth || 300;
+      const rH = cropImg.clientHeight || 200;
+      const marginX = Math.max(10, Math.round(rW * 0.05));
+      const marginY = Math.max(10, Math.round(rH * 0.05));
+      cropBoxState = {
+        x: marginX,
+        y: marginY,
+        w: Math.max(40, rW - marginX * 2),
+        h: Math.max(30, rH - marginY * 2),
+      };
+
+      if (cropInputW && cropInputH) {
+        cropInputW.value = Math.round(cropActiveAnnot.width || 200);
+        const ratio = cropBoxState.h / (cropBoxState.w || 1);
+        cropInputH.value = Math.round(cropActiveAnnot.height || Math.round(cropActiveAnnot.width * ratio));
+      }
+
+      updateCropBoxDOM();
+    }
+
+    function updateCropBoxDOM() {
+      if (!cropBox || !cropImg) return;
+      const rW = cropImg.clientWidth || 1;
+      const rH = cropImg.clientHeight || 1;
+
+      cropBoxState.x = Math.max(0, Math.min(rW - cropBoxState.w, cropBoxState.x));
+      cropBoxState.y = Math.max(0, Math.min(rH - cropBoxState.h, cropBoxState.y));
+      cropBoxState.w = Math.max(20, Math.min(rW - cropBoxState.x, cropBoxState.w));
+      cropBoxState.h = Math.max(20, Math.min(rH - cropBoxState.y, cropBoxState.h));
+
+      cropBox.style.left = cropBoxState.x + 'px';
+      cropBox.style.top = cropBoxState.y + 'px';
+      cropBox.style.width = cropBoxState.w + 'px';
+      cropBox.style.height = cropBoxState.h + 'px';
+
+      const scaleX = cropImg.naturalWidth / rW;
+      const scaleY = cropImg.naturalHeight / rH;
+      const naturalW = Math.round(cropBoxState.w * scaleX);
+      const naturalH = Math.round(cropBoxState.h * scaleY);
+
+      if (cropBadge) cropBadge.textContent = `${naturalW} × ${naturalH} px`;
+      if (cropOutDim) {
+        const outW = cropInputW ? cropInputW.value : naturalW;
+        const outH = cropInputH ? cropInputH.value : naturalH;
+        cropOutDim.textContent = `${outW} × ${outH} px`;
+      }
+    }
+
+    // Drag crop box
+    let isDraggingCropBox = false;
+    let dragStartX = 0, dragStartY = 0;
+    let dragInitBoxX = 0, dragInitBoxY = 0;
+
+    cropBox?.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('crop-handle') || e.target.closest('.crop-handle')) return;
+      isDraggingCropBox = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragInitBoxX = cropBoxState.x;
+      dragInitBoxY = cropBoxState.y;
+      e.preventDefault();
+      e.stopPropagation();
+
+      function onMove(ev) {
+        if (!isDraggingCropBox) return;
+        const dx = ev.clientX - dragStartX;
+        const dy = ev.clientY - dragStartY;
+        const rW = cropImg.clientWidth;
+        const rH = cropImg.clientHeight;
+        cropBoxState.x = Math.max(0, Math.min(rW - cropBoxState.w, dragInitBoxX + dx));
+        cropBoxState.y = Math.max(0, Math.min(rH - cropBoxState.h, dragInitBoxY + dy));
+        updateCropBoxDOM();
+      }
+
+      function onUp() {
+        isDraggingCropBox = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+
+    // Resize crop handles
+    document.querySelectorAll('.crop-handle').forEach(handle => {
+      handle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const handleType = handle.dataset.handle;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const initBox = { ...cropBoxState };
+        const rW = cropImg.clientWidth;
+        const rH = cropImg.clientHeight;
+
+        function onHandleMove(ev) {
+          const dx = ev.clientX - startX;
+          const dy = ev.clientY - startY;
+
+          let newX = initBox.x;
+          let newY = initBox.y;
+          let newW = initBox.w;
+          let newH = initBox.h;
+
+          if (handleType.includes('e')) newW = Math.max(20, Math.min(rW - initBox.x, initBox.w + dx));
+          if (handleType.includes('s')) newH = Math.max(20, Math.min(rH - initBox.y, initBox.h + dy));
+          if (handleType.includes('w')) {
+            const rawW = initBox.w - dx;
+            newW = Math.max(20, Math.min(initBox.x + initBox.w, rawW));
+            newX = initBox.x + (initBox.w - newW);
+          }
+          if (handleType.includes('n')) {
+            const rawH = initBox.h - dy;
+            newH = Math.max(20, Math.min(initBox.y + initBox.h, rawH));
+            newY = initBox.y + (initBox.h - newH);
+          }
+
+          if (cropActiveRatio !== 'free') {
+            let targetRatio = 1;
+            if (cropActiveRatio === '1:1') targetRatio = 1;
+            else if (cropActiveRatio === '4:3') targetRatio = 4 / 3;
+            else if (cropActiveRatio === '16:9') targetRatio = 16 / 9;
+            else if (cropActiveRatio === '3:2') targetRatio = 3 / 2;
+            else if (cropActiveRatio === 'orig') targetRatio = cropImg.naturalWidth / (cropImg.naturalHeight || 1);
+
+            if (handleType === 'e' || handleType === 'w') {
+              newH = Math.round(newW / targetRatio);
+            } else {
+              newW = Math.round(newH * targetRatio);
+            }
+          }
+
+          cropBoxState = { x: newX, y: newY, w: newW, h: newH };
+          updateCropBoxDOM();
+
+          if (cropInputW && cropInputH && cropIsRatioLocked) {
+            const ratio = cropBoxState.h / cropBoxState.w;
+            cropInputH.value = Math.round((parseInt(cropInputW.value) || 200) * ratio);
+          }
+        }
+
+        function onHandleUp() {
+          document.removeEventListener('mousemove', onHandleMove);
+          document.removeEventListener('mouseup', onHandleUp);
+        }
+
+        document.addEventListener('mousemove', onHandleMove);
+        document.addEventListener('mouseup', onHandleUp);
+      });
+    });
+
+    // Aspect Ratio Preset buttons
+    document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        cropActiveRatio = btn.dataset.ratio;
+
+        if (cropActiveRatio !== 'free') {
+          let ratio = 1;
+          if (cropActiveRatio === '1:1') ratio = 1;
+          else if (cropActiveRatio === '4:3') ratio = 4 / 3;
+          else if (cropActiveRatio === '16:9') ratio = 16 / 9;
+          else if (cropActiveRatio === '3:2') ratio = 3 / 2;
+          else if (cropActiveRatio === 'orig') ratio = cropImg.naturalWidth / (cropImg.naturalHeight || 1);
+
+          const rW = cropImg.clientWidth;
+          const rH = cropImg.clientHeight;
+          let newW = cropBoxState.w;
+          let newH = Math.round(newW / ratio);
+
+          if (newH > rH) {
+            newH = rH - 20;
+            newW = Math.round(newH * ratio);
+          }
+          if (newW > rW) {
+            newW = rW - 20;
+            newH = Math.round(newW / ratio);
+          }
+
+          const centerX = cropBoxState.x + cropBoxState.w / 2;
+          const centerY = cropBoxState.y + cropBoxState.h / 2;
+          cropBoxState.w = Math.max(30, Math.round(newW));
+          cropBoxState.h = Math.max(30, Math.round(newH));
+          cropBoxState.x = Math.max(0, Math.min(rW - cropBoxState.w, Math.round(centerX - cropBoxState.w / 2)));
+          cropBoxState.y = Math.max(0, Math.min(rH - cropBoxState.h, Math.round(centerY - cropBoxState.h / 2)));
+
+          updateCropBoxDOM();
+
+          if (cropInputW && cropInputH && cropIsRatioLocked) {
+            cropInputH.value = Math.round((parseInt(cropInputW.value) || 200) / ratio);
+          }
+        }
+      });
+    });
+
+    // Toggle aspect ratio lock in modal
+    document.getElementById('btn-toggle-crop-ratio-lock')?.addEventListener('click', () => {
+      cropIsRatioLocked = !cropIsRatioLocked;
+      const icon = document.getElementById('crop-ratio-lock-icon');
+      if (icon) icon.textContent = cropIsRatioLocked ? '🔒 Proportional' : '🔓 Free Ratio';
+    });
+
+    // Dimension Inputs in modal
+    cropInputW?.addEventListener('input', (e) => {
+      const w = parseInt(e.target.value);
+      if (w > 0 && cropIsRatioLocked && cropInputH && cropBoxState.w > 0) {
+        const ratio = cropBoxState.h / cropBoxState.w;
+        cropInputH.value = Math.round(w * ratio);
+      }
+      updateCropBoxDOM();
+    });
+
+    cropInputH?.addEventListener('input', (e) => {
+      const h = parseInt(e.target.value);
+      if (h > 0 && cropIsRatioLocked && cropInputW && cropBoxState.h > 0) {
+        const ratio = cropBoxState.w / cropBoxState.h;
+        cropInputW.value = Math.round(h * ratio);
+      }
+      updateCropBoxDOM();
+    });
+
+    // Scale Presets in modal
+    document.querySelectorAll('.crop-scale-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const factor = parseFloat(btn.dataset.scale);
+        if (!factor || !cropInputW || !cropInputH) return;
+        const baseW = Math.round(cropActiveAnnot.width || 200);
+        const baseH = Math.round(cropActiveAnnot.height || 150);
+        cropInputW.value = Math.round(baseW * factor);
+        cropInputH.value = Math.round(baseH * factor);
+        updateCropBoxDOM();
+      });
+    });
+
+    // Rotate & Flip image in modal via offscreen canvas
+    function transformModalImage(operation) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.onload = () => {
+        if (operation === 'rotate-cw') {
+          canvas.width = img.height;
+          canvas.height = img.width;
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate((90 * Math.PI) / 180);
+          ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        } else if (operation === 'rotate-ccw') {
+          canvas.width = img.height;
+          canvas.height = img.width;
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate((-90 * Math.PI) / 180);
+          ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        } else if (operation === 'flip-h') {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+          ctx.drawImage(img, 0, 0);
+        } else if (operation === 'flip-v') {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.translate(0, canvas.height);
+          ctx.scale(1, -1);
+          ctx.drawImage(img, 0, 0);
+        }
+        cropCurrentSrc = canvas.toDataURL('image/png');
+        cropImg.onload = () => setupCropBoxInitial();
+        cropImg.src = cropCurrentSrc;
+      };
+      img.src = cropCurrentSrc;
+    }
+
+    document.getElementById('btn-crop-rotate-left')?.addEventListener('click', () => transformModalImage('rotate-ccw'));
+    document.getElementById('btn-crop-rotate-right')?.addEventListener('click', () => transformModalImage('rotate-cw'));
+    document.getElementById('btn-crop-flip-h')?.addEventListener('click', () => transformModalImage('flip-h'));
+    document.getElementById('btn-crop-flip-v')?.addEventListener('click', () => transformModalImage('flip-v'));
+
+    cropResetBtn?.addEventListener('click', () => {
+      cropCurrentSrc = cropOriginalSrc;
+      cropImg.onload = () => setupCropBoxInitial();
+      cropImg.src = cropCurrentSrc;
+    });
+
+    // Apply Crop
+    cropApplyBtn?.addEventListener('click', async () => {
+      if (!cropActiveAnnot || !cropImg) return;
+      const rW = cropImg.clientWidth || 1;
+      const rH = cropImg.clientHeight || 1;
+      const scaleX = cropImg.naturalWidth / rW;
+      const scaleY = cropImg.naturalHeight / rH;
+
+      const sx = Math.max(0, cropBoxState.x * scaleX);
+      const sy = Math.max(0, cropBoxState.y * scaleY);
+      const sW = Math.min(cropImg.naturalWidth - sx, cropBoxState.w * scaleX);
+      const sH = Math.min(cropImg.naturalHeight - sy, cropBoxState.h * scaleY);
+
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = Math.max(1, Math.round(sW));
+      outCanvas.height = Math.max(1, Math.round(sH));
+      const outCtx = outCanvas.getContext('2d');
+      outCtx.drawImage(cropImg, sx, sy, sW, sH, 0, 0, outCanvas.width, outCanvas.height);
+
+      const croppedDataUrl = outCanvas.toDataURL('image/png');
+      const userW = parseInt(cropInputW?.value);
+      const userH = parseInt(cropInputH?.value);
+
+      if (cropActiveAnnot.isPdfPage) {
+        state.pageCrops[cropActiveAnnot.pageNum] = {
+          x: sx,
+          y: sy,
+          width: sW,
+          height: sH,
+          croppedSrc: croppedDataUrl,
+          newWidth: userW || Math.round(sW / 1.5),
+          newHeight: userH || Math.round(sH / 1.5),
+        };
+        saveHistory();
+        await renderCurrentPage();
+        closeCropModal();
+        return;
+      }
+
+      cropActiveAnnot.src = croppedDataUrl;
+
+      if (userW > 0) cropActiveAnnot.width = userW;
+      if (userH > 0) cropActiveAnnot.height = userH;
+
+      if (cropIsNewImage) {
+        state.annotations[state.currentPage].push(cropActiveAnnot);
+      }
+
+      saveHistory();
+      renderAnnotationsLayer();
+      selectAnnotation(cropActiveAnnot);
+      closeCropModal();
+    });
+
+    // ==========================================
+    // Top Toolbar & Property Bar Image Resizing Controls
+    // ==========================================
+    async function openCropForCurrentPdfPage() {
+      if (!state.pdfDocProxy || !state.totalPages) {
+        alert('Please open or upload a PDF document first.');
+        return;
+      }
+      const pageDataUrl = renderCanvas.toDataURL('image/png');
+      const dispW = Math.round(parseFloat(renderCanvas.style.width) || (renderCanvas.width / 1.5));
+      const dispH = Math.round(parseFloat(renderCanvas.style.height) || (renderCanvas.height / 1.5));
+      const pageCropItem = {
+        id: 'pdf-page-' + state.currentPage,
+        isPdfPage: true,
+        pageNum: state.currentPage,
+        src: pageDataUrl,
+        width: dispW,
+        height: dispH,
+      };
+      openCropModalForAnnotation(pageCropItem);
+    }
+
+    document.getElementById('btn-crop-page')?.addEventListener('click', openCropForCurrentPdfPage);
+    document.getElementById('btn-floating-crop')?.addEventListener('click', openCropForCurrentPdfPage);
+    const cropImageToolBtn = document.getElementById('btn-crop-image-tool');
+    cropImageToolBtn?.addEventListener('click', () => {
+      const activeList = state.annotations[state.currentPage] || [];
+      const selAnnot = activeList.find(a => a.id === state.selectedAnnotationId);
+      if (selAnnot && (selAnnot.type === 'image' || selAnnot.type === 'signature' || selAnnot.type === 'stamp')) {
+        openCropModalForAnnotation(selAnnot);
+        return;
+      }
+      const anyImg = [...activeList].reverse().find(a => a.type === 'image' || a.type === 'signature' || a.type === 'stamp');
+      if (anyImg) {
+        selectAnnotation(anyImg);
+        openCropModalForAnnotation(anyImg);
+        return;
+      }
+      imageInput?.click();
+    });
+
+    const propCropBtn = document.getElementById('btn-prop-crop-modal');
+    propCropBtn?.addEventListener('click', () => {
+      const activeList = state.annotations[state.currentPage] || [];
+      const selAnnot = activeList.find(a => a.id === state.selectedAnnotationId);
+      if (selAnnot) openCropModalForAnnotation(selAnnot);
+    });
+
+    let isPropImgLocked = true;
+    const propImgLockBtn = document.getElementById('btn-prop-img-lock');
+    const propImgLockIcon = document.getElementById('prop-img-lock-icon');
+    propImgLockBtn?.addEventListener('click', () => {
+      isPropImgLocked = !isPropImgLocked;
+      if (propImgLockIcon) propImgLockIcon.textContent = isPropImgLocked ? '🔒' : '🔓';
+      propImgLockBtn.classList.toggle('border-blue-500', isPropImgLocked);
+    });
+
+    const propWInput = document.getElementById('prop-img-w');
+    const propHInput = document.getElementById('prop-img-h');
+
+    function updateImgDimensions(w, h, save = true) {
+      const activeList = state.annotations[state.currentPage] || [];
+      const selAnnot = activeList.find(a => a.id === state.selectedAnnotationId);
+      if (!selAnnot) return;
+      selAnnot.width = Math.max(20, Math.round(w));
+      selAnnot.height = Math.max(20, Math.round(h));
+      const el = document.getElementById('annot-' + selAnnot.id);
+      if (el) {
+        const img = el.querySelector('img');
+        if (img) {
+          img.style.width = selAnnot.width + 'px';
+          img.style.height = selAnnot.height + 'px';
+        }
+      }
+      if (save) saveHistory();
+    }
+
+    propWInput?.addEventListener('input', (e) => {
+      const newW = parseFloat(e.target.value);
+      if (!newW || isNaN(newW)) return;
+      const activeList = state.annotations[state.currentPage] || [];
+      const selAnnot = activeList.find(a => a.id === state.selectedAnnotationId);
+      if (!selAnnot) return;
+      let newH = selAnnot.height;
+      if (isPropImgLocked && selAnnot.width > 0) {
+        const ratio = selAnnot.height / selAnnot.width;
+        newH = Math.round(newW * ratio);
+        if (propHInput) propHInput.value = newH;
+      }
+      updateImgDimensions(newW, newH, false);
+    });
+    propWInput?.addEventListener('change', () => saveHistory());
+
+    propHInput?.addEventListener('input', (e) => {
+      const newH = parseFloat(e.target.value);
+      if (!newH || isNaN(newH)) return;
+      const activeList = state.annotations[state.currentPage] || [];
+      const selAnnot = activeList.find(a => a.id === state.selectedAnnotationId);
+      if (!selAnnot) return;
+      let newW = selAnnot.width;
+      if (isPropImgLocked && selAnnot.height > 0) {
+        const ratio = selAnnot.width / selAnnot.height;
+        newW = Math.round(newH * ratio);
+        if (propWInput) propWInput.value = newW;
+      }
+      updateImgDimensions(newW, newH, false);
+    });
+    propHInput?.addEventListener('change', () => saveHistory());
+
+    document.querySelectorAll('.btn-quick-scale').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const scale = parseFloat(btn.dataset.scale);
+        const activeList = state.annotations[state.currentPage] || [];
+        const selAnnot = activeList.find(a => a.id === state.selectedAnnotationId);
+        if (!selAnnot || !scale) return;
+        const newW = Math.round(selAnnot.width * scale);
+        const newH = Math.round(selAnnot.height * scale);
+        if (propWInput) propWInput.value = newW;
+        if (propHInput) propHInput.value = newH;
+        updateImgDimensions(newW, newH, true);
+      });
     });
 
     // Watermark & Page Numbering Modal Logic
