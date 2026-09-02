@@ -8,17 +8,23 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
   description="Sign PDF documents and contracts online for free. Draw, type or upload your signature with 100% client-side privacy."
   activeTool="sign"
 >
-  <div class="py-12 md:py-16 hero-mesh-gradient border-b border-hairline">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-3 py-1 text-[12px] font-mono text-ink shadow-whisper mb-4">
-        <span class="flex h-2 w-2 rounded-full bg-link"></span>
-        <span>Secure Document Signing</span>
+  <div class="py-14 md:py-20 hero-mesh-gradient border-b border-hairline relative overflow-hidden">
+    <div class="hero-mesh-blob -top-24 left-1/4 h-80 w-80 rounded-full bg-blue-500/15 animate-pulse-glow"></div>
+    <div class="hero-mesh-blob -top-12 right-1/4 h-80 w-80 rounded-full bg-indigo-500/15"></div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated/90 px-3.5 py-1 text-[11px] font-mono text-ink shadow-whisper mb-4">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
+        </span>
+        <span class="uppercase tracking-wider font-semibold text-blue-600 dark:text-cyan-400">Secure Document Signing</span>
       </div>
 
-      <h1 class="text-4xl font-bold tracking-display text-ink sm:text-5xl">
+      <h1 class="text-4xl font-extrabold tracking-display text-ink sm:text-5xl">
         Sign PDF Documents Online
       </h1>
-      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto">
+      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto leading-relaxed">
         Fill and sign agreements, contracts, and tax forms in seconds. Create legally binding electronic signatures without uploading your sensitive files.
       </p>
 

@@ -2,27 +2,27 @@
 // WatermarkModal.astro - Watermark & Header/Footer Page Numbers
 ---
 
-<div id="watermark-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-  <div class="w-full max-w-md rounded-lg border border-hairline bg-canvas-elevated p-6 shadow-floating animate-fade-in">
+<div id="watermark-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden">
+  <div class="w-full max-w-md rounded-2xl border border-hairline bg-canvas-elevated p-6 sm:p-7 shadow-floating animate-fade-in">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-hairline pb-3">
-      <div class="flex items-center gap-2">
-        <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-on-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+    <div class="flex items-center justify-between border-b border-hairline/80 pb-3.5">
+      <div class="flex items-center gap-2.5">
+        <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
           </svg>
         </div>
-        <h3 class="text-[16px] font-semibold tracking-tight text-ink">Watermark & Page Numbers</h3>
+        <h3 class="text-[17px] font-bold tracking-tight text-ink">Watermark & Page Numbers</h3>
       </div>
-      <button id="btn-close-watermark-modal" class="text-mute hover:text-ink text-lg leading-none p-1">&times;</button>
+      <button id="btn-close-watermark-modal" class="text-mute hover:text-ink text-xl leading-none p-1.5 rounded-lg hover:bg-hairline-soft transition-colors cursor-pointer">&times;</button>
     </div>
 
     <!-- Mode Selector Tabs -->
-    <div class="mt-4 flex rounded-sm border border-hairline bg-hairline-soft p-0.5 text-[13px] font-medium">
-      <button id="watermark-tab-wm" class="flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper">
+    <div class="mt-5 flex rounded-xl border border-hairline/80 bg-hairline-soft/80 p-1 text-[13px] font-medium">
+      <button id="watermark-tab-wm" class="flex-1 rounded-lg py-1.5 text-center bg-canvas-elevated text-ink font-semibold shadow-sm transition-all cursor-pointer">
         Watermark
       </button>
-      <button id="watermark-tab-pg" class="flex-1 rounded-sm py-1.5 text-center text-body hover:text-ink">
+      <button id="watermark-tab-pg" class="flex-1 rounded-lg py-1.5 text-center text-body hover:text-ink transition-all cursor-pointer">
         Page Numbering
       </button>
     </div>
@@ -30,24 +30,24 @@
     <!-- Pane 1: Watermark -->
     <div id="watermark-pane-wm" class="mt-4 space-y-4">
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1">Watermark Text</label>
+        <label class="block text-[12px] font-medium text-body mb-1.5">Watermark Text</label>
         <input
           type="text"
           id="wm-text-input"
           placeholder="e.g. CONFIDENTIAL or SAMPLE"
           value="CONFIDENTIAL"
-          class="w-full rounded-sm border border-hairline bg-canvas px-3 py-2 text-[13px] font-medium text-ink outline-none uppercase"
+          class="w-full rounded-xl border border-hairline bg-canvas px-3.5 py-2 text-[13px] font-medium text-ink outline-none uppercase focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-[12px] font-medium text-body mb-1">Opacity: <span id="wm-opacity-label" class="font-mono text-mute">20%</span></label>
-          <input type="range" id="wm-opacity-slider" min="0.05" max="0.8" step="0.05" value="0.2" class="w-full accent-ink cursor-pointer" />
+          <label class="block text-[12px] font-medium text-body mb-1.5">Opacity: <span id="wm-opacity-label" class="font-mono text-mute">20%</span></label>
+          <input type="range" id="wm-opacity-slider" min="0.05" max="0.8" step="0.05" value="0.2" class="w-full accent-blue-600 cursor-pointer" />
         </div>
         <div>
-          <label class="block text-[12px] font-medium text-body mb-1">Rotation Angle</label>
-          <select id="wm-angle-select" class="w-full rounded-sm border border-hairline bg-canvas px-2.5 py-1.5 text-[12px] text-ink outline-none">
+          <label class="block text-[12px] font-medium text-body mb-1.5">Rotation Angle</label>
+          <select id="wm-angle-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[12px] text-ink outline-none focus:border-blue-500">
             <option value="-45" selected>-45° (Diagonal)</option>
             <option value="0">0° (Horizontal)</option>
             <option value="45">45° (Diagonal Up)</option>
@@ -56,14 +56,14 @@
       </div>
 
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1">Color</label>
-        <div class="flex items-center gap-2">
-          <input type="color" id="wm-color-picker" value="#ff0000" class="h-6 w-8 cursor-pointer rounded-xs border border-hairline p-0" />
+        <label class="block text-[12px] font-medium text-body mb-1.5">Color</label>
+        <div class="flex items-center gap-2.5">
+          <input type="color" id="wm-color-picker" value="#ff0000" class="h-8 w-9 cursor-pointer rounded-xl border border-hairline p-0" />
           <span class="text-[12px] text-mute font-mono">Applies to all pages across the PDF</span>
         </div>
       </div>
 
-      <button id="btn-apply-watermark" class="w-full rounded-sm bg-ink py-2 text-[13px] font-medium text-on-primary shadow-whisper hover:opacity-90 active:scale-95 transition-all">
+      <button id="btn-apply-watermark" class="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
         Apply Watermark to All Pages
       </button>
     </div>
@@ -71,8 +71,8 @@
     <!-- Pane 2: Page Numbers -->
     <div id="watermark-pane-pg" class="mt-4 space-y-4 hidden">
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1">Format</label>
-        <select id="pg-format-select" class="w-full rounded-sm border border-hairline bg-canvas px-2.5 py-2 text-[13px] text-ink outline-none font-mono">
+        <label class="block text-[12px] font-medium text-body mb-1.5">Format</label>
+        <select id="pg-format-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[13px] text-ink outline-none font-mono focus:border-blue-500">
           <option value="Page {n} of {total}" selected>Page 1 of 5</option>
           <option value="{n} / {total}">1 / 5</option>
           <option value="Page {n}">Page 1</option>
@@ -81,8 +81,8 @@
       </div>
 
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1">Position</label>
-        <select id="pg-position-select" class="w-full rounded-sm border border-hairline bg-canvas px-2.5 py-2 text-[13px] text-ink outline-none">
+        <label class="block text-[12px] font-medium text-body mb-1.5">Position</label>
+        <select id="pg-position-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[13px] text-ink outline-none focus:border-blue-500">
           <option value="bottom-center" selected>Bottom Center</option>
           <option value="bottom-right">Bottom Right</option>
           <option value="top-right">Top Right</option>
@@ -90,7 +90,7 @@
         </select>
       </div>
 
-      <button id="btn-apply-pagenumbers" class="w-full rounded-sm bg-ink py-2 text-[13px] font-medium text-on-primary shadow-whisper hover:opacity-90 active:scale-95 transition-all">
+      <button id="btn-apply-pagenumbers" class="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
         Add Page Numbers to All Pages
       </button>
     </div>

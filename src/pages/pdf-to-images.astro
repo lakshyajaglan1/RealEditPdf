@@ -7,39 +7,45 @@ import Layout from '../layouts/Layout.astro';
   description="Convert all pages of your PDF into high-resolution PNG or JPG images directly in your browser. 100% free and private."
   activeTool="convert"
 >
-  <div class="py-12 md:py-20 hero-mesh-gradient border-b border-hairline">
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-3 py-1 text-[12px] font-mono text-ink shadow-whisper mb-4">
-        <span class="flex h-2 w-2 rounded-full bg-amber-500"></span>
-        <span>High-Res Rasterizer</span>
+  <div class="py-14 md:py-24 hero-mesh-gradient border-b border-hairline relative overflow-hidden">
+    <div class="hero-mesh-blob -top-24 left-1/4 h-80 w-80 rounded-full bg-amber-500/15 animate-pulse-glow"></div>
+    <div class="hero-mesh-blob -top-12 right-1/4 h-80 w-80 rounded-full bg-orange-500/15"></div>
+
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated/90 px-3.5 py-1 text-[11px] font-mono text-ink shadow-whisper mb-4">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-amber-500"></span>
+        </span>
+        <span class="uppercase tracking-wider font-semibold text-amber-600 dark:text-amber-400">High-Res Rasterizer</span>
       </div>
 
-      <h1 class="text-4xl font-bold tracking-display text-ink sm:text-5xl">
+      <h1 class="text-4xl font-extrabold tracking-display text-ink sm:text-5xl">
         Convert PDF to Images (PNG / JPG)
       </h1>
-      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto">
+      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto leading-relaxed">
         Extract each page of your PDF as crystal-clear 300 DPI image files. Processed entirely in your browser with zero limits.
       </p>
 
-      <div class="mt-10 rounded-lg border border-hairline bg-canvas-elevated p-6 sm:p-8 shadow-floating text-left">
-        <div id="conv-dropzone" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-hairline bg-canvas p-10 text-center hover:border-ink/40 transition-all cursor-pointer">
-          <div class="h-12 w-12 rounded-full bg-canvas-elevated border border-hairline flex items-center justify-center mb-3 shadow-whisper">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      <div class="mt-10 rounded-3xl border border-hairline bg-canvas-elevated/90 backdrop-blur-xl p-6 sm:p-10 shadow-floating text-left">
+        <div id="conv-dropzone" class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-canvas/80 p-12 text-center hover:border-amber-500/50 hover:shadow-glow-cyan transition-all duration-300 cursor-pointer group">
+          <div class="h-16 w-16 rounded-2xl bg-canvas-elevated border border-hairline flex items-center justify-center mb-4 shadow-whisper group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="text-[16px] font-semibold text-ink">Select a PDF file to convert</h3>
-          <p class="text-[13px] text-mute mt-1">High quality 2x resolution render</p>
+          <h3 class="text-xl font-bold text-ink">Select a PDF file to convert</h3>
+          <p class="text-[13px] text-mute mt-1.5">High-definition 300 DPI image rendering</p>
           <input type="file" id="conv-file-input" accept="application/pdf" class="hidden" />
         </div>
 
-        <div id="conv-results" class="mt-6 space-y-6 hidden">
+        <div id="conv-results" class="mt-8 space-y-6 hidden">
           <div class="flex items-center justify-between border-b border-hairline pb-3">
             <div>
-              <h3 id="conv-filename" class="font-medium text-ink">document.pdf</h3>
+              <h3 id="conv-filename" class="font-semibold text-ink">document.pdf</h3>
               <span id="conv-status" class="text-xs font-mono text-mute">Rendering pages...</span>
             </div>
-            <button id="btn-conv-reset" class="text-xs text-mute hover:text-ink">Convert Another</button>
+            <button id="btn-conv-reset" class="text-xs text-mute hover:text-ink cursor-pointer">Convert Another</button>
           </div>
 
           <div id="conv-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto pr-1"></div>

@@ -2,14 +2,14 @@
 // ThumbnailSidebar.astro - Page Organization & Thumbnail Rail
 ---
 
-<aside id="thumbnail-sidebar" class="w-64 border-r border-hairline bg-canvas p-3 flex flex-col justify-between overflow-y-auto select-none transition-all duration-200">
+<aside id="thumbnail-sidebar" class="w-64 border-r border-hairline bg-canvas-elevated/75 backdrop-blur-xl p-3.5 flex flex-col justify-between overflow-y-auto select-none transition-all duration-200">
   <div class="space-y-3">
-    <div class="flex items-center justify-between pb-2 border-b border-hairline">
-      <div class="flex items-center gap-1.5">
-        <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">Pages</span>
-        <span id="sidebar-page-count" class="rounded-xs bg-hairline-soft px-1.5 py-0.5 font-mono text-[10px] text-mute">0</span>
+    <div class="flex items-center justify-between pb-2.5 border-b border-hairline/80">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">Page Thumbnails</span>
+        <span id="sidebar-page-count" class="rounded-full bg-blue-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-blue-600 dark:text-cyan-400">0</span>
       </div>
-      <button id="btn-collapse-sidebar" class="text-mute hover:text-ink text-xs p-1" title="Close Panel">✕</button>
+      <button id="btn-collapse-sidebar" class="text-mute hover:text-ink text-xs p-1 rounded-md hover:bg-hairline-soft transition-colors" title="Close Panel">✕</button>
     </div>
 
     <!-- Thumbnails Container -->
@@ -19,21 +19,21 @@
   </div>
 
   <!-- Bottom Page Actions -->
-  <div class="pt-3 border-t border-hairline space-y-1.5">
+  <div class="pt-3 border-t border-hairline/80 space-y-2">
     <button
       id="btn-add-blank-page"
-      class="w-full flex items-center justify-center gap-1.5 rounded-sm border border-hairline bg-canvas-elevated py-1.5 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper"
+      class="w-full flex items-center justify-center gap-2 rounded-xl border border-hairline bg-canvas-elevated py-2 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg>
       <span>Insert Blank Page</span>
     </button>
 
     <label
-      class="w-full flex items-center justify-center gap-1.5 rounded-sm border border-hairline bg-canvas-elevated py-1.5 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper cursor-pointer"
+      class="w-full flex items-center justify-center gap-2 rounded-xl border border-hairline bg-canvas-elevated py-2 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper cursor-pointer transition-all"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
       <span>Append from PDF</span>
