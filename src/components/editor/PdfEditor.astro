@@ -1,0 +1,1893 @@
+---
+// PdfEditor.astro - Master Interactive Studio
+import EditorToolbar from './EditorToolbar.astro';
+import ThumbnailSidebar from './ThumbnailSidebar.astro';
+import SignatureModal from './SignatureModal.astro';
+import StampModal from './StampModal.astro';
+import WatermarkModal from './WatermarkModal.astro';
+---
+
+<div id="editor-anchor" class="w-full relative flex flex-col bg-canvas rounded-lg border border-hairline shadow-floating overflow-hidden">
+  <!-- Top Editor Toolbar -->
+  <EditorToolbar />
+
+  <!-- Main Editor Workspace (Sidebar + Canvas Viewport) -->
+  <div class="relative flex h-[750px] w-full overflow-hidden bg-hairline-soft/40">
+    <!-- Page Thumbnail Sidebar -->
+    <ThumbnailSidebar />
+
+    <!-- Canvas Scrollable Viewport -->
+    <div id="canvas-viewport" class="relative flex-1 overflow-auto p-4 sm:p-8 flex flex-col items-center justify-start">
+      
+      <!-- Empty Dropzone State (When no PDF is loaded) -->
+      <div id="editor-empty-state" class="my-auto flex flex-col items-center justify-center max-w-xl text-center p-8 rounded-lg border-2 border-dashed border-hairline bg-canvas-elevated shadow-whisper transition-all hover:border-ink/40">
+        <div class="h-16 w-16 rounded-full bg-canvas flex items-center justify-center border border-hairline mb-4 shadow-whisper">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+
+        <h3 class="text-xl font-semibold tracking-tight text-ink mb-1">Upload PDF to start editing</h3>
+        <p class="text-[13px] text-body mb-6 max-w-md">
+          Drag and drop your document here, or click to browse. Files are processed 100% locally in your browser.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <label class="cursor-pointer inline-flex h-10 items-center justify-center rounded-full bg-ink px-6 text-sm font-medium text-white shadow-whisper hover:bg-neutral-800 active:scale-95 transition-all">
+            <span>Choose PDF File</span>
+            <input type="file" id="main-pdf-input" accept="application/pdf" class="hidden" />
+          </label>
+
+          <button id="btn-load-sample" class="inline-flex h-10 items-center justify-center rounded-full border border-hairline bg-canvas-elevated px-5 text-sm font-medium text-ink hover:bg-hairline-soft transition-all shadow-whisper">
+            <span>Try Sample Document</span>
+          </button>
+        </div>
+
+        <div class="mt-6 flex items-center gap-4 text-[11px] font-mono text-mute">
+          <span class="flex items-center gap-1">
+            <svg class="h-3.5 w-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            No File Size Limit
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="h-3.5 w-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            Zero Server Uploads
+          </span>
+        </div>
+      </div>
+
+      <!-- Active PDF Page Wrapper (Shown when PDF is loaded) -->
+      <div id="pdf-page-container" class="relative hidden bg-white shadow-floating border border-hairline rounded-sm transition-transform origin-top">
+        <!-- PDF.js Underlay Canvas (Renders original PDF page) -->
+        <canvas id="pdf-render-canvas" class="block rounded-sm"></canvas>
+
+        <!-- Freehand Drawing Canvas Layer -->
+        <canvas id="pdf-draw-canvas" class="absolute inset-0 z-10 touch-none pointer-events-none"></canvas>
+
+        <!-- Interactive Annotations Container (Text, Shapes, Signatures, Stamps, Redactions) -->
+        <div id="pdf-annotations-layer" class="absolute inset-0 z-20 overflow-visible"></div>
+      </div>
+
+      <!-- Floating Page Navigation Pill (Bottom of Canvas) -->
+      <div id="floating-page-nav" class="sticky bottom-4 mt-6 z-30 hidden items-center gap-2.5 rounded-full border border-hairline bg-canvas-elevated/95 px-3.5 py-1.5 backdrop-blur-md shadow-floating text-[13px]">
+        <button id="btn-prev-page" class="flex h-6 w-6 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30" title="Previous Page">
+          ‹
+        </button>
+        <span class="font-mono text-[12px] font-medium text-ink px-1">
+          Page <span id="current-page-num">1</span> of <span id="total-page-num">1</span>
+        </span>
+        <button id="btn-next-page" class="flex h-6 w-6 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30" title="Next Page">
+          ›
+        </button>
+        <div class="h-3.5 w-px bg-hairline mx-0.5"></div>
+        <button id="btn-floating-rotate" class="flex h-6 items-center gap-1 rounded-full px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors" title="Rotate Current Page (90° CW)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Rotate</span>
+        </button>
+      </div>
+
+      <!-- Loading Spinner Overlay -->
+      <div id="editor-loading" class="absolute inset-0 z-40 flex items-center justify-center bg-white/70 backdrop-blur-xs hidden">
+        <div class="flex flex-col items-center gap-3">
+          <div class="h-8 w-8 animate-spin rounded-full border-2 border-link border-t-transparent"></div>
+          <span id="loading-text" class="text-[13px] font-medium text-ink">Processing Document...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <SignatureModal />
+  <StampModal />
+  <WatermarkModal />
+</div>
+
+<!-- Core Client-Side Logic Script -->
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    // State management
+    const state = {
+      pdfBytes: null,
+      pdfDocProxy: null,
+      totalPages: 0,
+      currentPage: 1,
+      pageRotations: {}, // pageNum -> degrees (0, 90, 180, 270)
+      annotations: {}, // pageNum -> Array of annotations
+      activeTool: 'select', // 'select', 'text', 'draw', 'highlight', 'shape', 'redact'
+      activeShape: 'rect',
+      scale: 1.0,
+      selectedAnnotationId: null,
+      history: [],
+      historyIndex: -1,
+      isDrawing: false,
+      drawPoints: [],
+      activeDrawColor: '#171717',
+      activeDrawWidth: 2,
+      activeDrawOpacity: 1.0,
+      activeHighlightColor: '#fef08a',
+    };
+
+    // DOM Elements
+    const emptyState = document.getElementById('editor-empty-state');
+    const pageContainer = document.getElementById('pdf-page-container');
+    const renderCanvas = document.getElementById('pdf-render-canvas');
+    const drawCanvas = document.getElementById('pdf-draw-canvas');
+    const annotationsLayer = document.getElementById('pdf-annotations-layer');
+    const fileInput = document.getElementById('main-pdf-input');
+    const appendFileInput = document.getElementById('append-pdf-input');
+    const sampleBtn = document.getElementById('btn-load-sample');
+    const loadingOverlay = document.getElementById('editor-loading');
+    const loadingText = document.getElementById('loading-text');
+    const pageNav = document.getElementById('floating-page-nav');
+    const curPageSpan = document.getElementById('current-page-num');
+    const totPageSpan = document.getElementById('total-page-num');
+    const prevPageBtn = document.getElementById('btn-prev-page');
+    const nextPageBtn = document.getElementById('btn-next-page');
+    const thumbnailsList = document.getElementById('thumbnails-list');
+    const sidebarCount = document.getElementById('sidebar-page-count');
+    const zoomPct = document.getElementById('zoom-percentage');
+    const zoomInBtn = document.getElementById('btn-zoom-in');
+    const zoomOutBtn = document.getElementById('btn-zoom-out');
+    const propertyBar = document.getElementById('property-bar');
+    const exportBtn = document.getElementById('btn-export-pdf');
+    const undoBtn = document.getElementById('btn-undo');
+    const redoBtn = document.getElementById('btn-redo');
+
+    function showLoading(msg = 'Processing Document...') {
+      loadingText.textContent = msg;
+      loadingOverlay.classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      loadingOverlay.classList.add('hidden');
+    }
+
+    function saveHistory() {
+      // Deep clone annotations & rotations
+      const snapshot = {
+        annotations: JSON.parse(JSON.stringify(state.annotations)),
+        rotations: { ...state.pageRotations },
+      };
+      state.history = state.history.slice(0, state.historyIndex + 1);
+      state.history.push(snapshot);
+      state.historyIndex++;
+      updateUndoRedoUI();
+    }
+
+    function updateUndoRedoUI() {
+      undoBtn.disabled = state.historyIndex <= 0;
+      redoBtn.disabled = state.historyIndex >= state.history.length - 1;
+    }
+
+    undoBtn.addEventListener('click', () => {
+      if (state.historyIndex > 0) {
+        state.historyIndex--;
+        const snapshot = state.history[state.historyIndex];
+        state.annotations = JSON.parse(JSON.stringify(snapshot.annotations));
+        state.pageRotations = { ...snapshot.rotations };
+        renderCurrentPage();
+        updateUndoRedoUI();
+      }
+    });
+
+    redoBtn.addEventListener('click', () => {
+      if (state.historyIndex < state.history.length - 1) {
+        state.historyIndex++;
+        const snapshot = state.history[state.historyIndex];
+        state.annotations = JSON.parse(JSON.stringify(snapshot.annotations));
+        state.pageRotations = { ...snapshot.rotations };
+        renderCurrentPage();
+        updateUndoRedoUI();
+      }
+    });
+
+    // Load PDF ArrayBuffer
+    async function loadPdfBuffer(buffer) {
+      showLoading('Rendering PDF Pages...');
+      try {
+        state.pdfBytes = new Uint8Array(buffer);
+        if (!window.pdfjsLib) {
+          throw new Error('PDF.js engine is still loading. Please try again.');
+        }
+        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes });
+        state.pdfDocProxy = await loadingTask.promise;
+        state.totalPages = state.pdfDocProxy.numPages;
+        state.currentPage = 1;
+        state.annotations = {};
+        state.pageRotations = {};
+
+        for (let i = 1; i <= state.totalPages; i++) {
+          state.annotations[i] = [];
+          state.pageRotations[i] = 0;
+        }
+
+        emptyState.classList.add('hidden');
+        pageContainer.classList.remove('hidden');
+        pageNav.classList.remove('hidden');
+        pageNav.classList.add('flex');
+
+        sidebarCount.textContent = state.totalPages;
+        totPageSpan.textContent = state.totalPages;
+
+        saveHistory();
+        await renderThumbnails();
+        await renderCurrentPage();
+      } catch (err) {
+        console.error('Error loading PDF:', err);
+        alert('Failed to load PDF file: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Render Main Active Page
+    async function renderCurrentPage() {
+      if (!state.pdfDocProxy) return;
+      showLoading('Rendering Page ' + state.currentPage + '...');
+      try {
+        curPageSpan.textContent = state.currentPage;
+        prevPageBtn.disabled = state.currentPage <= 1;
+        nextPageBtn.disabled = state.currentPage >= state.totalPages;
+
+        const page = await state.pdfDocProxy.getPage(state.currentPage);
+        const rotation = (page.rotate + (state.pageRotations[state.currentPage] || 0)) % 360;
+        const viewport = page.getViewport({ scale: state.scale * 1.5, rotation });
+
+        renderCanvas.width = viewport.width;
+        renderCanvas.height = viewport.height;
+        renderCanvas.style.width = (viewport.width / 1.5) + 'px';
+        renderCanvas.style.height = (viewport.height / 1.5) + 'px';
+
+        drawCanvas.width = viewport.width;
+        drawCanvas.height = viewport.height;
+        drawCanvas.style.width = (viewport.width / 1.5) + 'px';
+        drawCanvas.style.height = (viewport.height / 1.5) + 'px';
+
+        const ctx = renderCanvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        renderAnnotationsLayer(viewport.width / 1.5, viewport.height / 1.5);
+        renderDrawingsOnCanvas();
+        highlightActiveThumbnail();
+      } catch (err) {
+        console.error('Render error:', err);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Render Annotations HTML overlay
+    function renderAnnotationsLayer(width, height) {
+      annotationsLayer.innerHTML = '';
+      const pageAnnots = state.annotations[state.currentPage] || [];
+
+      pageAnnots.forEach(annot => {
+        const el = document.createElement('div');
+        el.id = 'annot-' + annot.id;
+        el.className = 'absolute group';
+        el.style.left = annot.x + 'px';
+        el.style.top = annot.y + 'px';
+        el.style.zIndex = annot.zIndex || '25';
+
+        if (annot.type === 'text') {
+          el.innerHTML = `
+            <div class="relative px-2.5 py-1 rounded-xs bg-transparent border border-dashed border-ink/30 hover:border-link focus-within:border-link focus-within:ring-1 focus-within:ring-link/30 transition-all cursor-text select-text"
+                 style="color: ${annot.color || '#171717'}; font-size: ${annot.fontSize || 16}px; font-family: ${annot.fontFamily || 'Geist, sans-serif'}; ${annot.bgWhiteout ? 'background-color: #ffffff;' : ''}">
+              <div class="annot-text-content select-text cursor-text outline-none inline-block min-w-[50px] whitespace-pre-wrap break-words" contenteditable="true" spellcheck="false">${annot.text || 'Type text here'}</div>
+              <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30" title="Delete text">&times;</button>
+              <div class="annot-drag-handle absolute -top-2.5 -left-2.5 h-5 w-5 rounded-full bg-ink text-white text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm cursor-grab active:cursor-grabbing transition-opacity z-30 select-none" title="Drag to move">✥</div>
+            </div>
+          `;
+        } else if (annot.type === 'shape') {
+          let inner = '';
+          const w = annot.width || 120;
+          const h = annot.height || 60;
+          const stroke = annot.color || '#171717';
+          const strokeW = annot.strokeWidth || 2;
+          const op = annot.opacity !== undefined ? annot.opacity : 1;
+
+          if (annot.shapeType === 'rect') {
+            inner = `<div class="annot-shape-box" style="width:${w}px; height:${h}px; border:${strokeW}px solid ${stroke}; opacity:${op};"></div>`;
+          } else if (annot.shapeType === 'rounded-rect') {
+            inner = `<div class="annot-shape-box" style="width:${w}px; height:${h}px; border:${strokeW}px solid ${stroke}; border-radius:8px; opacity:${op};"></div>`;
+          } else if (annot.shapeType === 'circle') {
+            inner = `<div class="annot-shape-box" style="width:${w}px; height:${h}px; border:${strokeW}px solid ${stroke}; border-radius:50%; opacity:${op};"></div>`;
+          } else if (annot.shapeType === 'line') {
+            inner = `<div class="annot-shape-box" style="width:${w}px; height:${strokeW}px; background-color:${stroke}; opacity:${op};"></div>`;
+          } else if (annot.shapeType === 'check') {
+            inner = `<div class="annot-shape-box flex items-center justify-center select-none" style="width:${w}px; height:${h}px; font-size:${Math.min(w,h)*0.8}px; font-weight:bold; color:${stroke}; opacity:${op};">✓</div>`;
+          } else if (annot.shapeType === 'cross') {
+            inner = `<div class="annot-shape-box flex items-center justify-center select-none" style="width:${w}px; height:${h}px; font-size:${Math.min(w,h)*0.8}px; font-weight:bold; color:${stroke}; opacity:${op};">✕</div>`;
+          } else if (annot.shapeType === 'arrow') {
+            inner = `<div class="annot-shape-box flex items-center justify-center select-none" style="width:${w}px; height:${h}px; font-size:${Math.min(w,h)*0.8}px; font-weight:bold; color:${stroke}; opacity:${op};">➔</div>`;
+          }
+
+          el.innerHTML = `
+            <div class="relative cursor-move group-hover:outline group-hover:outline-1 group-hover:outline-link select-none">
+              ${inner}
+              <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30" title="Delete shape">&times;</button>
+              <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
+            </div>
+          `;
+        } else if (annot.type === 'image' || annot.type === 'signature') {
+          const w = annot.width || 160;
+          const h = annot.height || 70;
+          el.innerHTML = `
+            <div class="relative cursor-move group-hover:outline group-hover:outline-1 group-hover:outline-link select-none">
+              <img src="${annot.src}" style="width:${w}px; height:${h}px; object-fit:contain;" draggable="false" />
+              <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30">&times;</button>
+              <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
+            </div>
+          `;
+        } else if (annot.type === 'redact') {
+          const w = annot.width || 140;
+          const h = annot.height || 30;
+          el.innerHTML = `
+            <div class="annot-redact-box relative cursor-move bg-ink rounded-xs flex items-center justify-center group-hover:outline group-hover:outline-1 group-hover:outline-rose-500 select-none" style="width:${w}px; height:${h}px;">
+              <span class="text-[9px] font-mono text-white/40 uppercase tracking-widest pointer-events-none">REDACTED</span>
+              <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30">&times;</button>
+              <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-rose-500 border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
+            </div>
+          `;
+        }
+
+        // Attach Drag Handling & Resize Handling
+        attachAnnotationEvents(el, annot);
+        annotationsLayer.appendChild(el);
+      });
+    }
+
+    // Attach Event Listeners to each annotation (Drag, Resize & Delete)
+    function attachAnnotationEvents(el, annot) {
+      const delBtn = el.querySelector('.annot-del-btn');
+      if (delBtn) {
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteAnnotation(annot.id);
+        });
+      }
+
+      const textEl = el.querySelector('.annot-text-content');
+      if (textEl) {
+        textEl.addEventListener('input', () => {
+          annot.text = textEl.innerText;
+        });
+        textEl.addEventListener('focus', () => {
+          selectAnnotation(annot);
+        });
+        textEl.addEventListener('blur', () => {
+          annot.text = textEl.innerText;
+          saveHistory();
+        });
+        textEl.addEventListener('keydown', (e) => {
+          e.stopPropagation();
+        });
+      }
+
+      // Selection & Inspector
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectAnnotation(annot);
+      });
+
+      // Draggable logic
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
+
+      el.addEventListener('mousedown', (e) => {
+        // If clicking inside editable text area, let user write/select text freely
+        if (e.target.classList.contains('annot-text-content') || e.target.closest('.annot-text-content') || e.target.isContentEditable) {
+          return;
+        }
+        if (e.target.classList.contains('annot-resize-handle') || e.target.closest('.annot-resize-handle')) return;
+        if (e.target.classList.contains('annot-del-btn') || e.target.closest('.annot-del-btn')) return;
+
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = annot.x;
+        initialTop = annot.y;
+        document.body.style.userSelect = 'none';
+
+        function onMouseMove(moveEvent) {
+          if (!isDragging) return;
+          const dx = moveEvent.clientX - startX;
+          const dy = moveEvent.clientY - startY;
+          annot.x = Math.max(0, initialLeft + dx);
+          annot.y = Math.max(0, initialTop + dy);
+          el.style.left = annot.x + 'px';
+          el.style.top = annot.y + 'px';
+        }
+
+        function onMouseUp() {
+          if (isDragging) {
+            isDragging = false;
+            document.body.style.userSelect = '';
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            saveHistory();
+          }
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+
+      // Resize handle logic
+      const resizeHandle = el.querySelector('.annot-resize-handle');
+      if (resizeHandle) {
+        resizeHandle.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          const rStartX = e.clientX;
+          const rStartY = e.clientY;
+          const startWidth = annot.width || (annot.type === 'shape' ? 120 : (annot.type === 'redact' ? 140 : 160));
+          const startHeight = annot.height || (annot.type === 'shape' ? 60 : (annot.type === 'redact' ? 30 : 70));
+          const isProportional = (annot.type === 'signature' || annot.type === 'image');
+          const aspectRatio = startWidth / (startHeight || 1);
+
+          document.body.style.userSelect = 'none';
+
+          function onResizeMouseMove(moveEv) {
+            const dx = moveEv.clientX - rStartX;
+            const dy = moveEv.clientY - rStartY;
+
+            let newWidth = Math.max(30, Math.round(startWidth + dx));
+            let newHeight;
+            if (isProportional) {
+              newHeight = Math.max(20, Math.round(newWidth / aspectRatio));
+            } else {
+              newHeight = Math.max(15, Math.round(startHeight + dy));
+            }
+
+            annot.width = newWidth;
+            annot.height = newHeight;
+
+            // Update DOM element directly for high performance
+            if (annot.type === 'signature' || annot.type === 'image') {
+              const img = el.querySelector('img');
+              if (img) {
+                img.style.width = newWidth + 'px';
+                img.style.height = newHeight + 'px';
+              }
+            } else if (annot.type === 'redact') {
+              const box = el.querySelector('.annot-redact-box');
+              if (box) {
+                box.style.width = newWidth + 'px';
+                box.style.height = newHeight + 'px';
+              }
+            } else if (annot.type === 'shape') {
+              const shapeBox = el.querySelector('.annot-shape-box');
+              if (shapeBox) {
+                shapeBox.style.width = newWidth + 'px';
+                shapeBox.style.height = newHeight + 'px';
+                if (annot.shapeType === 'check' || annot.shapeType === 'cross' || annot.shapeType === 'arrow') {
+                  shapeBox.style.fontSize = Math.min(newWidth, newHeight) * 0.8 + 'px';
+                }
+              }
+            }
+          }
+
+          function onResizeMouseUp() {
+            document.body.style.userSelect = '';
+            document.removeEventListener('mousemove', onResizeMouseMove);
+            document.removeEventListener('mouseup', onResizeMouseUp);
+            saveHistory();
+          }
+
+          document.addEventListener('mousemove', onResizeMouseMove);
+          document.addEventListener('mouseup', onResizeMouseUp);
+        });
+      }
+    }
+
+    function selectAnnotation(annot) {
+      state.selectedAnnotationId = annot.id;
+      propertyBar.classList.remove('hidden');
+      const typeDisplay = annot.type.toUpperCase() + (annot.shapeType ? ` (${annot.shapeType})` : '');
+      document.getElementById('inspector-element-type').textContent = typeDisplay;
+
+      const fontGroup = document.getElementById('prop-font-group');
+      const strokeGroup = document.getElementById('prop-stroke-group');
+      const opacityGroup = document.getElementById('prop-opacity-group');
+
+      if (annot.type === 'text') {
+        if (fontGroup) fontGroup.classList.remove('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+        const fontFamSel = document.getElementById('prop-font-family');
+        if (fontFamSel && annot.fontFamily) fontFamSel.value = annot.fontFamily;
+        const fontSizeSel = document.getElementById('prop-font-size');
+        if (fontSizeSel && annot.fontSize) fontSizeSel.value = annot.fontSize;
+      } else if (annot.type === 'shape') {
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.remove('hidden');
+        if (opacityGroup) opacityGroup.classList.remove('hidden');
+        const strokeInput = document.getElementById('prop-stroke-width');
+        if (strokeInput) strokeInput.value = annot.strokeWidth || 2;
+        const strokeVal = document.getElementById('prop-stroke-val');
+        if (strokeVal) strokeVal.textContent = (annot.strokeWidth || 2) + 'px';
+        const opInput = document.getElementById('prop-opacity');
+        if (opInput) opInput.value = annot.opacity !== undefined ? annot.opacity : 1.0;
+        const opVal = document.getElementById('prop-opacity-val');
+        if (opVal) opVal.textContent = Math.round((annot.opacity !== undefined ? annot.opacity : 1.0) * 100) + '%';
+      } else {
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+      }
+
+      const colorInput = document.getElementById('prop-color-picker');
+      if (colorInput && annot.color) {
+        colorInput.value = annot.color;
+      }
+    }
+
+    function deleteAnnotation(id) {
+      const list = state.annotations[state.currentPage] || [];
+      state.annotations[state.currentPage] = list.filter(a => a.id !== id);
+      propertyBar.classList.add('hidden');
+      renderAnnotationsLayer();
+      saveHistory();
+    }
+
+    // Render Freehand Drawings
+    function renderDrawingsOnCanvas() {
+      const ctx = drawCanvas.getContext('2d');
+      ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+
+      const pageAnnots = state.annotations[state.currentPage] || [];
+      pageAnnots.filter(a => a.type === 'draw').forEach(drawItem => {
+        if (!drawItem.points || drawItem.points.length < 2) return;
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle = drawItem.color;
+        ctx.lineWidth = drawItem.lineWidth * 1.5;
+        ctx.globalAlpha = drawItem.opacity !== undefined ? drawItem.opacity : 1.0;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.moveTo(drawItem.points[0].x * 1.5, drawItem.points[0].y * 1.5);
+        for (let i = 1; i < drawItem.points.length; i++) {
+          ctx.lineTo(drawItem.points[i].x * 1.5, drawItem.points[i].y * 1.5);
+        }
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    // Drawing Interaction on drawCanvas
+    drawCanvas.addEventListener('mousedown', (e) => {
+      if (state.activeTool !== 'draw' && state.activeTool !== 'highlight') return;
+      state.isDrawing = true;
+      const rect = drawCanvas.getBoundingClientRect();
+      const scaleFactor = (drawCanvas.width / 1.5) / rect.width;
+      const x = (e.clientX - rect.left) * scaleFactor;
+      const y = (e.clientY - rect.top) * scaleFactor;
+      state.drawPoints = [{ x, y }];
+    });
+
+    drawCanvas.addEventListener('mousemove', (e) => {
+      if (!state.isDrawing) return;
+      const rect = drawCanvas.getBoundingClientRect();
+      const scaleFactor = (drawCanvas.width / 1.5) / rect.width;
+      const x = (e.clientX - rect.left) * scaleFactor;
+      const y = (e.clientY - rect.top) * scaleFactor;
+      state.drawPoints.push({ x, y });
+
+      const ctx = drawCanvas.getContext('2d');
+      ctx.save();
+      ctx.beginPath();
+      const isHighlighter = (state.activeTool === 'highlight');
+      ctx.strokeStyle = isHighlighter ? state.activeHighlightColor : state.activeDrawColor;
+      ctx.lineWidth = (isHighlighter ? 20 : state.activeDrawWidth) * 1.5;
+      ctx.globalAlpha = isHighlighter ? 0.35 : state.activeDrawOpacity;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      const pts = state.drawPoints;
+      if (pts.length >= 2) {
+        ctx.moveTo(pts[pts.length - 2].x * 1.5, pts[pts.length - 2].y * 1.5);
+        ctx.lineTo(pts[pts.length - 1].x * 1.5, pts[pts.length - 1].y * 1.5);
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    function commitDrawing() {
+      if (state.isDrawing && state.drawPoints.length > 1) {
+        state.isDrawing = false;
+        const isHighlighter = (state.activeTool === 'highlight');
+        const newDraw = {
+          id: 'draw-' + Date.now(),
+          type: 'draw',
+          points: [...state.drawPoints],
+          color: isHighlighter ? state.activeHighlightColor : state.activeDrawColor,
+          lineWidth: isHighlighter ? 20 : state.activeDrawWidth,
+          opacity: isHighlighter ? 0.35 : state.activeDrawOpacity,
+        };
+        state.annotations[state.currentPage].push(newDraw);
+        saveHistory();
+        renderDrawingsOnCanvas();
+      }
+      state.isDrawing = false;
+    }
+
+    drawCanvas.addEventListener('mouseup', commitDrawing);
+    drawCanvas.addEventListener('mouseleave', commitDrawing);
+
+    // Insertion Helpers
+    function insertTextAnnotation(customX, customY) {
+      if (!state.currentPage || !state.pdfDocProxy) {
+        alert('Please open a PDF file or click "Load Sample Document" first.');
+        return;
+      }
+      if (!state.annotations[state.currentPage]) {
+        state.annotations[state.currentPage] = [];
+      }
+      const displayW = renderCanvas.width / 1.5 || 600;
+      const displayH = renderCanvas.height / 1.5 || 800;
+      const x = customX !== undefined ? customX : Math.max(30, Math.round((displayW - 200) / 2));
+      const y = customY !== undefined ? customY : Math.max(30, Math.round((displayH - 40) / 3));
+
+      const newText = {
+        id: 'txt-' + Date.now(),
+        type: 'text',
+        x,
+        y,
+        text: 'Type text here',
+        fontSize: parseInt(document.getElementById('prop-font-size')?.value || '16', 10),
+        color: state.activeDrawColor || '#171717',
+        fontFamily: document.getElementById('prop-font-family')?.value || 'Geist, sans-serif',
+        bgWhiteout: false,
+      };
+
+      state.annotations[state.currentPage].push(newText);
+      saveHistory();
+      renderAnnotationsLayer();
+      selectAnnotation(newText);
+
+      // Auto-focus and select all placeholder text so user can write immediately
+      setTimeout(() => {
+        const textWrapper = document.getElementById('annot-' + newText.id);
+        if (textWrapper) {
+          const content = textWrapper.querySelector('.annot-text-content');
+          if (content) {
+            content.focus();
+            const range = document.createRange();
+            range.selectNodeContents(content);
+            const sel = window.getSelection();
+            if (sel) {
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          }
+        }
+      }, 50);
+    }
+
+    function insertShapeAnnotation(shapeType, customX, customY) {
+      if (!state.currentPage || !state.pdfDocProxy) {
+        alert('Please open a PDF file or click "Load Sample Document" first.');
+        return;
+      }
+      if (!state.annotations[state.currentPage]) {
+        state.annotations[state.currentPage] = [];
+      }
+      const type = shapeType || state.activeShape || 'rect';
+      state.activeShape = type;
+      const displayW = renderCanvas.width / 1.5 || 600;
+      const displayH = renderCanvas.height / 1.5 || 800;
+      const w = (type === 'line' || type === 'arrow') ? 160 : (type === 'circle' ? 90 : 130);
+      const h = (type === 'line') ? 4 : (type === 'circle' ? 90 : (type === 'arrow' ? 40 : 70));
+
+      const x = customX !== undefined ? customX : Math.max(30, Math.round((displayW - w) / 2));
+      const y = customY !== undefined ? customY : Math.max(30, Math.round((displayH - h) / 3));
+
+      const newShape = {
+        id: 'shp-' + Date.now(),
+        type: 'shape',
+        shapeType: type,
+        x,
+        y,
+        width: w,
+        height: h,
+        color: state.activeDrawColor || '#171717',
+        strokeWidth: parseInt(document.getElementById('prop-stroke-width')?.value || '2', 10),
+        opacity: parseFloat(document.getElementById('prop-opacity')?.value || '1.0'),
+      };
+
+      state.annotations[state.currentPage].push(newShape);
+      saveHistory();
+      renderAnnotationsLayer();
+      selectAnnotation(newShape);
+    }
+
+    // Canvas click to add element
+    annotationsLayer.addEventListener('click', (e) => {
+      if (e.target !== annotationsLayer) return;
+      const rect = annotationsLayer.getBoundingClientRect();
+      const x = Math.max(10, Math.round(e.clientX - rect.left));
+      const y = Math.max(10, Math.round(e.clientY - rect.top));
+
+      if (state.activeTool === 'text') {
+        insertTextAnnotation(x, y);
+      } else if (state.activeTool === 'shape') {
+        insertShapeAnnotation(state.activeShape, x, y);
+      } else if (state.activeTool === 'redact') {
+        if (!state.annotations[state.currentPage]) state.annotations[state.currentPage] = [];
+        const newRedact = {
+          id: 'red-' + Date.now(),
+          type: 'redact',
+          x,
+          y,
+          width: 140,
+          height: 28,
+        };
+        state.annotations[state.currentPage].push(newRedact);
+        saveHistory();
+        renderAnnotationsLayer();
+        selectAnnotation(newRedact);
+      }
+    });
+
+    // Render Left Thumbnails
+    // Render Left Thumbnails
+    async function renderThumbnails() {
+      thumbnailsList.innerHTML = '';
+      for (let p = 1; p <= state.totalPages; p++) {
+        const thumbCard = document.createElement('div');
+        thumbCard.className = `thumb-card relative rounded-md border p-2 bg-canvas-elevated cursor-pointer transition-all hover:border-ink ${p === state.currentPage ? 'border-link ring-1 ring-link' : 'border-hairline'}`;
+        thumbCard.dataset.page = p;
+
+        thumbCard.innerHTML = `
+          <div class="flex items-center justify-between pb-1.5 text-[11px] font-mono text-mute">
+            <span class="font-medium text-ink">Page ${p}</span>
+            <div class="flex items-center gap-1.5">
+              <button class="thumb-rotate-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-sm shadow-xs font-bold transition-all hover:scale-105" title="Rotate Page 90°">↻</button>
+              <button class="thumb-del-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-rose-50 text-mute hover:text-rose-600 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105" title="Delete Page">✕</button>
+            </div>
+          </div>
+          <div class="flex items-center justify-center bg-hairline-soft/50 rounded-xs overflow-hidden h-28">
+            <canvas id="thumb-canvas-${p}" class="max-h-full max-w-full shadow-xs"></canvas>
+          </div>
+        `;
+
+        // Rotate Action
+        thumbCard.querySelector('.thumb-rotate-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          state.pageRotations[p] = ((state.pageRotations[p] || 0) + 90) % 360;
+          saveHistory();
+          renderCurrentPage();
+          renderSingleThumbnail(p);
+        });
+
+        // Delete Page Action
+        thumbCard.querySelector('.thumb-del-btn').addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (state.totalPages <= 1) {
+            alert('Cannot delete the only page in the document.');
+            return;
+          }
+          if (confirm(`Are you sure you want to delete Page ${p}?`)) {
+            await deletePage(p);
+          }
+        });
+
+        thumbCard.addEventListener('click', () => {
+          state.currentPage = p;
+          renderCurrentPage();
+        });
+
+        thumbnailsList.appendChild(thumbCard);
+        renderSingleThumbnail(p);
+      }
+    }
+
+    async function renderSingleThumbnail(p) {
+      if (!state.pdfDocProxy) return;
+      try {
+        const page = await state.pdfDocProxy.getPage(p);
+        const rotation = (page.rotate + (state.pageRotations[p] || 0)) % 360;
+        const viewport = page.getViewport({ scale: 0.25, rotation });
+        const canvas = document.getElementById('thumb-canvas-' + p);
+        if (canvas) {
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+      } catch (e) {
+        console.error('Thumb render error', e);
+      }
+    }
+
+    function highlightActiveThumbnail() {
+      document.querySelectorAll('.thumb-card').forEach(card => {
+        const p = parseInt(card.dataset.page);
+        if (p === state.currentPage) {
+          card.classList.add('border-link', 'ring-1', 'ring-link');
+          card.classList.remove('border-hairline');
+        } else {
+          card.classList.remove('border-link', 'ring-1', 'ring-link');
+          card.classList.add('border-hairline');
+        }
+      });
+    }
+
+    async function deletePage(pageIndex) {
+      showLoading('Deleting Page...');
+      try {
+        const { PDFDocument } = window.PDFLib;
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        srcDoc.removePage(pageIndex - 1);
+        const newBytes = await srcDoc.save();
+        await loadPdfBuffer(newBytes.buffer);
+      } catch (err) {
+        alert('Failed to delete page: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Page Rotation Handler (Toolbar & Floating Nav)
+    function rotateCurrentPage() {
+      if (!state.currentPage) return;
+      state.pageRotations[state.currentPage] = ((state.pageRotations[state.currentPage] || 0) + 90) % 360;
+      saveHistory();
+      renderCurrentPage();
+      renderSingleThumbnail(state.currentPage);
+    }
+
+    const btnRotatePage = document.getElementById('btn-rotate-page');
+    const btnFloatingRotate = document.getElementById('btn-floating-rotate');
+    btnRotatePage?.addEventListener('click', rotateCurrentPage);
+    btnFloatingRotate?.addEventListener('click', rotateCurrentPage);
+
+    // Tool switching
+    function setTool(toolName) {
+      state.activeTool = toolName;
+      document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = (toolName === 'shape') ? document.getElementById('tool-shape-btn') : document.getElementById('tool-' + toolName);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (toolName === 'draw' || toolName === 'highlight') {
+        drawCanvas.style.pointerEvents = 'auto';
+        drawCanvas.classList.remove('pointer-events-none');
+        drawCanvas.classList.add('cursor-crosshair');
+        annotationsLayer.style.pointerEvents = 'none';
+
+        // Open property bar with color palette for immediate access
+        propertyBar.classList.remove('hidden');
+        document.getElementById('inspector-element-type').textContent = toolName.toUpperCase();
+      } else {
+        drawCanvas.style.pointerEvents = 'none';
+        drawCanvas.classList.add('pointer-events-none');
+        drawCanvas.classList.remove('cursor-crosshair');
+        annotationsLayer.style.pointerEvents = 'auto';
+      }
+    }
+
+    document.getElementById('tool-select')?.addEventListener('click', () => setTool('select'));
+    document.getElementById('tool-text')?.addEventListener('click', () => {
+      setTool('text');
+      insertTextAnnotation();
+    });
+    document.getElementById('tool-draw')?.addEventListener('click', () => setTool('draw'));
+    document.getElementById('tool-highlight')?.addEventListener('click', () => setTool('highlight'));
+    document.getElementById('tool-redact')?.addEventListener('click', () => setTool('redact'));
+
+    // Shape dropdown & Immediate Shape Insertion
+    const shapeBtn = document.getElementById('tool-shape-btn');
+    const shapeDropdown = document.getElementById('shapes-dropdown');
+    shapeBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      shapeDropdown?.classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('.shape-opt').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const shapeType = opt.dataset.shape || 'rect';
+        shapeDropdown?.classList.add('hidden');
+        setTool('shape');
+        insertShapeAnnotation(shapeType);
+      });
+    });
+
+    document.addEventListener('click', () => {
+      shapeDropdown?.classList.add('hidden');
+    });
+
+    // Zoom Handling (Buttons & Touchpad Gestures)
+    zoomInBtn?.addEventListener('click', () => {
+      if (state.scale < 3.0) {
+        state.scale = Math.min(3.0, state.scale + 0.2);
+        zoomPct.textContent = Math.round(state.scale * 100) + '%';
+        renderCurrentPage();
+      }
+    });
+
+    zoomOutBtn?.addEventListener('click', () => {
+      if (state.scale > 0.5) {
+        state.scale = Math.max(0.5, state.scale - 0.2);
+        zoomPct.textContent = Math.round(state.scale * 100) + '%';
+        renderCurrentPage();
+      }
+    });
+
+    // Touchpad Pinch-to-Zoom & Ctrl+Wheel Gestures
+    const canvasViewport = document.getElementById('canvas-viewport');
+    let zoomGestureTimer = null;
+
+    canvasViewport?.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const zoomStep = -e.deltaY * 0.005;
+        const targetScale = Math.max(0.4, Math.min(3.0, state.scale + zoomStep));
+        if (Math.abs(targetScale - state.scale) > 0.01) {
+          state.scale = parseFloat(targetScale.toFixed(2));
+          zoomPct.textContent = Math.round(state.scale * 100) + '%';
+
+          if (zoomGestureTimer) clearTimeout(zoomGestureTimer);
+          zoomGestureTimer = setTimeout(() => {
+            renderCurrentPage();
+          }, 30);
+        }
+      }
+    }, { passive: false });
+
+    // Property Bar Handlers (Font, Size, Color, Thickness, Opacity)
+    const propFontFamily = document.getElementById('prop-font-family');
+    propFontFamily?.addEventListener('change', (e) => {
+      if (state.selectedAnnotationId && state.currentPage) {
+        const list = state.annotations[state.currentPage] || [];
+        const target = list.find(a => a.id === state.selectedAnnotationId);
+        if (target && target.type === 'text') {
+          target.fontFamily = e.target.value;
+          renderAnnotationsLayer();
+          saveHistory();
+        }
+      }
+    });
+
+    const propFontSize = document.getElementById('prop-font-size');
+    propFontSize?.addEventListener('change', (e) => {
+      if (state.selectedAnnotationId && state.currentPage) {
+        const list = state.annotations[state.currentPage] || [];
+        const target = list.find(a => a.id === state.selectedAnnotationId);
+        if (target && target.type === 'text') {
+          target.fontSize = parseInt(e.target.value, 10);
+          renderAnnotationsLayer();
+          saveHistory();
+        }
+      }
+    });
+
+    const propStrokeWidth = document.getElementById('prop-stroke-width');
+    const propStrokeVal = document.getElementById('prop-stroke-val');
+    propStrokeWidth?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (propStrokeVal) propStrokeVal.textContent = val + 'px';
+      if (state.activeTool === 'draw') {
+        state.activeDrawWidth = val;
+      }
+      if (state.selectedAnnotationId && state.currentPage) {
+        const list = state.annotations[state.currentPage] || [];
+        const target = list.find(a => a.id === state.selectedAnnotationId);
+        if (target && target.type === 'shape') {
+          target.strokeWidth = val;
+          renderAnnotationsLayer();
+        }
+      }
+    });
+    propStrokeWidth?.addEventListener('change', () => saveHistory());
+
+    const propOpacity = document.getElementById('prop-opacity');
+    const propOpacityVal = document.getElementById('prop-opacity-val');
+    propOpacity?.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (propOpacityVal) propOpacityVal.textContent = Math.round(val * 100) + '%';
+      if (state.activeTool === 'draw') {
+        state.activeDrawOpacity = val;
+      }
+      if (state.selectedAnnotationId && state.currentPage) {
+        const list = state.annotations[state.currentPage] || [];
+        const target = list.find(a => a.id === state.selectedAnnotationId);
+        if (target && (target.type === 'shape' || target.type === 'draw')) {
+          target.opacity = val;
+          renderAnnotationsLayer();
+        }
+      }
+    });
+    propOpacity?.addEventListener('change', () => saveHistory());
+
+    // Property Bar Color Palette & Custom Picker Handlers
+    document.querySelectorAll('.color-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const color = btn.dataset.color;
+        if (state.activeTool === 'highlight') {
+          state.activeHighlightColor = color;
+          const ind = document.getElementById('highlight-color-indicator');
+          if (ind) ind.style.backgroundColor = color;
+        } else {
+          state.activeDrawColor = color;
+          const ind = document.getElementById('draw-color-indicator');
+          if (ind) ind.style.backgroundColor = color;
+        }
+
+        if (state.selectedAnnotationId && state.currentPage) {
+          const list = state.annotations[state.currentPage] || [];
+          const target = list.find(a => a.id === state.selectedAnnotationId);
+          if (target) {
+            target.color = color;
+            renderAnnotationsLayer();
+            saveHistory();
+          }
+        }
+      });
+    });
+
+    const propColorPicker = document.getElementById('prop-color-picker');
+    propColorPicker?.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (state.activeTool === 'highlight') {
+        state.activeHighlightColor = color;
+        const ind = document.getElementById('highlight-color-indicator');
+        if (ind) ind.style.backgroundColor = color;
+      } else {
+        state.activeDrawColor = color;
+        const ind = document.getElementById('draw-color-indicator');
+        if (ind) ind.style.backgroundColor = color;
+      }
+
+      if (state.selectedAnnotationId && state.currentPage) {
+        const list = state.annotations[state.currentPage] || [];
+        const target = list.find(a => a.id === state.selectedAnnotationId);
+        if (target) {
+          target.color = color;
+          renderAnnotationsLayer();
+        }
+      }
+    });
+
+    propColorPicker?.addEventListener('change', () => saveHistory());
+
+    // Page Nav
+    prevPageBtn.addEventListener('click', () => {
+      if (state.currentPage > 1) {
+        state.currentPage--;
+        renderCurrentPage();
+      }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+      if (state.currentPage < state.totalPages) {
+        state.currentPage++;
+        renderCurrentPage();
+      }
+    });
+
+    // File Input Upload
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = (ev) => loadPdfBuffer(ev.target.result);
+        reader.readAsArrayBuffer(file);
+      }
+    });
+
+    // Sample Document Generator (Generates a clean PDF using pdf-lib on the fly)
+    sampleBtn.addEventListener('click', async () => {
+      showLoading('Generating Sample Document...');
+      try {
+        const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        const page1 = pdfDoc.addPage([600, 800]);
+        const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        // Header
+        page1.drawText('RealPdfEdit — Sample Agreement', {
+          x: 50,
+          y: 720,
+          size: 20,
+          font: helveticaBold,
+          color: rgb(0.09, 0.09, 0.09),
+        });
+
+        page1.drawText('Client-Side Free PDF Editor Demo Document', {
+          x: 50,
+          y: 695,
+          size: 12,
+          font: helvetica,
+          color: rgb(0.3, 0.3, 0.3),
+        });
+
+        page1.drawLine({
+          start: { x: 50, y: 680 },
+          end: { x: 550, y: 680 },
+          thickness: 1,
+          color: rgb(0.85, 0.85, 0.85),
+        });
+
+        // Body Text
+        const sampleLines = [
+          '1. OVERVIEW: This document is running 100% inside your browser.',
+          '2. PRIVACY GUARANTEE: Zero files are sent to remote servers.',
+          '3. TESTING TOOLS:',
+          '   • Select "Text" above to add new text or replace sentences.',
+          '   • Select "Draw" or "Highlight" to sketch annotations.',
+          '   • Click "Sign" to create and place your calligraphy or drawn e-signature.',
+          '   • Click "Redact" to blackout sensitive details.',
+          '   • Click "Stamp" to place official APPROVED / CONFIDENTIAL badges.',
+          '   • Click "Save & Download" when done to get your high-res PDF!',
+        ];
+
+        let curY = 640;
+        sampleLines.forEach(line => {
+          page1.drawText(line, {
+            x: 50,
+            y: curY,
+            size: 11,
+            font: helvetica,
+            color: rgb(0.15, 0.15, 0.15),
+          });
+          curY -= 26;
+        });
+
+        // Signature Box
+        page1.drawRectangle({
+          x: 50,
+          y: 200,
+          width: 500,
+          height: 100,
+          borderColor: rgb(0.85, 0.85, 0.85),
+          borderWidth: 1,
+        });
+
+        page1.drawText('SIGNATURE AREA (Place E-Signature Here):', {
+          x: 65,
+          y: 275,
+          size: 10,
+          font: helveticaBold,
+          color: rgb(0.5, 0.5, 0.5),
+        });
+
+        // Page 2
+        const page2 = pdfDoc.addPage([600, 800]);
+        page2.drawText('Page 2 — Document Terms & Exhibits', {
+          x: 50,
+          y: 720,
+          size: 18,
+          font: helveticaBold,
+          color: rgb(0.09, 0.09, 0.09),
+        });
+
+        const pdfBytes = await pdfDoc.save();
+        await loadPdfBuffer(pdfBytes.buffer);
+      } catch (err) {
+        alert('Error creating sample: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    });
+
+    // Export PDF with all modifications & overlays
+    exportBtn.addEventListener('click', async () => {
+      if (!state.pdfBytes) {
+        alert('Please open or create a PDF first.');
+        return;
+      }
+
+      showLoading('Compiling High-Resolution PDF...');
+      try {
+        const { PDFDocument, rgb, degrees, StandardFonts } = window.PDFLib;
+        const pdfDoc = await PDFDocument.load(state.pdfBytes);
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        const pages = pdfDoc.getPages();
+
+        // Apply page rotations & annotations
+        for (let i = 0; i < pages.length; i++) {
+          const pNum = i + 1;
+          const page = pages[i];
+          const rotationAngle = state.pageRotations[pNum] || 0;
+          if (rotationAngle !== 0) {
+            page.setRotation(degrees((page.getRotation().angle + rotationAngle) % 360));
+          }
+
+          const pageAnnots = state.annotations[pNum] || [];
+          const { width: pWidth, height: pHeight } = page.getSize();
+          const displayWidth = renderCanvas.width / 1.5;
+          const displayHeight = renderCanvas.height / 1.5;
+          const scaleX = pWidth / displayWidth;
+          const scaleY = pHeight / displayHeight;
+
+          // 1. Embed Freehand drawings and highlights layer for this page
+          const drawAnnots = pageAnnots.filter(a => a.type === 'draw');
+          if (drawAnnots.length > 0) {
+            const offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = pWidth * 2;
+            offscreenCanvas.height = pHeight * 2;
+            const offCtx = offscreenCanvas.getContext('2d');
+
+            const scaleToExportX = (pWidth * 2) / displayWidth;
+            const scaleToExportY = (pHeight * 2) / displayHeight;
+
+            drawAnnots.forEach(drawItem => {
+              if (!drawItem.points || drawItem.points.length < 2) return;
+              offCtx.save();
+              offCtx.beginPath();
+              offCtx.strokeStyle = drawItem.color;
+              offCtx.lineWidth = drawItem.lineWidth * scaleToExportX;
+              offCtx.globalAlpha = drawItem.opacity !== undefined ? drawItem.opacity : 1.0;
+              offCtx.lineCap = 'round';
+              offCtx.lineJoin = 'round';
+
+              offCtx.moveTo(drawItem.points[0].x * scaleToExportX, drawItem.points[0].y * scaleToExportY);
+              for (let pt = 1; pt < drawItem.points.length; pt++) {
+                offCtx.lineTo(drawItem.points[pt].x * scaleToExportX, drawItem.points[pt].y * scaleToExportY);
+              }
+              offCtx.stroke();
+              offCtx.restore();
+            });
+
+            const drawPngDataUrl = offscreenCanvas.toDataURL('image/png');
+            const drawPngBytes = await fetch(drawPngDataUrl).then(r => r.arrayBuffer());
+            const embeddedDrawLayer = await pdfDoc.embedPng(drawPngBytes);
+            page.drawImage(embeddedDrawLayer, {
+              x: 0,
+              y: 0,
+              width: pWidth,
+              height: pHeight,
+            });
+          }
+
+          // 2. Render Text, Redact, Shapes, Images, Signatures, Stamps
+          for (const annot of pageAnnots) {
+            if (annot.type === 'text') {
+              const pdfX = annot.x * scaleX;
+              const pdfY = pHeight - ((annot.y + annot.fontSize) * scaleY);
+              const hex = annot.color || '#171717';
+              const r = parseInt(hex.slice(1,3), 16) / 255 || 0.09;
+              const g = parseInt(hex.slice(3,5), 16) / 255 || 0.09;
+              const b = parseInt(hex.slice(5,7), 16) / 255 || 0.09;
+              page.drawText(annot.text || '', {
+                x: pdfX,
+                y: pdfY,
+                size: annot.fontSize * scaleY,
+                font,
+                color: rgb(r, g, b),
+              });
+            } else if (annot.type === 'redact') {
+              const w = annot.width || 140;
+              const h = annot.height || 30;
+              const pdfX = annot.x * scaleX;
+              const pdfY = pHeight - ((annot.y + h) * scaleY);
+              page.drawRectangle({
+                x: pdfX,
+                y: pdfY,
+                width: w * scaleX,
+                height: h * scaleY,
+                color: rgb(0.09, 0.09, 0.09),
+              });
+            } else if (annot.type === 'shape') {
+              const w = annot.width || 120;
+              const h = annot.height || 60;
+              const pdfX = annot.x * scaleX;
+              const pdfY = pHeight - ((annot.y + h) * scaleY);
+              const hex = annot.color || '#171717';
+              const r = parseInt(hex.slice(1,3), 16) / 255 || 0.09;
+              const g = parseInt(hex.slice(3,5), 16) / 255 || 0.09;
+              const b = parseInt(hex.slice(5,7), 16) / 255 || 0.09;
+
+              if (annot.shapeType === 'rect' || annot.shapeType === 'rounded-rect') {
+                page.drawRectangle({
+                  x: pdfX,
+                  y: pdfY,
+                  width: w * scaleX,
+                  height: h * scaleY,
+                  borderColor: rgb(r, g, b),
+                  borderWidth: (annot.strokeWidth || 2) * scaleX,
+                });
+              } else if (annot.shapeType === 'circle') {
+                page.drawEllipse({
+                  x: pdfX + (w * scaleX) / 2,
+                  y: pdfY + (h * scaleY) / 2,
+                  xScale: (w * scaleX) / 2,
+                  yScale: (h * scaleY) / 2,
+                  borderColor: rgb(r, g, b),
+                  borderWidth: (annot.strokeWidth || 2) * scaleX,
+                });
+              } else if (annot.shapeType === 'line') {
+                page.drawLine({
+                  start: { x: pdfX, y: pHeight - (annot.y * scaleY) },
+                  end: { x: pdfX + w * scaleX, y: pHeight - (annot.y * scaleY) },
+                  color: rgb(r, g, b),
+                  thickness: (annot.strokeWidth || 2) * scaleX,
+                });
+              } else if (annot.shapeType === 'check') {
+                page.drawText('✓', {
+                  x: pdfX + (w * scaleX) * 0.15,
+                  y: pdfY + (h * scaleY) * 0.15,
+                  size: Math.min(w * scaleX, h * scaleY) * 0.75,
+                  font,
+                  color: rgb(r, g, b),
+                });
+              } else if (annot.shapeType === 'cross') {
+                page.drawText('X', {
+                  x: pdfX + (w * scaleX) * 0.2,
+                  y: pdfY + (h * scaleY) * 0.15,
+                  size: Math.min(w * scaleX, h * scaleY) * 0.75,
+                  font,
+                  color: rgb(r, g, b),
+                });
+              } else if (annot.shapeType === 'arrow') {
+                page.drawText('➔', {
+                  x: pdfX + (w * scaleX) * 0.1,
+                  y: pdfY + (h * scaleY) * 0.2,
+                  size: Math.min(w * scaleX, h * scaleY) * 0.75,
+                  font,
+                  color: rgb(r, g, b),
+                });
+              }
+            } else if (annot.type === 'signature' || annot.type === 'image') {
+              const imgBytes = await fetch(annot.src).then(r => r.arrayBuffer());
+              let embeddedImg;
+              if (annot.src.startsWith('data:image/png')) {
+                embeddedImg = await pdfDoc.embedPng(imgBytes);
+              } else {
+                embeddedImg = await pdfDoc.embedJpg(imgBytes).catch(async () => await pdfDoc.embedPng(imgBytes));
+              }
+
+              const w = annot.width || 160;
+              const h = annot.height || 70;
+              const pdfX = annot.x * scaleX;
+              const imgW = w * scaleX;
+              const imgH = h * scaleY;
+              const pdfY = pHeight - ((annot.y + h) * scaleY);
+
+              page.drawImage(embeddedImg, {
+                x: pdfX,
+                y: pdfY,
+                width: imgW,
+                height: imgH,
+              });
+            }
+          }
+        }
+
+        const finalBytes = await pdfDoc.save();
+        const blob = new Blob([finalBytes], { type: 'application/pdf' });
+        const downloadUrl = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = 'RealPdfEdit-Document.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(downloadUrl);
+
+        // Confetti celebration
+        if (window.confetti) {
+          window.confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        }
+      } catch (err) {
+        console.error('Export error:', err);
+        alert('Failed to export PDF: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    });
+
+    // Signature Modal Logic
+    const signModal = document.getElementById('signature-modal');
+    const openSignBtn = document.getElementById('btn-open-sign-modal');
+    const closeSignBtn = document.getElementById('btn-close-sign-modal');
+    const cancelSignBtn = document.getElementById('btn-cancel-sign');
+    const insertSignBtn = document.getElementById('btn-insert-sign');
+    const signDrawCanvas = document.getElementById('sign-draw-canvas');
+    const clearSignBtn = document.getElementById('btn-clear-draw-sign');
+    const signTypeInput = document.getElementById('sign-type-input');
+    const signDropzone = document.getElementById('sign-dropzone');
+    const signUploadInput = document.getElementById('sign-upload-input');
+    const signUploadPreview = document.getElementById('sign-upload-preview');
+    const signUploadPreviewContainer = document.getElementById('sign-upload-preview-container');
+    const btnReuploadSign = document.getElementById('btn-reupload-sign');
+
+    let currentSignTab = 'draw';
+    let isSignDrawing = false;
+    let signInkColor = '#171717';
+    let uploadedSignatureDataUrl = null;
+    let selectedSignFont = "'Dancing Script', cursive";
+
+    // Tab buttons & Panes
+    const tabDraw = document.getElementById('sign-tab-draw');
+    const tabType = document.getElementById('sign-tab-type');
+    const tabUpload = document.getElementById('sign-tab-upload');
+    const paneDraw = document.getElementById('sign-pane-draw');
+    const paneType = document.getElementById('sign-pane-type');
+    const paneUpload = document.getElementById('sign-pane-upload');
+
+    function switchSignTab(tab) {
+      currentSignTab = tab;
+      [tabDraw, tabType, tabUpload].forEach(btn => {
+        if (btn) btn.className = 'flex-1 rounded-sm py-1.5 text-center text-body hover:text-ink cursor-pointer';
+      });
+      [paneDraw, paneType, paneUpload].forEach(p => {
+        if (p) p.classList.add('hidden');
+      });
+
+      if (tab === 'draw') {
+        if (tabDraw) tabDraw.className = 'flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper font-semibold cursor-pointer';
+        paneDraw?.classList.remove('hidden');
+      } else if (tab === 'type') {
+        if (tabType) tabType.className = 'flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper font-semibold cursor-pointer';
+        paneType?.classList.remove('hidden');
+        updateTypePreviews();
+      } else if (tab === 'upload') {
+        if (tabUpload) tabUpload.className = 'flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper font-semibold cursor-pointer';
+        paneUpload?.classList.remove('hidden');
+      }
+    }
+
+    tabDraw?.addEventListener('click', () => switchSignTab('draw'));
+    tabType?.addEventListener('click', () => switchSignTab('type'));
+    tabUpload?.addEventListener('click', () => switchSignTab('upload'));
+
+    // Open/Close
+    openSignBtn?.addEventListener('click', () => {
+      signModal?.classList.remove('hidden');
+      switchSignTab(currentSignTab);
+    });
+    closeSignBtn?.addEventListener('click', () => signModal?.classList.add('hidden'));
+    cancelSignBtn?.addEventListener('click', () => signModal?.classList.add('hidden'));
+
+    // Signature Drawing Canvas setup
+    const sCtx = signDrawCanvas?.getContext('2d');
+    if (sCtx) {
+      sCtx.lineWidth = 2.5;
+      sCtx.lineCap = 'round';
+      sCtx.lineJoin = 'round';
+    }
+
+    // Ink Color Selection
+    document.querySelectorAll('.sign-ink-color').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sign-ink-color').forEach(b => b.classList.remove('ring-2', 'ring-link'));
+        btn.classList.add('ring-2', 'ring-link');
+        signInkColor = btn.dataset.color || '#171717';
+        updateTypePreviews();
+      });
+    });
+
+    const signCustomColor = document.getElementById('sign-custom-color');
+    signCustomColor?.addEventListener('input', (e) => {
+      document.querySelectorAll('.sign-ink-color').forEach(b => b.classList.remove('ring-2', 'ring-link'));
+      signInkColor = e.target.value;
+      updateTypePreviews();
+    });
+
+    // Type signature live preview updates
+    function updateTypePreviews() {
+      const text = signTypeInput?.value.trim() || 'John Doe';
+      document.querySelectorAll('.sign-preview').forEach(preview => {
+        preview.textContent = text;
+        preview.style.color = signInkColor;
+      });
+    }
+
+    signTypeInput?.addEventListener('input', updateTypePreviews);
+
+    // Font selection in Type tab
+    document.querySelectorAll('.sign-font-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.sign-font-opt').forEach(o => {
+          o.classList.remove('border-2', 'border-link');
+          o.classList.add('border', 'border-hairline');
+        });
+        opt.classList.remove('border', 'border-hairline');
+        opt.classList.add('border-2', 'border-link');
+        const radio = opt.querySelector('input[type="radio"]');
+        if (radio) {
+          radio.checked = true;
+          selectedSignFont = radio.value;
+        }
+      });
+    });
+
+    // Draw Tab Canvas Handlers
+    signDrawCanvas?.addEventListener('mousedown', (e) => {
+      isSignDrawing = true;
+      const r = signDrawCanvas.getBoundingClientRect();
+      sCtx.beginPath();
+      sCtx.strokeStyle = signInkColor;
+      sCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+    });
+
+    signDrawCanvas?.addEventListener('mousemove', (e) => {
+      if (!isSignDrawing) return;
+      const r = signDrawCanvas.getBoundingClientRect();
+      sCtx.lineTo(e.clientX - r.left, e.clientY - r.top);
+      sCtx.stroke();
+    });
+
+    signDrawCanvas?.addEventListener('mouseup', () => isSignDrawing = false);
+    signDrawCanvas?.addEventListener('mouseleave', () => isSignDrawing = false);
+    clearSignBtn?.addEventListener('click', () => sCtx?.clearRect(0, 0, signDrawCanvas.width, signDrawCanvas.height));
+
+    // Upload Signature Dropzone & Background Transparency Processing
+    signDropzone?.addEventListener('click', () => signUploadInput?.click());
+    signDropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      signDropzone.classList.add('border-link', 'bg-hairline-soft');
+    });
+    signDropzone?.addEventListener('dragleave', () => {
+      signDropzone.classList.remove('border-link', 'bg-hairline-soft');
+    });
+    signDropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      signDropzone.classList.remove('border-link', 'bg-hairline-soft');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        processUploadedSignature(file);
+      }
+    });
+
+    signUploadInput?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) processUploadedSignature(file);
+    });
+
+    btnReuploadSign?.addEventListener('click', () => {
+      uploadedSignatureDataUrl = null;
+      signUploadPreviewContainer?.classList.add('hidden');
+      signDropzone?.classList.remove('hidden');
+      if (signUploadInput) signUploadInput.value = '';
+    });
+
+    function processUploadedSignature(file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = img.width;
+          c.height = img.height;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          // Transparency: strip near-white background pixels
+          const imgData = ctx.getImageData(0, 0, c.width, c.height);
+          const data = imgData.data;
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i], g = data[i+1], b = data[i+2];
+            // If near white, make pixel transparent
+            if (r > 205 && g > 205 && b > 205) {
+              data[i+3] = 0;
+            }
+          }
+          ctx.putImageData(imgData, 0, 0);
+
+          uploadedSignatureDataUrl = c.toDataURL('image/png');
+          if (signUploadPreview) signUploadPreview.src = uploadedSignatureDataUrl;
+          signDropzone?.classList.add('hidden');
+          signUploadPreviewContainer?.classList.remove('hidden');
+          signUploadPreviewContainer?.classList.add('flex');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Insert Signature logic for Draw, Type & Upload
+    insertSignBtn?.addEventListener('click', () => {
+      let finalDataUrl = null;
+      let finalWidth = 160;
+      let finalHeight = 70;
+
+      if (currentSignTab === 'draw') {
+        finalDataUrl = signDrawCanvas.toDataURL('image/png');
+        finalWidth = 160;
+        finalHeight = 70;
+      } else if (currentSignTab === 'type') {
+        const name = signTypeInput?.value.trim() || 'John Doe';
+        const typeCanvas = document.createElement('canvas');
+        typeCanvas.width = 500;
+        typeCanvas.height = 180;
+        const tctx = typeCanvas.getContext('2d');
+        tctx.clearRect(0, 0, typeCanvas.width, typeCanvas.height);
+        tctx.font = `52px ${selectedSignFont}`;
+        tctx.fillStyle = signInkColor;
+        tctx.textAlign = 'center';
+        tctx.textBaseline = 'middle';
+        tctx.fillText(name, 250, 90);
+        finalDataUrl = typeCanvas.toDataURL('image/png');
+        finalWidth = 180;
+        finalHeight = 65;
+      } else if (currentSignTab === 'upload') {
+        if (!uploadedSignatureDataUrl) {
+          alert('Please upload an image of your signature first.');
+          return;
+        }
+        finalDataUrl = uploadedSignatureDataUrl;
+        finalWidth = 160;
+        finalHeight = 70;
+      }
+
+      if (!finalDataUrl) {
+        alert('Please draw, type, or upload your signature.');
+        return;
+      }
+
+      const newSign = {
+        id: 'sign-' + Date.now(),
+        type: 'signature',
+        src: finalDataUrl,
+        x: 100,
+        y: 200,
+        width: finalWidth,
+        height: finalHeight,
+      };
+
+      if (state.currentPage) {
+        state.annotations[state.currentPage].push(newSign);
+        saveHistory();
+        renderAnnotationsLayer();
+      }
+
+      signModal?.classList.add('hidden');
+      sCtx?.clearRect(0, 0, signDrawCanvas.width, signDrawCanvas.height);
+    });
+
+    // Stamp Modal Logic (Approved, Confidential, etc.)
+    const stampModal = document.getElementById('stamp-modal');
+    const openStampBtn = document.getElementById('btn-open-stamp-modal');
+    const closeStampBtn = document.getElementById('btn-close-stamp-modal');
+
+    openStampBtn?.addEventListener('click', () => stampModal?.classList.remove('hidden'));
+    closeStampBtn?.addEventListener('click', () => stampModal?.classList.add('hidden'));
+
+    document.querySelectorAll('.stamp-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.text;
+        const color = btn.dataset.color;
+        
+        // Generate stamp badge canvas data URL
+        const stampC = document.createElement('canvas');
+        stampC.width = 240;
+        stampC.height = 90;
+        const sctx = stampC.getContext('2d');
+        sctx.strokeStyle = color;
+        sctx.lineWidth = 4;
+        sctx.strokeRect(6, 6, 228, 78);
+        sctx.font = 'bold 22px Geist Mono, monospace';
+        sctx.fillStyle = color;
+        sctx.textAlign = 'center';
+        sctx.textBaseline = 'middle';
+        sctx.fillText(text, 120, 38);
+        sctx.font = '11px Geist Mono, monospace';
+        sctx.fillText(new Date().toLocaleDateString(), 120, 62);
+
+        const newStamp = {
+          id: 'stamp-' + Date.now(),
+          type: 'image',
+          src: stampC.toDataURL('image/png'),
+          x: 150,
+          y: 150,
+          width: 160,
+          height: 60,
+        };
+        state.annotations[state.currentPage].push(newStamp);
+        saveHistory();
+        renderAnnotationsLayer();
+        stampModal?.classList.add('hidden');
+      });
+    });
+
+    // Image Upload
+    const imageInput = document.getElementById('image-file-input');
+    const addImageBtn = document.getElementById('btn-add-image');
+    addImageBtn?.addEventListener('click', () => imageInput?.click());
+
+    imageInput?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const newImg = {
+            id: 'img-' + Date.now(),
+            type: 'image',
+            src: ev.target.result,
+            x: 100,
+            y: 100,
+            width: 160,
+            height: 100,
+          };
+          state.annotations[state.currentPage].push(newImg);
+          saveHistory();
+          renderAnnotationsLayer();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Watermark & Page Numbering Modal Logic
+    const wmModal = document.getElementById('watermark-modal');
+    const openWmBtn = document.getElementById('btn-open-watermark-modal');
+    const closeWmBtn = document.getElementById('btn-close-watermark-modal');
+    const tabWm = document.getElementById('watermark-tab-wm');
+    const tabPg = document.getElementById('watermark-tab-pg');
+    const paneWm = document.getElementById('watermark-pane-wm');
+    const panePg = document.getElementById('watermark-pane-pg');
+    const applyWmBtn = document.getElementById('btn-apply-watermark');
+    const applyPgBtn = document.getElementById('btn-apply-pagenumbers');
+    const wmOpacitySlider = document.getElementById('wm-opacity-slider');
+    const wmOpacityLabel = document.getElementById('wm-opacity-label');
+
+    function switchWatermarkTab(tab) {
+      if (tab === 'wm') {
+        if (tabWm) tabWm.className = 'flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper font-semibold cursor-pointer';
+        if (tabPg) tabPg.className = 'flex-1 rounded-sm py-1.5 text-center text-body hover:text-ink cursor-pointer';
+        paneWm?.classList.remove('hidden');
+        panePg?.classList.add('hidden');
+      } else {
+        if (tabPg) tabPg.className = 'flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper font-semibold cursor-pointer';
+        if (tabWm) tabWm.className = 'flex-1 rounded-sm py-1.5 text-center text-body hover:text-ink cursor-pointer';
+        panePg?.classList.remove('hidden');
+        paneWm?.classList.add('hidden');
+      }
+    }
+
+    tabWm?.addEventListener('click', () => switchWatermarkTab('wm'));
+    tabPg?.addEventListener('click', () => switchWatermarkTab('pg'));
+
+    openWmBtn?.addEventListener('click', () => {
+      wmModal?.classList.remove('hidden');
+      switchWatermarkTab('wm');
+    });
+    closeWmBtn?.addEventListener('click', () => wmModal?.classList.add('hidden'));
+
+    wmOpacitySlider?.addEventListener('input', (e) => {
+      if (wmOpacityLabel) {
+        wmOpacityLabel.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
+      }
+    });
+
+    // Apply Watermark to All Pages
+    applyWmBtn?.addEventListener('click', () => {
+      if (!state.totalPages) {
+        alert('Please open a PDF document first.');
+        return;
+      }
+      const text = document.getElementById('wm-text-input')?.value || 'CONFIDENTIAL';
+      const opacity = parseFloat(document.getElementById('wm-opacity-slider')?.value) || 0.2;
+      const color = document.getElementById('wm-color-picker')?.value || '#ff0000';
+
+      for (let p = 1; p <= state.totalPages; p++) {
+        if (!state.annotations[p]) state.annotations[p] = [];
+        state.annotations[p].push({
+          id: 'wm-' + p + '-' + Date.now(),
+          type: 'text',
+          text: text,
+          x: 100,
+          y: 260,
+          fontSize: 48,
+          color: color,
+          opacity: opacity,
+          zIndex: '15',
+        });
+      }
+      saveHistory();
+      renderAnnotationsLayer();
+      wmModal?.classList.add('hidden');
+    });
+
+    // Apply Page Numbers to All Pages
+    applyPgBtn?.addEventListener('click', () => {
+      if (!state.totalPages) {
+        alert('Please open a PDF document first.');
+        return;
+      }
+      const format = document.getElementById('pg-format-select')?.value || 'Page {n} of {total}';
+      const position = document.getElementById('pg-position-select')?.value || 'bottom-center';
+
+      const displayW = renderCanvas.width / 1.5 || 600;
+      const displayH = renderCanvas.height / 1.5 || 800;
+
+      for (let p = 1; p <= state.totalPages; p++) {
+        if (!state.annotations[p]) state.annotations[p] = [];
+        let text = format.replace('{n}', p).replace('{total}', state.totalPages);
+        let posX = Math.round(displayW / 2 - 40);
+        let posY = Math.round(displayH - 35);
+
+        if (position === 'bottom-right') {
+          posX = Math.round(displayW - 120);
+          posY = Math.round(displayH - 35);
+        } else if (position === 'bottom-left') {
+          posX = 40;
+          posY = Math.round(displayH - 35);
+        } else if (position === 'top-right') {
+          posX = Math.round(displayW - 120);
+          posY = 30;
+        }
+
+        state.annotations[p].push({
+          id: 'pgnum-' + p + '-' + Date.now(),
+          type: 'text',
+          text: text,
+          x: Math.max(20, posX),
+          y: Math.max(20, posY),
+          fontSize: 12,
+          color: '#4d4d4d',
+          fontFamily: 'Geist Mono, monospace',
+          zIndex: '15',
+        });
+      }
+      saveHistory();
+      renderAnnotationsLayer();
+      wmModal?.classList.add('hidden');
+    });
+
+    // Sidebar Toggle
+    const sidebar = document.getElementById('thumbnail-sidebar');
+    const toggleSidebarBtn = document.getElementById('btn-toggle-sidebar');
+    const collapseSidebarBtn = document.getElementById('btn-collapse-sidebar');
+
+    toggleSidebarBtn?.addEventListener('click', () => sidebar?.classList.toggle('hidden'));
+    collapseSidebarBtn?.addEventListener('click', () => sidebar?.classList.add('hidden'));
+
+    // Insert Blank Page
+    document.getElementById('btn-add-blank-page')?.addEventListener('click', async () => {
+      if (!state.pdfBytes) return;
+      showLoading('Adding Blank Page...');
+      try {
+        const { PDFDocument } = window.PDFLib;
+        const pdfDoc = await PDFDocument.load(state.pdfBytes);
+        pdfDoc.addPage([600, 800]);
+        const newBytes = await pdfDoc.save();
+        await loadPdfBuffer(newBytes.buffer);
+      } catch (err) {
+        alert('Failed to insert blank page: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    });
+
+    // Delete selected element button
+    document.getElementById('btn-delete-element')?.addEventListener('click', () => {
+      if (state.selectedAnnotationId) {
+        deleteAnnotation(state.selectedAnnotationId);
+      }
+    });
+  });
+</script>

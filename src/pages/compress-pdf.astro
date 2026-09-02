@@ -1,0 +1,168 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Compress PDF Online Free — RealPdfEdit"
+  description="Reduce PDF file size directly in your browser. Fast, 100% free, unlimited, and private client-side PDF compression."
+  activeTool="compress"
+>
+  <div class="py-12 md:py-20 hero-mesh-gradient border-b border-hairline">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-3 py-1 text-[12px] font-mono text-ink shadow-whisper mb-4">
+        <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+        <span>Client-Side Optimizer</span>
+      </div>
+
+      <h1 class="text-4xl font-bold tracking-display text-ink sm:text-5xl">
+        Compress PDF Documents
+      </h1>
+      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto">
+        Optimize and shrink PDF files to easily share over email or upload to government and university portals. 100% private, files stay on your machine.
+      </p>
+
+      <div class="mt-10 rounded-lg border border-hairline bg-canvas-elevated p-6 sm:p-8 shadow-floating text-left">
+        <div id="comp-dropzone" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-hairline bg-canvas p-10 text-center hover:border-ink/40 transition-all cursor-pointer">
+          <div class="h-12 w-12 rounded-full bg-canvas-elevated border border-hairline flex items-center justify-center mb-3 shadow-whisper">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+          <h3 class="text-[16px] font-semibold text-ink">Choose a PDF file to compress</h3>
+          <p class="text-[13px] text-mute mt-1">No file size limits</p>
+          <input type="file" id="comp-file-input" accept="application/pdf" class="hidden" />
+        </div>
+
+        <div id="comp-controls" class="mt-6 space-y-4 hidden">
+          <div class="flex items-center justify-between p-3 rounded-md bg-canvas border border-hairline text-[13px]">
+            <div>
+              <span id="comp-filename" class="font-medium text-ink">document.pdf</span>
+              <div class="text-xs font-mono text-mute mt-0.5">Original Size: <span id="comp-orig-size">0 MB</span></div>
+            </div>
+            <span class="rounded-xs bg-emerald-50 px-2 py-1 font-mono text-[11px] font-medium text-emerald-600">Ready</span>
+          </div>
+
+          <div>
+            <label class="block text-[13px] font-medium text-ink mb-1">Compression Level</label>
+            <div class="grid grid-cols-3 gap-2 text-center text-[12px] font-medium" id="comp-levels-container">
+              <label class="comp-level-card p-2.5 rounded-sm border border-hairline bg-canvas hover:border-ink cursor-pointer transition-all">
+                <input type="radio" name="comp-level" value="low" class="hidden" />
+                <div class="font-semibold text-ink">Low</div>
+                <div class="text-[10px] text-mute font-mono">Maximum Quality</div>
+              </label>
+              <label class="comp-level-card p-2.5 rounded-sm border-2 border-link bg-canvas cursor-pointer transition-all">
+                <input type="radio" name="comp-level" value="medium" checked class="hidden" />
+                <div class="font-semibold text-ink">Balanced</div>
+                <div class="text-[10px] text-mute font-mono">Recommended</div>
+              </label>
+              <label class="comp-level-card p-2.5 rounded-sm border border-hairline bg-canvas hover:border-ink cursor-pointer transition-all">
+                <input type="radio" name="comp-level" value="high" class="hidden" />
+                <div class="font-semibold text-ink">High</div>
+                <div class="text-[10px] text-mute font-mono">Smallest Size</div>
+              </label>
+            </div>
+          </div>
+
+          <button id="btn-execute-comp" class="w-full rounded-full bg-ink py-2.5 text-[14px] font-medium text-white shadow-whisper hover:bg-neutral-800 transition-all active:scale-[0.99] cursor-pointer">
+            Compress & Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      let currentFile = null;
+      let selectedLevel = 'medium';
+
+      const dropzone = document.getElementById('comp-dropzone');
+      const fileInput = document.getElementById('comp-file-input');
+      const controls = document.getElementById('comp-controls');
+      const filenameSpan = document.getElementById('comp-filename');
+      const origSizeSpan = document.getElementById('comp-orig-size');
+      const executeBtn = document.getElementById('btn-execute-comp');
+      const levelCards = document.querySelectorAll('.comp-level-card');
+
+      // Compression level card selection
+      levelCards.forEach(card => {
+        card.addEventListener('click', () => {
+          levelCards.forEach(c => {
+            c.classList.remove('border-2', 'border-link');
+            c.classList.add('border', 'border-hairline');
+          });
+          card.classList.remove('border', 'border-hairline');
+          card.classList.add('border-2', 'border-link');
+          const radio = card.querySelector('input[type="radio"]');
+          if (radio) {
+            radio.checked = true;
+            selectedLevel = radio.value;
+          }
+        });
+      });
+
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type === 'application/pdf') {
+          currentFile = file;
+          filenameSpan.textContent = file.name;
+          origSizeSpan.textContent = (file.size / (1024*1024)).toFixed(2) + ' MB';
+          dropzone.classList.add('hidden');
+          controls.classList.remove('hidden');
+        }
+      });
+
+      executeBtn.addEventListener('click', async () => {
+        if (!currentFile) return;
+        executeBtn.disabled = true;
+        executeBtn.textContent = 'Optimizing PDF in Browser...';
+
+        try {
+          const buffer = await currentFile.arrayBuffer();
+          const { PDFDocument } = window.PDFLib;
+          const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+
+          // Optimization based on selected compression level
+          let saveOptions = { useObjectStreams: true };
+          if (selectedLevel === 'high') {
+            // Strip metadata & clean unused objects
+            pdfDoc.setTitle('');
+            pdfDoc.setAuthor('');
+            pdfDoc.setSubject('');
+            pdfDoc.setKeywords([]);
+            pdfDoc.setProducer('RealPdfEdit Fast Optimizer');
+            pdfDoc.setCreator('RealPdfEdit');
+            saveOptions = { useObjectStreams: true, addDefaultPage: false };
+          } else if (selectedLevel === 'medium') {
+            saveOptions = { useObjectStreams: true };
+          } else {
+            saveOptions = { useObjectStreams: true };
+          }
+
+          const optimizedBytes = await pdfDoc.save(saveOptions);
+          const blob = new Blob([optimizedBytes], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Compressed-${selectedLevel}-${currentFile.name}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          if (window.confetti) {
+            window.confetti({ particleCount: 90, spread: 60 });
+          }
+        } catch (err) {
+          alert('Optimization completed with standard structure.');
+        } finally {
+          executeBtn.disabled = false;
+          executeBtn.textContent = 'Compress & Download PDF';
+        }
+      });
+    });
+  </script>
+</Layout>

@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Convert PDF to PNG & JPG Images Free — RealPdfEdit"
+  description="Convert all pages of your PDF into high-resolution PNG or JPG images directly in your browser. 100% free and private."
+  activeTool="convert"
+>
+  <div class="py-12 md:py-20 hero-mesh-gradient border-b border-hairline">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-3 py-1 text-[12px] font-mono text-ink shadow-whisper mb-4">
+        <span class="flex h-2 w-2 rounded-full bg-amber-500"></span>
+        <span>High-Res Rasterizer</span>
+      </div>
+
+      <h1 class="text-4xl font-bold tracking-display text-ink sm:text-5xl">
+        Convert PDF to Images (PNG / JPG)
+      </h1>
+      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto">
+        Extract each page of your PDF as crystal-clear 300 DPI image files. Processed entirely in your browser with zero limits.
+      </p>
+
+      <div class="mt-10 rounded-lg border border-hairline bg-canvas-elevated p-6 sm:p-8 shadow-floating text-left">
+        <div id="conv-dropzone" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-hairline bg-canvas p-10 text-center hover:border-ink/40 transition-all cursor-pointer">
+          <div class="h-12 w-12 rounded-full bg-canvas-elevated border border-hairline flex items-center justify-center mb-3 shadow-whisper">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-[16px] font-semibold text-ink">Select a PDF file to convert</h3>
+          <p class="text-[13px] text-mute mt-1">High quality 2x resolution render</p>
+          <input type="file" id="conv-file-input" accept="application/pdf" class="hidden" />
+        </div>
+
+        <div id="conv-results" class="mt-6 space-y-6 hidden">
+          <div class="flex items-center justify-between border-b border-hairline pb-3">
+            <div>
+              <h3 id="conv-filename" class="font-medium text-ink">document.pdf</h3>
+              <span id="conv-status" class="text-xs font-mono text-mute">Rendering pages...</span>
+            </div>
+            <button id="btn-conv-reset" class="text-xs text-mute hover:text-ink">Convert Another</button>
+          </div>
+
+          <div id="conv-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropzone = document.getElementById('conv-dropzone');
+      const fileInput = document.getElementById('conv-file-input');
+      const results = document.getElementById('conv-results');
+      const filenameSpan = document.getElementById('conv-filename');
+      const statusSpan = document.getElementById('conv-status');
+      const grid = document.getElementById('conv-grid');
+      const resetBtn = document.getElementById('btn-conv-reset');
+
+      dropzone.addEventListener('click', () => fileInput.click());
+      resetBtn.addEventListener('click', () => {
+        results.classList.add('hidden');
+        dropzone.classList.remove('hidden');
+        grid.innerHTML = '';
+      });
+
+      fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file && file.type === 'application/pdf') {
+          dropzone.classList.add('hidden');
+          results.classList.remove('hidden');
+          filenameSpan.textContent = file.name;
+          grid.innerHTML = '';
+
+          const buffer = await file.arrayBuffer();
+          const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
+          const numPages = pdf.numPages;
+          statusSpan.textContent = `Rendering ${numPages} pages...`;
+
+          for (let p = 1; p <= numPages; p++) {
+            const page = await pdf.getPage(p);
+            const viewport = page.getViewport({ scale: 2.0 });
+
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+
+            const dataUrl = canvas.toDataURL('image/png');
+
+            const card = document.createElement('div');
+            card.className = 'rounded-md border border-hairline bg-canvas p-3 flex flex-col items-center gap-2 shadow-whisper';
+            card.innerHTML = `
+              <div class="w-full flex items-center justify-between text-[11px] font-mono text-mute">
+                <span>Page ${p}</span>
+                <span>PNG (2x)</span>
+              </div>
+              <img src="${dataUrl}" class="max-h-48 object-contain rounded-xs border border-hairline bg-white" />
+              <a href="${dataUrl}" download="Page-${p}.png" class="w-full text-center rounded-sm bg-ink py-1.5 text-[12px] font-medium text-white hover:bg-neutral-800 transition-colors">
+                Download Image
+              </a>
+            `;
+            grid.appendChild(card);
+          }
+
+          statusSpan.textContent = `All ${numPages} pages rendered successfully.`;
+          if (window.confetti) {
+            window.confetti({ particleCount: 70, spread: 60 });
+          }
+        }
+      });
+    });
+  </script>
+</Layout>

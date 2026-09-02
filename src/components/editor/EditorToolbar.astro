@@ -1,0 +1,306 @@
+---
+// EditorToolbar.astro - Vercel Geist Style Toolbar
+---
+
+<div class="w-full border-b border-hairline bg-canvas-elevated/95 backdrop-blur px-3 py-2 text-ink shadow-whisper select-none">
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <!-- Left Group: Tools Selector -->
+    <div class="flex flex-wrap items-center gap-1">
+      <!-- Select / Pointer Mode -->
+      <button
+        id="tool-select"
+        class="tool-btn active flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium transition-all"
+        title="Select & Move (V)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+        </svg>
+        <span class="hidden md:inline">Select</span>
+      </button>
+
+      <!-- Add Text -->
+      <button
+        id="tool-text"
+        class="tool-btn flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink cursor-pointer"
+        title="Add & Write Text (T)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+        <span class="hidden md:inline">Text</span>
+      </button>
+
+      <!-- Freehand Pen with Active Color Indicator -->
+      <div class="relative flex items-center">
+        <button
+          id="tool-draw"
+          class="tool-btn flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink cursor-pointer"
+          title="Draw Pen (D)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+          <span class="hidden md:inline">Draw</span>
+          <span id="draw-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#171717] ring-1 ring-hairline inline-block ml-0.5"></span>
+        </button>
+      </div>
+
+      <!-- Highlighter with Active Color Indicator -->
+      <div class="relative flex items-center">
+        <button
+          id="tool-highlight"
+          class="tool-btn flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink cursor-pointer"
+          title="Highlighter (H)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-warning" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" clip-rule="evenodd" />
+          </svg>
+          <span class="hidden md:inline">Highlight</span>
+          <span id="highlight-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#fef08a] ring-1 ring-hairline inline-block ml-0.5"></span>
+        </button>
+      </div>
+
+      <!-- Shapes Dropdown/Trigger -->
+      <div class="relative">
+        <button
+          id="tool-shape-btn"
+          class="tool-btn flex h-8 items-center gap-1 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink cursor-pointer"
+          title="Insert Shapes"
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2" />
+          </svg>
+          <span class="hidden md:inline">Shapes</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-60 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+
+        <!-- Shapes Menu -->
+        <div id="shapes-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-48 rounded-md border border-hairline bg-canvas-elevated/95 backdrop-blur-md p-1.5 shadow-floating">
+          <button type="button" data-shape="rect" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="h-3.5 w-3.5 border-2 border-ink rounded-none inline-block"></span> <span>Rectangle</span>
+          </button>
+          <button type="button" data-shape="rounded-rect" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="h-3.5 w-3.5 border-2 border-ink rounded-sm inline-block"></span> <span>Rounded Box</span>
+          </button>
+          <button type="button" data-shape="circle" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="h-3.5 w-3.5 border-2 border-ink rounded-full inline-block"></span> <span>Circle / Ellipse</span>
+          </button>
+          <button type="button" data-shape="line" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="h-0.5 w-4 bg-ink inline-block"></span> <span>Straight Line</span>
+          </button>
+          <button type="button" data-shape="arrow" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="text-xs font-bold">➔</span> <span>Arrow</span>
+          </button>
+          <button type="button" data-shape="check" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="text-xs font-bold text-emerald-600">✓</span> <span>Checkmark</span>
+          </button>
+          <button type="button" data-shape="cross" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
+            <span class="text-xs font-bold text-rose-600">✕</span> <span>Cross Mark</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- E-Signature Modal Trigger -->
+      <button
+        id="btn-open-sign-modal"
+        class="flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink"
+        title="Sign Document (S)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-link" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span class="hidden md:inline">Sign</span>
+      </button>
+
+      <!-- Image Inserter -->
+      <button
+        id="btn-add-image"
+        class="flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink"
+        title="Insert Image"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span class="hidden md:inline">Image</span>
+      </button>
+      <input type="file" id="image-file-input" accept="image/*" class="hidden" />
+
+      <!-- Stamp Modal Trigger -->
+      <button
+        id="btn-open-stamp-modal"
+        class="flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink"
+        title="Add Stamp (Approved, Confidential, etc.)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span class="hidden md:inline">Stamp</span>
+      </button>
+
+      <!-- Redaction / Blackout -->
+      <button
+        id="tool-redact"
+        class="tool-btn flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink"
+        title="Redact / Blackout sensitive text"
+      >
+        <div class="h-3.5 w-3.5 bg-ink rounded-xs"></div>
+        <span class="hidden md:inline">Redact</span>
+      </button>
+
+      <!-- Watermark & Page Numbering -->
+      <button
+        id="btn-open-watermark-modal"
+        class="flex h-8 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-medium text-body transition-all hover:bg-hairline-soft hover:text-ink"
+        title="Watermark & Page Numbers"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+        </svg>
+        <span class="hidden md:inline">Watermark</span>
+      </button>
+    </div>
+
+    <!-- Right Group: Undo/Redo, Zoom, Page Controls, Download -->
+    <div class="flex items-center gap-1.5">
+      <!-- Undo / Redo -->
+      <div class="flex items-center border-r border-hairline pr-1.5 gap-0.5">
+        <button id="btn-undo" class="flex h-7 w-7 items-center justify-center rounded-sm text-body hover:bg-hairline-soft hover:text-ink disabled:opacity-30" title="Undo (Ctrl+Z)" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+        </button>
+        <button id="btn-redo" class="flex h-7 w-7 items-center justify-center rounded-sm text-body hover:bg-hairline-soft hover:text-ink disabled:opacity-30" title="Redo (Ctrl+Y)" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Zoom Controls -->
+      <div class="hidden sm:flex items-center border-r border-hairline pr-1.5 gap-1">
+        <button id="btn-zoom-out" class="flex h-7 w-7 items-center justify-center rounded-sm text-body hover:bg-hairline-soft hover:text-ink" title="Zoom Out">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+          </svg>
+        </button>
+        <span id="zoom-percentage" class="min-w-[42px] text-center font-mono text-[12px] font-medium text-ink">100%</span>
+        <button id="btn-zoom-in" class="flex h-7 w-7 items-center justify-center rounded-sm text-body hover:bg-hairline-soft hover:text-ink" title="Zoom In">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Rotate Page Button -->
+      <button
+        id="btn-rotate-page"
+        class="flex h-8 items-center gap-1.5 rounded-sm border border-hairline bg-canvas px-2.5 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink"
+        title="Rotate Current Page (90° CW)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span class="hidden md:inline">Rotate</span>
+      </button>
+
+      <!-- Page Sidebar Toggle -->
+      <button
+        id="btn-toggle-sidebar"
+        class="flex h-8 items-center gap-1.5 rounded-sm border border-hairline bg-canvas px-2.5 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink"
+        title="Toggle Page Thumbnails"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        </svg>
+        <span class="hidden md:inline">Pages</span>
+      </button>
+
+      <!-- Download Modified PDF Button -->
+      <button
+        id="btn-export-pdf"
+        class="flex h-8 items-center gap-1.5 rounded-full bg-ink px-3.5 text-[13px] font-medium text-white shadow-whisper transition-all hover:bg-neutral-800 active:scale-95"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span>Save & Download</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dynamic Property Inspector Sub-Bar (Appears when active element selected) -->
+  <div id="property-bar" class="mt-2 flex flex-wrap items-center gap-2 border-t border-hairline pt-2 text-[12px] hidden">
+    <div class="flex items-center gap-1 text-mute font-mono text-[11px]">
+      <span id="inspector-element-type">ELEMENT</span>:
+    </div>
+
+    <!-- Font Family Selection -->
+    <div id="prop-font-group" class="flex items-center gap-1">
+      <select id="prop-font-family" class="h-6 rounded-sm border border-hairline bg-canvas px-1.5 text-[12px] font-medium text-ink">
+        <option value="Geist, sans-serif">Geist Sans</option>
+        <option value="Geist Mono, monospace">Geist Mono</option>
+        <option value="Times New Roman, serif">Serif (Times)</option>
+        <option value="Brush Script MT, cursive">Handwriting</option>
+      </select>
+
+      <select id="prop-font-size" class="h-6 rounded-sm border border-hairline bg-canvas px-1.5 text-[12px] font-mono text-ink">
+        <option value="12">12px</option>
+        <option value="14">14px</option>
+        <option value="16" selected>16px</option>
+        <option value="18">18px</option>
+        <option value="20">20px</option>
+        <option value="24">24px</option>
+        <option value="32">32px</option>
+        <option value="48">48px</option>
+      </select>
+    </div>
+
+    <!-- Color Palette -->
+    <div class="flex items-center gap-1">
+      <span class="text-mute text-[11px]">Color:</span>
+      <input type="color" id="prop-color-picker" value="#171717" class="h-5 w-6 cursor-pointer rounded-xs border border-hairline bg-transparent p-0" />
+      <div class="flex items-center gap-0.5">
+        <button class="color-preset h-4 w-4 rounded-full bg-[#171717] border border-hairline" data-color="#171717"></button>
+        <button class="color-preset h-4 w-4 rounded-full bg-[#ee0000] border border-hairline" data-color="#ee0000"></button>
+        <button class="color-preset h-4 w-4 rounded-full bg-[#0070f3] border border-hairline" data-color="#0070f3"></button>
+        <button class="color-preset h-4 w-4 rounded-full bg-[#10b981] border border-hairline" data-color="#10b981"></button>
+        <button class="color-preset h-4 w-4 rounded-full bg-[#f5a623] border border-hairline" data-color="#f5a623"></button>
+        <button class="color-preset h-4 w-4 rounded-full bg-[#ffffff] border border-hairline" data-color="#ffffff" title="Whiteout"></button>
+      </div>
+    </div>
+
+    <!-- Stroke / Thickness (For Drawing / Shapes) -->
+    <div id="prop-stroke-group" class="flex items-center gap-1.5">
+      <span class="text-mute text-[11px]">Thickness:</span>
+      <input type="range" id="prop-stroke-width" min="1" max="24" value="2" class="h-1.5 w-16 accent-ink cursor-pointer" />
+      <span id="prop-stroke-val" class="font-mono text-[11px] text-mute">2px</span>
+    </div>
+
+    <!-- Opacity -->
+    <div id="prop-opacity-group" class="flex items-center gap-1.5">
+      <span class="text-mute text-[11px]">Opacity:</span>
+      <input type="range" id="prop-opacity" min="0.1" max="1" step="0.05" value="1" class="h-1.5 w-16 accent-ink cursor-pointer" />
+      <span id="prop-opacity-val" class="font-mono text-[11px] text-mute">100%</span>
+    </div>
+
+    <!-- Delete Selected Element -->
+    <div class="ml-auto flex items-center gap-1">
+      <button id="btn-delete-element" class="flex h-6 items-center gap-1 rounded-sm bg-rose-50 px-2 text-[11px] font-medium text-rose-600 hover:bg-rose-100" title="Delete Element (Del)">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+        <span>Delete</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tool-btn.active {
+    background-color: var(--color-ink);
+    color: var(--color-on-primary);
+  }
+</style>

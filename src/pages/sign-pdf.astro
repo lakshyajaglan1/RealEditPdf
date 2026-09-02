@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PdfEditor from '../components/editor/PdfEditor.astro';
+---
+
+<Layout
+  title="Sign PDF Documents Online Free — RealPdfEdit"
+  description="Sign PDF documents and contracts online for free. Draw, type or upload your signature with 100% client-side privacy."
+  activeTool="sign"
+>
+  <div class="py-12 md:py-16 hero-mesh-gradient border-b border-hairline">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-3 py-1 text-[12px] font-mono text-ink shadow-whisper mb-4">
+        <span class="flex h-2 w-2 rounded-full bg-link"></span>
+        <span>Secure Document Signing</span>
+      </div>
+
+      <h1 class="text-4xl font-bold tracking-display text-ink sm:text-5xl">
+        Sign PDF Documents Online
+      </h1>
+      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto">
+        Fill and sign agreements, contracts, and tax forms in seconds. Create legally binding electronic signatures without uploading your sensitive files.
+      </p>
+
+      <!-- Mount Studio with Focus on Sign Tool -->
+      <div class="mt-10 w-full text-left">
+        <PdfEditor />
+      </div>
+    </div>
+  </div>
+</Layout>

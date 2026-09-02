@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Privacy & Security Guarantee — RealPdfEdit"
+  description="How RealPdfEdit guarantees 100% data sovereignty. All PDF operations run locally in your browser with WebAssembly. Zero files are uploaded to remote servers."
+  activeTool="privacy"
+>
+  <div class="py-12 md:py-20 hero-mesh-gradient border-b border-hairline">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-3 py-1 text-[12px] font-mono text-ink shadow-whisper mb-4">
+        <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+        <span>Zero Cloud Upload Architecture</span>
+      </div>
+
+      <h1 class="text-4xl font-bold tracking-display text-ink sm:text-5xl">
+        Privacy & Security Architecture
+      </h1>
+      <p class="mt-4 text-[16px] text-body max-w-2xl mx-auto">
+        Your documents contain sensitive contracts, financial records, medical reports, and legal agreements. Here is why you can trust RealPdfEdit with your most critical files.
+      </p>
+    </div>
+  </div>
+
+  <section class="py-16 bg-canvas">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-12">
+      <!-- Section 1 -->
+      <div class="rounded-lg border border-hairline bg-canvas-elevated p-8 shadow-whisper space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-cyan font-bold">
+            01
+          </div>
+          <h2 class="text-xl font-bold text-ink">Zero Server Uploads (100% Local Execution)</h2>
+        </div>
+        <p class="text-[14px] leading-relaxed text-body">
+          Traditional PDF tools (like Smallpdf, ILovePDF, and Adobe Web) require you to upload your PDF files to their remote cloud servers. Those servers parse, modify, and store your files, introducing exposure to data breaches, unauthorized access, and compliance violations.
+        </p>
+        <p class="text-[14px] leading-relaxed text-body">
+          <strong>RealPdfEdit is fundamentally different.</strong> We use WebAssembly and modern browser APIs (<code class="font-mono text-xs bg-hairline-soft px-1.5 py-0.5 rounded-xs">pdfjs-dist</code> and <code class="font-mono text-xs bg-hairline-soft px-1.5 py-0.5 rounded-xs">pdf-lib</code>) to run the entire PDF engine inside your device's memory. <strong>Not a single byte of your PDF file is ever transmitted over the network.</strong>
+        </p>
+      </div>
+
+      <!-- Section 2 -->
+      <div id="gdpr" class="rounded-lg border border-hairline bg-canvas-elevated p-8 shadow-whisper space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-cyan font-bold">
+            02
+          </div>
+          <h2 class="text-xl font-bold text-ink">GDPR, HIPAA & Enterprise Ready</h2>
+        </div>
+        <p class="text-[14px] leading-relaxed text-body">
+          Because no personal data or document contents are collected, stored, or processed on external servers, RealPdfEdit inherently satisfies the highest compliance standards:
+        </p>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-[13px]">
+          <li class="flex items-start gap-2 p-3 rounded-md bg-canvas border border-hairline">
+            <span class="text-emerald-600 font-bold">✓</span>
+            <div><strong>GDPR & CCPA Compliant:</strong> Zero personal data collection or cross-border transfers.</div>
+          </li>
+          <li class="flex items-start gap-2 p-3 rounded-md bg-canvas border border-hairline">
+            <span class="text-emerald-600 font-bold">✓</span>
+            <div><strong>HIPAA Ready:</strong> Protected health information (PHI) never leaves your physical workstation.</div>
+          </li>
+          <li class="flex items-start gap-2 p-3 rounded-md bg-canvas border border-hairline">
+            <span class="text-emerald-600 font-bold">✓</span>
+            <div><strong>No Analytics Tracking:</strong> We do not track document content, metadata, or reading activity.</div>
+          </li>
+          <li class="flex items-start gap-2 p-3 rounded-md bg-canvas border border-hairline">
+            <span class="text-emerald-600 font-bold">✓</span>
+            <div><strong>Zero Data Retention:</strong> When you close the browser tab, everything in RAM is instantly wiped.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Section 3 -->
+      <div id="offline" class="rounded-lg border border-hairline bg-canvas-elevated p-8 shadow-whisper space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-cyan font-bold">
+            03
+          </div>
+          <h2 class="text-xl font-bold text-ink">Works Completely Offline</h2>
+        </div>
+        <p class="text-[14px] leading-relaxed text-body">
+          You can test our privacy guarantee yourself: open RealPdfEdit, disconnect your Wi-Fi or turn on Airplane Mode, and edit, merge, redact, sign, and export PDFs as usual. It works seamlessly with zero internet connection!
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

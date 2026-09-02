@@ -1,0 +1,139 @@
+---
+// SignatureModal.astro - E-Signature Creator (Draw, Type, Upload)
+---
+
+<div id="signature-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+  <div class="w-full max-w-lg rounded-lg border border-hairline bg-canvas-elevated p-6 shadow-floating animate-fade-in">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-hairline pb-3">
+      <div class="flex items-center gap-2">
+        <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+        </div>
+        <h3 class="text-[16px] font-semibold tracking-tight text-ink">Create E-Signature</h3>
+      </div>
+      <button id="btn-close-sign-modal" class="text-mute hover:text-ink text-lg leading-none p-1">&times;</button>
+    </div>
+
+    <!-- Tabs: Draw / Type / Upload -->
+    <div class="mt-4 flex rounded-sm border border-hairline bg-hairline-soft p-0.5 text-[13px] font-medium">
+      <button id="sign-tab-draw" class="flex-1 rounded-sm py-1.5 text-center bg-canvas-elevated text-ink shadow-whisper">
+        Draw
+      </button>
+      <button id="sign-tab-type" class="flex-1 rounded-sm py-1.5 text-center text-body hover:text-ink">
+        Type
+      </button>
+      <button id="sign-tab-upload" class="flex-1 rounded-sm py-1.5 text-center text-body hover:text-ink">
+        Upload
+      </button>
+    </div>
+
+    <!-- Common Ink Color Selector -->
+    <div class="mt-3 flex items-center justify-between border-b border-hairline pb-2.5 text-[12px]">
+      <div class="flex items-center gap-2">
+        <span class="text-mute font-mono text-[11px] uppercase">Ink Color:</span>
+        <div class="flex items-center gap-1.5" id="sign-ink-colors">
+          <button class="sign-ink-color h-4.5 w-4.5 rounded-full bg-[#171717] ring-2 ring-link cursor-pointer" data-color="#171717" title="Black"></button>
+          <button class="sign-ink-color h-4.5 w-4.5 rounded-full bg-[#0070f3] cursor-pointer" data-color="#0070f3" title="Royal Blue"></button>
+          <button class="sign-ink-color h-4.5 w-4.5 rounded-full bg-[#0c2340] cursor-pointer" data-color="#0c2340" title="Dark Navy"></button>
+          <button class="sign-ink-color h-4.5 w-4.5 rounded-full bg-[#7928ca] cursor-pointer" data-color="#7928ca" title="Purple"></button>
+          <button class="sign-ink-color h-4.5 w-4.5 rounded-full bg-[#b91c1c] cursor-pointer" data-color="#b91c1c" title="Crimson Red"></button>
+          <button class="sign-ink-color h-4.5 w-4.5 rounded-full bg-[#047857] cursor-pointer" data-color="#047857" title="Emerald Green"></button>
+          <input type="color" id="sign-custom-color" value="#171717" class="h-5 w-6 cursor-pointer rounded-xs border border-hairline p-0 bg-transparent" title="Custom Ink Color" />
+        </div>
+      </div>
+      <button id="btn-clear-draw-sign" class="text-rose-600 hover:underline text-[12px]">Clear Canvas</button>
+    </div>
+
+    <!-- Tab 1: Draw Surface -->
+    <div id="sign-pane-draw" class="mt-3 space-y-3">
+      <div class="relative rounded-md border border-hairline bg-white shadow-inner">
+        <canvas id="sign-draw-canvas" width="460" height="180" class="w-full h-44 cursor-crosshair touch-none rounded-md"></canvas>
+        <div class="absolute bottom-2 left-3 text-[11px] font-mono text-neutral-400 pointer-events-none select-none">
+          Sign above line
+        </div>
+        <div class="absolute bottom-6 left-3 right-3 border-b border-dashed border-neutral-300 pointer-events-none"></div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Type Signature -->
+    <div id="sign-pane-type" class="mt-4 space-y-3 hidden">
+      <div>
+        <label class="block text-[12px] font-medium text-body mb-1">Your Full Name</label>
+        <input
+          type="text"
+          id="sign-type-input"
+          placeholder="e.g. John Doe"
+          value="John Doe"
+          class="w-full rounded-sm border border-hairline bg-canvas px-3 py-2 text-[14px] text-ink outline-none focus:border-ink"
+        />
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <span class="text-[11px] font-mono uppercase text-mute">Select Calligraphy Style:</span>
+        <div class="grid grid-cols-2 gap-2" id="sign-font-options">
+          <label class="sign-font-opt flex items-center justify-center p-3 rounded-md border-2 border-link bg-canvas-elevated cursor-pointer hover:border-link">
+            <input type="radio" name="sign-style" value="'Dancing Script', cursive" checked class="hidden" />
+            <span class="sign-preview text-2xl font-semibold text-ink" style="font-family: 'Dancing Script', cursive;">John Doe</span>
+          </label>
+          <label class="sign-font-opt flex items-center justify-center p-3 rounded-md border border-hairline bg-canvas-elevated cursor-pointer hover:border-link">
+            <input type="radio" name="sign-style" value="'Great Vibes', cursive" class="hidden" />
+            <span class="sign-preview text-2xl text-ink" style="font-family: 'Great Vibes', cursive;">John Doe</span>
+          </label>
+          <label class="sign-font-opt flex items-center justify-center p-3 rounded-md border border-hairline bg-canvas-elevated cursor-pointer hover:border-link">
+            <input type="radio" name="sign-style" value="'Caveat', cursive" class="hidden" />
+            <span class="sign-preview text-2xl font-bold text-ink" style="font-family: 'Caveat', cursive;">John Doe</span>
+          </label>
+          <label class="sign-font-opt flex items-center justify-center p-3 rounded-md border border-hairline bg-canvas-elevated cursor-pointer hover:border-link">
+            <input type="radio" name="sign-style" value="'Brush Script MT', cursive" class="hidden" />
+            <span class="sign-preview text-xl italic font-serif text-ink" style="font-family: 'Brush Script MT', cursive;">John Doe</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Upload Signature -->
+    <div id="sign-pane-upload" class="mt-4 space-y-3 hidden">
+      <div
+        id="sign-dropzone"
+        class="flex flex-col items-center justify-center rounded-md border-2 border-dashed border-hairline bg-canvas p-6 text-center cursor-pointer hover:bg-hairline-soft transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-mute mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <p class="text-[13px] font-medium text-ink">Click or drag an image of your signature</p>
+        <p class="text-[11px] text-mute mt-0.5">PNG, JPG, WebP (White background is automatically made transparent)</p>
+        <input type="file" id="sign-upload-input" accept="image/*" class="hidden" />
+      </div>
+
+      <div id="sign-upload-preview-container" class="hidden flex-col items-center justify-center p-4 border border-hairline rounded-md bg-canvas">
+        <div class="p-3 bg-white/90 rounded border border-hairline shadow-inner max-w-full flex items-center justify-center">
+          <img id="sign-upload-preview" class="max-h-24 max-w-full object-contain" alt="Uploaded signature" />
+        </div>
+        <div class="mt-2 flex items-center gap-2">
+          <span class="text-[11px] text-emerald-600 font-medium">✓ Transparency processed</span>
+          <button id="btn-reupload-sign" class="text-[11px] text-rose-600 hover:underline">Choose another</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="mt-6 flex items-center justify-between border-t border-hairline pt-4">
+      <label class="flex items-center gap-1.5 text-[12px] text-body cursor-pointer select-none">
+        <input type="checkbox" id="sign-save-local" checked class="rounded-xs accent-ink" />
+        <span>Save signature for 1-click reuse</span>
+      </label>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-cancel-sign" class="rounded-sm border border-hairline bg-canvas-elevated px-3 py-1.5 text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink">
+          Cancel
+        </button>
+        <button id="btn-insert-sign" class="rounded-sm bg-ink px-4 py-1.5 text-[13px] font-medium text-white shadow-whisper hover:bg-neutral-800">
+          Insert Signature
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
