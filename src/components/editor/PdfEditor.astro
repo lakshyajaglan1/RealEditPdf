@@ -33,7 +33,7 @@ import WatermarkModal from './WatermarkModal.astro';
         </p>
 
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <label class="cursor-pointer inline-flex h-10 items-center justify-center rounded-full bg-ink px-6 text-sm font-medium text-white shadow-whisper hover:bg-neutral-800 active:scale-95 transition-all">
+          <label class="cursor-pointer inline-flex h-10 items-center justify-center rounded-full bg-ink px-6 text-sm font-medium text-on-primary shadow-whisper hover:opacity-90 active:scale-95 transition-all">
             <span>Choose PDF File</span>
             <input type="file" id="main-pdf-input" accept="application/pdf" class="hidden" />
           </label>
@@ -45,11 +45,11 @@ import WatermarkModal from './WatermarkModal.astro';
 
         <div class="mt-6 flex items-center gap-4 text-[11px] font-mono text-mute">
           <span class="flex items-center gap-1">
-            <svg class="h-3.5 w-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            <svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
             No File Size Limit
           </span>
           <span class="flex items-center gap-1">
-            <svg class="h-3.5 w-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            <svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
             Zero Server Uploads
           </span>
         </div>
@@ -88,7 +88,7 @@ import WatermarkModal from './WatermarkModal.astro';
       </div>
 
       <!-- Loading Spinner Overlay -->
-      <div id="editor-loading" class="absolute inset-0 z-40 flex items-center justify-center bg-white/70 backdrop-blur-xs hidden">
+      <div id="editor-loading" class="absolute inset-0 z-40 flex items-center justify-center bg-canvas/80 backdrop-blur-xs hidden">
         <div class="flex flex-col items-center gap-3">
           <div class="h-8 w-8 animate-spin rounded-full border-2 border-link border-t-transparent"></div>
           <span id="loading-text" class="text-[13px] font-medium text-ink">Processing Document...</span>
@@ -296,7 +296,7 @@ import WatermarkModal from './WatermarkModal.astro';
                  style="color: ${annot.color || '#171717'}; font-size: ${annot.fontSize || 16}px; font-family: ${annot.fontFamily || 'Geist, sans-serif'}; ${annot.bgWhiteout ? 'background-color: #ffffff;' : ''}">
               <div class="annot-text-content select-text cursor-text outline-none inline-block min-w-[50px] whitespace-pre-wrap break-words" contenteditable="true" spellcheck="false">${annot.text || 'Type text here'}</div>
               <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30" title="Delete text">&times;</button>
-              <div class="annot-drag-handle absolute -top-2.5 -left-2.5 h-5 w-5 rounded-full bg-ink text-white text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm cursor-grab active:cursor-grabbing transition-opacity z-30 select-none" title="Drag to move">✥</div>
+              <div class="annot-drag-handle absolute -top-2.5 -left-2.5 h-5 w-5 rounded-full bg-ink text-on-primary text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm cursor-grab active:cursor-grabbing transition-opacity z-30 select-none" title="Drag to move">✥</div>
             </div>
           `;
         } else if (annot.type === 'shape') {
@@ -344,8 +344,8 @@ import WatermarkModal from './WatermarkModal.astro';
           const w = annot.width || 140;
           const h = annot.height || 30;
           el.innerHTML = `
-            <div class="annot-redact-box relative cursor-move bg-ink rounded-xs flex items-center justify-center group-hover:outline group-hover:outline-1 group-hover:outline-rose-500 select-none" style="width:${w}px; height:${h}px;">
-              <span class="text-[9px] font-mono text-white/40 uppercase tracking-widest pointer-events-none">REDACTED</span>
+            <div class="annot-redact-box relative cursor-move bg-black rounded-xs flex items-center justify-center group-hover:outline group-hover:outline-1 group-hover:outline-rose-500 select-none" style="width:${w}px; height:${h}px;">
+              <span class="text-[9px] font-mono text-white/60 uppercase tracking-widest pointer-events-none">REDACTED</span>
               <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30">&times;</button>
               <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-rose-500 border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
             </div>
@@ -767,7 +767,7 @@ import WatermarkModal from './WatermarkModal.astro';
             <span class="font-medium text-ink">Page ${p}</span>
             <div class="flex items-center gap-1.5">
               <button class="thumb-rotate-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-sm shadow-xs font-bold transition-all hover:scale-105" title="Rotate Page 90°">↻</button>
-              <button class="thumb-del-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-rose-50 text-mute hover:text-rose-600 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105" title="Delete Page">✕</button>
+              <button class="thumb-del-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-rose-50 dark:hover:bg-rose-950/40 text-mute hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105" title="Delete Page">✕</button>
             </div>
           </div>
           <div class="flex items-center justify-center bg-hairline-soft/50 rounded-xs overflow-hidden h-28">

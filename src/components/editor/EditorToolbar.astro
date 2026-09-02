@@ -95,10 +95,10 @@
             <span class="text-xs font-bold">➔</span> <span>Arrow</span>
           </button>
           <button type="button" data-shape="check" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-            <span class="text-xs font-bold text-emerald-600">✓</span> <span>Checkmark</span>
+            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✓</span> <span>Checkmark</span>
           </button>
           <button type="button" data-shape="cross" class="shape-opt flex w-full items-center gap-2.5 rounded-sm px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-            <span class="text-xs font-bold text-rose-600">✕</span> <span>Cross Mark</span>
+            <span class="text-xs font-bold text-rose-600 dark:text-rose-400">✕</span> <span>Cross Mark</span>
           </button>
         </div>
       </div>
@@ -221,7 +221,7 @@
       <!-- Download Modified PDF Button -->
       <button
         id="btn-export-pdf"
-        class="flex h-8 items-center gap-1.5 rounded-full bg-ink px-3.5 text-[13px] font-medium text-white shadow-whisper transition-all hover:bg-neutral-800 active:scale-95"
+        class="flex h-8 items-center gap-1.5 rounded-full bg-ink px-3.5 text-[13px] font-medium text-on-primary shadow-whisper transition-all hover:opacity-90 active:scale-95"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -288,7 +288,7 @@
 
     <!-- Delete Selected Element -->
     <div class="ml-auto flex items-center gap-1">
-      <button id="btn-delete-element" class="flex h-6 items-center gap-1 rounded-sm bg-rose-50 px-2 text-[11px] font-medium text-rose-600 hover:bg-rose-100" title="Delete Element (Del)">
+      <button id="btn-delete-element" class="flex h-6 items-center gap-1 rounded-sm bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 px-2 text-[11px] font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-colors" title="Delete Element (Del)">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>

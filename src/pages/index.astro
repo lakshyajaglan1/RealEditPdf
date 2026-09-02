@@ -65,43 +65,43 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
           <tbody class="divide-y divide-hairline">
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">Daily Usage Limits</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">Unlimited (0 limits)</td>
-              <td class="py-4 px-6 text-rose-600">1-2 tasks per day</td>
-              <td class="py-4 px-6 text-rose-600">3 tasks per hour</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">Unlimited (0 limits)</td>
+              <td class="py-4 px-6 text-rose-600 dark:text-rose-400">1-2 tasks per day</td>
+              <td class="py-4 px-6 text-rose-600 dark:text-rose-400">3 tasks per hour</td>
             </tr>
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">Privacy & Security</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">100% Client-Side (0 Server Uploads)</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">100% Client-Side (0 Server Uploads)</td>
               <td class="py-4 px-6 text-body">Cloud server upload</td>
               <td class="py-4 px-6 text-body">Cloud server upload</td>
             </tr>
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">Edit Existing Text</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">100% Free & Unlimited</td>
-              <td class="py-4 px-6 text-rose-600">Locked behind $12/mo Pro</td>
-              <td class="py-4 px-6 text-amber-600">Limited / Paywalled</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">100% Free & Unlimited</td>
+              <td class="py-4 px-6 text-rose-600 dark:text-rose-400">Locked behind $12/mo Pro</td>
+              <td class="py-4 px-6 text-amber-600 dark:text-amber-400">Limited / Paywalled</td>
             </tr>
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">File Size Limit</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">No Limit (Your RAM is the limit)</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">No Limit (Your RAM is the limit)</td>
               <td class="py-4 px-6 text-body">15 MB max for free tier</td>
               <td class="py-4 px-6 text-body">50 MB max</td>
             </tr>
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">E-Signature Studio</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">Draw, Type & Upload with auto-transparency</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">Draw, Type & Upload with auto-transparency</td>
               <td class="py-4 px-6 text-body">Basic signature</td>
               <td class="py-4 px-6 text-body">Basic signature</td>
             </tr>
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">Document Redaction</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">Permanent vector/raster blackout</td>
-              <td class="py-4 px-6 text-rose-600">Pro subscription only</td>
-              <td class="py-4 px-6 text-amber-600">Separate paid tool</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">Permanent vector/raster blackout</td>
+              <td class="py-4 px-6 text-rose-600 dark:text-rose-400">Pro subscription only</td>
+              <td class="py-4 px-6 text-amber-600 dark:text-amber-400">Separate paid tool</td>
             </tr>
             <tr class="hover:bg-hairline-soft/30 transition-colors">
               <td class="py-4 px-6 font-medium text-ink">Account / Registration</td>
-              <td class="py-4 px-6 font-semibold text-emerald-600 bg-cyan/5">Not required (Zero friction)</td>
+              <td class="py-4 px-6 font-semibold text-emerald-600 dark:text-emerald-400 bg-cyan/5">Not required (Zero friction)</td>
               <td class="py-4 px-6 text-body">Forces signup popups</td>
               <td class="py-4 px-6 text-body">Forces email prompt</td>
             </tr>
@@ -127,7 +127,7 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Card 1: Text & Whiteout -->
         <div class="rounded-md border border-hairline bg-canvas-elevated p-6 shadow-whisper space-y-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-white font-mono">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-on-primary font-mono font-bold">
             T
           </div>
           <h3 class="text-lg font-semibold tracking-tight text-ink">Text Editing & Whiteout</h3>
@@ -138,8 +138,8 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
 
         <!-- Card 2: E-Signatures -->
         <div class="rounded-md border border-hairline bg-canvas-elevated p-6 shadow-whisper space-y-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-cyan">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-cyan/15 text-cyan border border-cyan-500/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
           </div>
@@ -151,7 +151,7 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
 
         <!-- Card 3: Permanent Redaction -->
         <div class="rounded-md border border-hairline bg-canvas-elevated p-6 shadow-whisper space-y-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-rose-500">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-rose-500/15 text-rose-500 border border-rose-500/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
             </svg>
@@ -164,7 +164,7 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
 
         <!-- Card 4: Page Thumbnail Studio -->
         <div class="rounded-md border border-hairline bg-canvas-elevated p-6 shadow-whisper space-y-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-white">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-on-primary">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
@@ -177,7 +177,7 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
 
         <!-- Card 5: Freehand & Highlighting -->
         <div class="rounded-md border border-hairline bg-canvas-elevated p-6 shadow-whisper space-y-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-amber-400">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-amber-500/15 text-amber-500 border border-amber-500/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
@@ -190,7 +190,7 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
 
         <!-- Card 6: Watermark & Numbering -->
         <div class="rounded-md border border-hairline bg-canvas-elevated p-6 shadow-whisper space-y-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-ink text-link">
+          <div class="flex h-10 w-10 items-center justify-center rounded-sm bg-link/15 text-link border border-link/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
             </svg>
@@ -217,7 +217,7 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
       <div>
         <a
           href="#editor-anchor"
-          class="inline-flex h-12 items-center justify-center rounded-full bg-ink px-8 text-sm font-medium text-white shadow-whisper hover:bg-neutral-800 transition-all active:scale-95"
+          class="inline-flex h-12 items-center justify-center rounded-full bg-ink px-8 text-sm font-medium text-on-primary shadow-whisper hover:opacity-90 transition-all active:scale-95"
         >
           Open PDF Editor Now
         </a>

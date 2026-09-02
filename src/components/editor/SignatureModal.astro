@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-hairline pb-3">
       <div class="flex items-center gap-2">
-        <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-white">
+        <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-on-primary">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
           </svg>
@@ -44,7 +44,7 @@
           <input type="color" id="sign-custom-color" value="#171717" class="h-5 w-6 cursor-pointer rounded-xs border border-hairline p-0 bg-transparent" title="Custom Ink Color" />
         </div>
       </div>
-      <button id="btn-clear-draw-sign" class="text-rose-600 hover:underline text-[12px]">Clear Canvas</button>
+      <button id="btn-clear-draw-sign" class="text-rose-600 dark:text-rose-400 hover:underline text-[12px]">Clear Canvas</button>
     </div>
 
     <!-- Tab 1: Draw Surface -->
@@ -113,8 +113,8 @@
           <img id="sign-upload-preview" class="max-h-24 max-w-full object-contain" alt="Uploaded signature" />
         </div>
         <div class="mt-2 flex items-center gap-2">
-          <span class="text-[11px] text-emerald-600 font-medium">✓ Transparency processed</span>
-          <button id="btn-reupload-sign" class="text-[11px] text-rose-600 hover:underline">Choose another</button>
+          <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">✓ Transparency processed</span>
+          <button id="btn-reupload-sign" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline">Choose another</button>
         </div>
       </div>
     </div>
@@ -130,7 +130,7 @@
         <button id="btn-cancel-sign" class="rounded-sm border border-hairline bg-canvas-elevated px-3 py-1.5 text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink">
           Cancel
         </button>
-        <button id="btn-insert-sign" class="rounded-sm bg-ink px-4 py-1.5 text-[13px] font-medium text-white shadow-whisper hover:bg-neutral-800">
+        <button id="btn-insert-sign" class="rounded-sm bg-ink px-4 py-1.5 text-[13px] font-medium text-on-primary shadow-whisper hover:opacity-90 active:scale-95 transition-all">
           Insert Signature
         </button>
       </div>

@@ -49,10 +49,10 @@
 html.dark {
   color-scheme: dark;
   --color-primary: #f4f4f5;
-  --color-on-primary: #18181b;
+  --color-on-primary: #09090b;
   --color-ink: #f4f4f5;
   --color-body: #a1a1aa;
-  --color-mute: #71717a;
+  --color-mute: #8a8a93;
   --color-faint: #52525b;
   --color-hairline: #27272a;
   --color-hairline-soft: #18181b;

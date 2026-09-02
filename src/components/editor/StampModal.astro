@@ -8,7 +8,7 @@ const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-hairline pb-3">
       <div class="flex items-center gap-2">
-        <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-white">
+        <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-ink text-on-primary">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
@@ -23,74 +23,74 @@ const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         <!-- APPROVED -->
         <button
-          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-emerald-500/30 bg-emerald-50/50 hover:bg-emerald-50 transition-all hover:scale-[1.02]"
+          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 transition-all hover:scale-[1.02] cursor-pointer"
           data-text="APPROVED"
           data-color="#059669"
         >
-          <span class="font-mono text-sm font-bold uppercase tracking-widest text-emerald-600 border-2 border-emerald-600 px-2 py-0.5 rounded-xs">
+          <span class="font-mono text-sm font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 border-2 border-emerald-600 dark:border-emerald-400 px-2 py-0.5 rounded-xs">
             APPROVED
           </span>
-          <span class="text-[10px] font-mono text-emerald-600/70 mt-1">{today}</span>
+          <span class="text-[10px] font-mono text-emerald-600/70 dark:text-emerald-400/70 mt-1">{today}</span>
         </button>
 
         <!-- CONFIDENTIAL -->
         <button
-          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-rose-500/30 bg-rose-50/50 hover:bg-rose-50 transition-all hover:scale-[1.02]"
+          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 transition-all hover:scale-[1.02] cursor-pointer"
           data-text="CONFIDENTIAL"
           data-color="#dc2626"
         >
-          <span class="font-mono text-sm font-bold uppercase tracking-widest text-rose-600 border-2 border-rose-600 px-2 py-0.5 rounded-xs">
+          <span class="font-mono text-sm font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400 border-2 border-rose-600 dark:border-rose-400 px-2 py-0.5 rounded-xs">
             CONFIDENTIAL
           </span>
-          <span class="text-[10px] font-mono text-rose-600/70 mt-1">DO NOT DISTRIBUTE</span>
+          <span class="text-[10px] font-mono text-rose-600/70 dark:text-rose-400/70 mt-1">DO NOT DISTRIBUTE</span>
         </button>
 
         <!-- DRAFT -->
         <button
-          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-blue-500/30 bg-blue-50/50 hover:bg-blue-50 transition-all hover:scale-[1.02]"
+          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 transition-all hover:scale-[1.02] cursor-pointer"
           data-text="DRAFT"
           data-color="#2563eb"
         >
-          <span class="font-mono text-sm font-bold uppercase tracking-widest text-blue-600 border-2 border-blue-600 px-2 py-0.5 rounded-xs">
+          <span class="font-mono text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400 px-2 py-0.5 rounded-xs">
             DRAFT
           </span>
-          <span class="text-[10px] font-mono text-blue-600/70 mt-1">WORK IN PROGRESS</span>
+          <span class="text-[10px] font-mono text-blue-600/70 dark:text-blue-400/70 mt-1">WORK IN PROGRESS</span>
         </button>
 
         <!-- PAID -->
         <button
-          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-teal-500/30 bg-teal-50/50 hover:bg-teal-50 transition-all hover:scale-[1.02]"
+          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 transition-all hover:scale-[1.02] cursor-pointer"
           data-text="PAID"
           data-color="#0d9488"
         >
-          <span class="font-mono text-sm font-bold uppercase tracking-widest text-teal-600 border-2 border-teal-600 px-2 py-0.5 rounded-xs">
+          <span class="font-mono text-sm font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 border-2 border-teal-600 dark:border-teal-400 px-2 py-0.5 rounded-xs">
             PAID
           </span>
-          <span class="text-[10px] font-mono text-teal-600/70 mt-1">{today}</span>
+          <span class="text-[10px] font-mono text-teal-600/70 dark:text-teal-400/70 mt-1">{today}</span>
         </button>
 
         <!-- VOID -->
         <button
-          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-purple-500/30 bg-purple-50/50 hover:bg-purple-50 transition-all hover:scale-[1.02]"
+          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 transition-all hover:scale-[1.02] cursor-pointer"
           data-text="VOID"
           data-color="#7c3aed"
         >
-          <span class="font-mono text-sm font-bold uppercase tracking-widest text-purple-600 border-2 border-purple-600 px-2 py-0.5 rounded-xs">
+          <span class="font-mono text-sm font-bold uppercase tracking-widest text-purple-600 dark:text-purple-400 border-2 border-purple-600 dark:border-purple-400 px-2 py-0.5 rounded-xs">
             VOID
           </span>
-          <span class="text-[10px] font-mono text-purple-600/70 mt-1">CANCELLED</span>
+          <span class="text-[10px] font-mono text-purple-600/70 dark:text-purple-400/70 mt-1">CANCELLED</span>
         </button>
 
         <!-- FINAL -->
         <button
-          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-slate-500/30 bg-slate-50/50 hover:bg-slate-50 transition-all hover:scale-[1.02]"
+          class="stamp-preset-btn flex flex-col items-center justify-center p-3 rounded-md border-2 border-slate-500/30 bg-slate-500/10 hover:bg-slate-500/20 transition-all hover:scale-[1.02] cursor-pointer"
           data-text="FINAL"
           data-color="#475569"
         >
-          <span class="font-mono text-sm font-bold uppercase tracking-widest text-slate-700 border-2 border-slate-700 px-2 py-0.5 rounded-xs">
+          <span class="font-mono text-sm font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300 border-2 border-slate-700 dark:border-slate-300 px-2 py-0.5 rounded-xs">
             FINAL
           </span>
-          <span class="text-[10px] font-mono text-slate-600/70 mt-1">VERIFIED</span>
+          <span class="text-[10px] font-mono text-slate-600/70 dark:text-slate-400/70 mt-1">VERIFIED</span>
         </button>
       </div>
 
@@ -105,7 +105,7 @@ const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '
             class="flex-1 rounded-sm border border-hairline bg-canvas-elevated px-2.5 py-1.5 text-[13px] font-mono text-ink outline-none uppercase"
           />
           <input type="color" id="custom-stamp-color" value="#0070f3" class="h-8 w-8 cursor-pointer rounded-sm border border-hairline p-0" />
-          <button id="btn-insert-custom-stamp" class="rounded-sm bg-ink px-3 py-1.5 text-[13px] font-medium text-white hover:bg-neutral-800">
+          <button id="btn-insert-custom-stamp" class="rounded-sm bg-ink px-3 py-1.5 text-[13px] font-medium text-on-primary hover:opacity-90 active:scale-95 transition-all">
             Create
           </button>
         </div>
