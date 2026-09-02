@@ -1120,7 +1120,7 @@ import WatermarkModal from './WatermarkModal.astro';
         const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
         // Header
-        page1.drawText('RealPdfEdit — Sample Agreement', {
+        page1.drawText('Real Edit Pdf — Sample Agreement', {
           x: 50,
           y: 720,
           size: 20,
@@ -1396,7 +1396,7 @@ import WatermarkModal from './WatermarkModal.astro';
 
         const a = document.createElement('a');
         a.href = downloadUrl;
-        a.download = 'RealPdfEdit-Document.pdf';
+        a.download = 'RealEditPdf-Document.pdf';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
