@@ -2,7 +2,7 @@
 // EditorToolbar.astro - Vercel Geist Style Toolbar
 ---
 
-<div class="w-full border-b border-hairline bg-canvas-elevated/90 backdrop-blur-xl px-3 sm:px-4 py-2 text-ink shadow-whisper select-none">
+<div class="relative z-30 w-full border-b border-hairline bg-canvas-elevated/90 backdrop-blur-xl px-3 sm:px-4 py-2 text-ink shadow-whisper select-none">
   <div class="flex flex-wrap items-center justify-between gap-2.5">
     <!-- Left Group: Unified Segmented Tools Dock -->
     <div class="flex flex-wrap items-center gap-1.5">
@@ -287,6 +287,16 @@
       <span class="text-mute text-[11px] font-medium">Opacity:</span>
       <input type="range" id="prop-opacity" min="0.1" max="1" step="0.05" value="1" class="h-1.5 w-18 accent-blue-600 cursor-pointer" />
       <span id="prop-opacity-val" class="font-mono text-[11px] text-mute">100%</span>
+    </div>
+
+    <!-- Layer Ordering (Bring Forward / Send Backward) -->
+    <div id="prop-layer-group" class="flex items-center gap-1 border-l border-hairline/80 pl-2">
+      <button id="btn-layer-forward" type="button" class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas-elevated px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Bring Forward">
+        <span>▲ Forward</span>
+      </button>
+      <button id="btn-layer-backward" type="button" class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas-elevated px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Send Backward">
+        <span>▼ Backward</span>
+      </button>
     </div>
 
     <!-- Delete Selected Element -->

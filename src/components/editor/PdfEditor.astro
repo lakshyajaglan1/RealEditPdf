@@ -211,15 +211,24 @@ import WatermarkModal from './WatermarkModal.astro';
       }
     });
 
-    // Load PDF ArrayBuffer
-    async function loadPdfBuffer(buffer) {
+    // Load PDF ArrayBuffer or Uint8Array
+    async function loadPdfBuffer(inputData) {
       showLoading('Rendering PDF Pages...');
       try {
-        state.pdfBytes = new Uint8Array(buffer);
+        if (inputData instanceof Uint8Array) {
+          state.pdfBytes = inputData.slice();
+        } else if (inputData instanceof ArrayBuffer) {
+          state.pdfBytes = new Uint8Array(inputData.slice(0));
+        } else if (inputData && inputData.buffer) {
+          state.pdfBytes = new Uint8Array(inputData.buffer, inputData.byteOffset || 0, inputData.byteLength).slice();
+        } else {
+          state.pdfBytes = new Uint8Array(inputData).slice();
+        }
+
         if (!window.pdfjsLib) {
           throw new Error('PDF.js engine is still loading. Please try again.');
         }
-        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes });
+        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes.slice() });
         state.pdfDocProxy = await loadingTask.promise;
         state.totalPages = state.pdfDocProxy.numPages;
         state.currentPage = 1;
@@ -515,7 +524,9 @@ import WatermarkModal from './WatermarkModal.astro';
     function selectAnnotation(annot) {
       state.selectedAnnotationId = annot.id;
       propertyBar.classList.remove('hidden');
-      const typeDisplay = annot.type.toUpperCase() + (annot.shapeType ? ` (${annot.shapeType})` : '');
+      const typeDisplay = annot.type === 'redact'
+        ? 'REDACT (BLACKOUT)'
+        : (annot.type.toUpperCase() + (annot.shapeType ? ` (${annot.shapeType})` : ''));
       document.getElementById('inspector-element-type').textContent = typeDisplay;
 
       const fontGroup = document.getElementById('prop-font-group');
@@ -553,6 +564,29 @@ import WatermarkModal from './WatermarkModal.astro';
         colorInput.value = annot.color;
       }
     }
+
+    // Rearrange Layer Order (Bring Forward / Send Backward)
+    function moveAnnotationLayer(direction) {
+      if (!state.selectedAnnotationId || !state.currentPage) return;
+      const list = state.annotations[state.currentPage] || [];
+      const idx = list.findIndex(a => a.id === state.selectedAnnotationId);
+      if (idx === -1) return;
+
+      if (direction === 'forward' && idx < list.length - 1) {
+        const item = list.splice(idx, 1)[0];
+        list.splice(idx + 1, 0, item);
+        saveHistory();
+        renderAnnotationsLayer();
+      } else if (direction === 'backward' && idx > 0) {
+        const item = list.splice(idx, 1)[0];
+        list.splice(idx - 1, 0, item);
+        saveHistory();
+        renderAnnotationsLayer();
+      }
+    }
+
+    document.getElementById('btn-layer-forward')?.addEventListener('click', () => moveAnnotationLayer('forward'));
+    document.getElementById('btn-layer-backward')?.addEventListener('click', () => moveAnnotationLayer('backward'));
 
     function deleteAnnotation(id) {
       const list = state.annotations[state.currentPage] || [];
@@ -734,6 +768,37 @@ import WatermarkModal from './WatermarkModal.astro';
       selectAnnotation(newShape);
     }
 
+    function insertRedactAnnotation(customX, customY) {
+      if (!state.currentPage || !state.pdfDocProxy) {
+        alert('Please open a PDF file or click "Try Sample Invoice" first.');
+        return;
+      }
+      if (!state.annotations[state.currentPage]) {
+        state.annotations[state.currentPage] = [];
+      }
+      const displayW = renderCanvas.width / 1.5 || 600;
+      const displayH = renderCanvas.height / 1.5 || 800;
+      const w = 150;
+      const h = 32;
+
+      const x = customX !== undefined ? customX : Math.max(30, Math.round((displayW - w) / 2));
+      const y = customY !== undefined ? customY : Math.max(30, Math.round((displayH - h) / 3));
+
+      const newRedact = {
+        id: 'red-' + Date.now(),
+        type: 'redact',
+        x,
+        y,
+        width: w,
+        height: h,
+      };
+
+      state.annotations[state.currentPage].push(newRedact);
+      saveHistory();
+      renderAnnotationsLayer();
+      selectAnnotation(newRedact);
+    }
+
     // Canvas click to add element
     annotationsLayer.addEventListener('click', (e) => {
       if (e.target !== annotationsLayer) return;
@@ -746,43 +811,132 @@ import WatermarkModal from './WatermarkModal.astro';
       } else if (state.activeTool === 'shape') {
         insertShapeAnnotation(state.activeShape, x, y);
       } else if (state.activeTool === 'redact') {
-        if (!state.annotations[state.currentPage]) state.annotations[state.currentPage] = [];
-        const newRedact = {
-          id: 'red-' + Date.now(),
-          type: 'redact',
-          x,
-          y,
-          width: 140,
-          height: 28,
-        };
-        state.annotations[state.currentPage].push(newRedact);
-        saveHistory();
-        renderAnnotationsLayer();
-        selectAnnotation(newRedact);
+        insertRedactAnnotation(x, y);
       }
     });
 
-    // Render Left Thumbnails
-    // Render Left Thumbnails
+    // Reorder Pages in PDF
+    async function reorderPages(fromIndex, toIndex) {
+      if (fromIndex === toIndex || fromIndex < 1 || toIndex < 1 || fromIndex > state.totalPages || toIndex > state.totalPages) return;
+      showLoading(`Moving Page ${fromIndex} to Page ${toIndex}...`);
+      try {
+        const { PDFDocument } = window.PDFLib;
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        const newDoc = await PDFDocument.create();
+
+        // 0-indexed list of page indices
+        const pageIndices = Array.from({ length: state.totalPages }, (_, i) => i);
+        const [moved] = pageIndices.splice(fromIndex - 1, 1);
+        pageIndices.splice(toIndex - 1, 0, moved);
+
+        const copiedPages = await newDoc.copyPages(srcDoc, pageIndices);
+        for (const page of copiedPages) {
+          newDoc.addPage(page);
+        }
+
+        const oldAnnotations = { ...state.annotations };
+        const oldRotations = { ...state.pageRotations };
+        const newAnnotations = {};
+        const newRotations = {};
+
+        pageIndices.forEach((origIdx, newZeroIdx) => {
+          const newP = newZeroIdx + 1;
+          const oldP = origIdx + 1;
+          newAnnotations[newP] = oldAnnotations[oldP] || [];
+          newRotations[newP] = oldRotations[oldP] || 0;
+        });
+
+        const newBytes = await newDoc.save();
+        state.pdfBytes = newBytes.slice();
+        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes.slice() });
+        state.pdfDocProxy = await loadingTask.promise;
+        state.totalPages = state.pdfDocProxy.numPages;
+        state.currentPage = toIndex;
+        state.annotations = newAnnotations;
+        state.pageRotations = newRotations;
+
+        sidebarCount.textContent = state.totalPages;
+        totPageSpan.textContent = state.totalPages;
+        saveHistory();
+        await renderThumbnails();
+        await renderCurrentPage();
+      } catch (err) {
+        console.error('Failed to reorder pages:', err);
+        alert('Failed to reorder pages: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Render Left Thumbnails with Reordering (Drag & Drop + Up/Down buttons)
     async function renderThumbnails() {
       thumbnailsList.innerHTML = '';
       for (let p = 1; p <= state.totalPages; p++) {
         const thumbCard = document.createElement('div');
         thumbCard.className = `thumb-card relative rounded-md border p-2 bg-canvas-elevated cursor-pointer transition-all hover:border-ink ${p === state.currentPage ? 'border-link ring-1 ring-link' : 'border-hairline'}`;
         thumbCard.dataset.page = p;
+        thumbCard.draggable = true;
 
         thumbCard.innerHTML = `
           <div class="flex items-center justify-between pb-1.5 text-[11px] font-mono text-mute">
-            <span class="font-medium text-ink">Page ${p}</span>
-            <div class="flex items-center gap-1.5">
-              <button class="thumb-rotate-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-sm shadow-xs font-bold transition-all hover:scale-105" title="Rotate Page 90°">↻</button>
-              <button class="thumb-del-btn h-7 w-7 rounded-md bg-canvas border border-hairline hover:bg-rose-50 dark:hover:bg-rose-950/40 text-mute hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105" title="Delete Page">✕</button>
+            <span class="font-medium text-ink flex items-center gap-1">
+              <span class="cursor-grab active:cursor-grabbing text-mute/70 hover:text-ink select-none" title="Drag to reorder">⋮⋮</span>
+              Page ${p}
+            </span>
+            <div class="flex items-center gap-1">
+              <button class="thumb-up-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-[10px] font-bold shadow-xs disabled:opacity-20 disabled:pointer-events-none transition-all cursor-pointer" title="Move Page Up" ${p === 1 ? 'disabled' : ''}>▲</button>
+              <button class="thumb-down-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-[10px] font-bold shadow-xs disabled:opacity-20 disabled:pointer-events-none transition-all cursor-pointer" title="Move Page Down" ${p === state.totalPages ? 'disabled' : ''}>▼</button>
+              <button class="thumb-rotate-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105 cursor-pointer" title="Rotate Page 90°">↻</button>
+              <button class="thumb-del-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-rose-50 dark:hover:bg-rose-950/40 text-mute hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105 cursor-pointer" title="Delete Page">✕</button>
             </div>
           </div>
-          <div class="flex items-center justify-center bg-hairline-soft/50 rounded-xs overflow-hidden h-28">
+          <div class="flex items-center justify-center bg-hairline-soft/50 rounded-xs overflow-hidden h-28 pointer-events-none">
             <canvas id="thumb-canvas-${p}" class="max-h-full max-w-full shadow-xs"></canvas>
           </div>
         `;
+
+        // Move Up Action
+        thumbCard.querySelector('.thumb-up-btn')?.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          await reorderPages(p, p - 1);
+        });
+
+        // Move Down Action
+        thumbCard.querySelector('.thumb-down-btn')?.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          await reorderPages(p, p + 1);
+        });
+
+        // Drag and Drop reordering
+        thumbCard.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', String(p));
+          e.dataTransfer.effectAllowed = 'move';
+          thumbCard.classList.add('opacity-50', 'ring-2', 'ring-blue-500');
+        });
+
+        thumbCard.addEventListener('dragend', () => {
+          thumbCard.classList.remove('opacity-50', 'ring-2', 'ring-blue-500');
+          document.querySelectorAll('.thumb-card').forEach(c => c.classList.remove('border-blue-500', 'bg-blue-50/20'));
+        });
+
+        thumbCard.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          thumbCard.classList.add('border-blue-500', 'bg-blue-50/20');
+        });
+
+        thumbCard.addEventListener('dragleave', () => {
+          thumbCard.classList.remove('border-blue-500', 'bg-blue-50/20');
+        });
+
+        thumbCard.addEventListener('drop', async (e) => {
+          e.preventDefault();
+          thumbCard.classList.remove('border-blue-500', 'bg-blue-50/20');
+          const draggedFrom = parseInt(e.dataTransfer.getData('text/plain'), 10);
+          if (draggedFrom && draggedFrom !== p) {
+            await reorderPages(draggedFrom, p);
+          }
+        });
 
         // Rotate Action
         thumbCard.querySelector('.thumb-rotate-btn').addEventListener('click', (e) => {
@@ -853,7 +1007,36 @@ import WatermarkModal from './WatermarkModal.astro';
         const srcDoc = await PDFDocument.load(state.pdfBytes);
         srcDoc.removePage(pageIndex - 1);
         const newBytes = await srcDoc.save();
-        await loadPdfBuffer(newBytes.buffer);
+
+        const oldAnnotations = { ...state.annotations };
+        const oldRotations = { ...state.pageRotations };
+        const newAnnotations = {};
+        const newRotations = {};
+        const newTotal = srcDoc.getPageCount();
+
+        for (let p = 1; p <= newTotal; p++) {
+          if (p < pageIndex) {
+            newAnnotations[p] = oldAnnotations[p] || [];
+            newRotations[p] = oldRotations[p] || 0;
+          } else {
+            newAnnotations[p] = oldAnnotations[p + 1] || [];
+            newRotations[p] = oldRotations[p + 1] || 0;
+          }
+        }
+
+        state.pdfBytes = newBytes.slice();
+        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes.slice() });
+        state.pdfDocProxy = await loadingTask.promise;
+        state.totalPages = state.pdfDocProxy.numPages;
+        state.currentPage = Math.min(state.currentPage, state.totalPages);
+        state.annotations = newAnnotations;
+        state.pageRotations = newRotations;
+
+        sidebarCount.textContent = state.totalPages;
+        totPageSpan.textContent = state.totalPages;
+        saveHistory();
+        await renderThumbnails();
+        await renderCurrentPage();
       } catch (err) {
         alert('Failed to delete page: ' + err.message);
       } finally {
@@ -887,15 +1070,26 @@ import WatermarkModal from './WatermarkModal.astro';
         drawCanvas.classList.remove('pointer-events-none');
         drawCanvas.classList.add('cursor-crosshair');
         annotationsLayer.style.pointerEvents = 'none';
+        annotationsLayer.classList.remove('cursor-crosshair');
 
         // Open property bar with color palette for immediate access
         propertyBar.classList.remove('hidden');
         document.getElementById('inspector-element-type').textContent = toolName.toUpperCase();
+      } else if (toolName === 'redact') {
+        drawCanvas.style.pointerEvents = 'none';
+        drawCanvas.classList.add('pointer-events-none');
+        drawCanvas.classList.remove('cursor-crosshair');
+        annotationsLayer.style.pointerEvents = 'auto';
+        annotationsLayer.classList.add('cursor-crosshair');
+
+        propertyBar.classList.remove('hidden');
+        document.getElementById('inspector-element-type').textContent = 'REDACT (BLACKOUT)';
       } else {
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
         annotationsLayer.style.pointerEvents = 'auto';
+        annotationsLayer.classList.remove('cursor-crosshair');
       }
     }
 
@@ -906,7 +1100,10 @@ import WatermarkModal from './WatermarkModal.astro';
     });
     document.getElementById('tool-draw')?.addEventListener('click', () => setTool('draw'));
     document.getElementById('tool-highlight')?.addEventListener('click', () => setTool('highlight'));
-    document.getElementById('tool-redact')?.addEventListener('click', () => setTool('redact'));
+    document.getElementById('tool-redact')?.addEventListener('click', () => {
+      setTool('redact');
+      insertRedactAnnotation();
+    });
 
     // Shape dropdown & Immediate Shape Insertion
     const shapeBtn = document.getElementById('tool-shape-btn');
@@ -1197,7 +1394,7 @@ import WatermarkModal from './WatermarkModal.astro';
         });
 
         const pdfBytes = await pdfDoc.save();
-        await loadPdfBuffer(pdfBytes.buffer);
+        await loadPdfBuffer(pdfBytes);
       } catch (err) {
         alert('Error creating sample: ' + err.message);
       } finally {
@@ -1302,7 +1499,7 @@ import WatermarkModal from './WatermarkModal.astro';
                 y: pdfY,
                 width: w * scaleX,
                 height: h * scaleY,
-                color: rgb(0.09, 0.09, 0.09),
+                color: rgb(0, 0, 0),
               });
             } else if (annot.type === 'shape') {
               const w = annot.width || 120;
@@ -1875,18 +2072,131 @@ import WatermarkModal from './WatermarkModal.astro';
     toggleSidebarBtn?.addEventListener('click', () => sidebar?.classList.toggle('hidden'));
     collapseSidebarBtn?.addEventListener('click', () => sidebar?.classList.add('hidden'));
 
-    // Insert Blank Page
-    document.getElementById('btn-add-blank-page')?.addEventListener('click', async () => {
-      if (!state.pdfBytes) return;
-      showLoading('Adding Blank Page...');
+    // Insert Blank Page Handler
+    async function insertBlankPage() {
+      showLoading('Inserting Blank Page...');
       try {
         const { PDFDocument } = window.PDFLib;
-        const pdfDoc = await PDFDocument.load(state.pdfBytes);
-        pdfDoc.addPage([600, 800]);
-        const newBytes = await pdfDoc.save();
-        await loadPdfBuffer(newBytes.buffer);
+        if (!state.pdfBytes) {
+          // No document open yet: create a fresh 1-page blank PDF
+          const newDoc = await PDFDocument.create();
+          newDoc.addPage([595, 842]); // Standard A4
+          const newBytes = await newDoc.save();
+          await loadPdfBuffer(newBytes.buffer);
+          return;
+        }
+
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        let pageW = 595, pageH = 842;
+        const curIdx = Math.max(0, Math.min(srcDoc.getPageCount() - 1, (state.currentPage || 1) - 1));
+        try {
+          const curPage = srcDoc.getPage(curIdx);
+          const size = curPage.getSize();
+          pageW = size.width;
+          pageH = size.height;
+        } catch (e) {}
+
+        const targetInsertIdx = Math.min(srcDoc.getPageCount(), (state.currentPage || 1));
+        srcDoc.insertPage(targetInsertIdx, [pageW, pageH]);
+        const newBytes = await srcDoc.save();
+
+        // Shift annotations and rotations for all subsequent pages
+        const oldAnnotations = { ...state.annotations };
+        const oldRotations = { ...state.pageRotations };
+        const newAnnotations = {};
+        const newRotations = {};
+        const newTotal = srcDoc.getPageCount();
+
+        for (let p = 1; p <= newTotal; p++) {
+          if (p <= targetInsertIdx) {
+            newAnnotations[p] = oldAnnotations[p] || [];
+            newRotations[p] = oldRotations[p] || 0;
+          } else if (p === targetInsertIdx + 1) {
+            newAnnotations[p] = [];
+            newRotations[p] = 0;
+          } else {
+            newAnnotations[p] = oldAnnotations[p - 1] || [];
+            newRotations[p] = oldRotations[p - 1] || 0;
+          }
+        }
+
+        state.pdfBytes = newBytes.slice();
+        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes.slice() });
+        state.pdfDocProxy = await loadingTask.promise;
+        state.totalPages = state.pdfDocProxy.numPages;
+        state.currentPage = targetInsertIdx + 1;
+        state.annotations = newAnnotations;
+        state.pageRotations = newRotations;
+
+        sidebarCount.textContent = state.totalPages;
+        totPageSpan.textContent = state.totalPages;
+        saveHistory();
+        await renderThumbnails();
+        await renderCurrentPage();
       } catch (err) {
+        console.error('Failed to insert blank page:', err);
         alert('Failed to insert blank page: ' + err.message);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    document.getElementById('btn-add-blank-page')?.addEventListener('click', insertBlankPage);
+
+    // Append from PDF Handler
+    const appendPdfInput = document.getElementById('append-pdf-input');
+    appendPdfInput?.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      e.target.value = ''; // Reset input so same file can be selected again
+
+      if (!state.pdfBytes) {
+        const buffer = await file.arrayBuffer();
+        await loadPdfBuffer(buffer);
+        return;
+      }
+
+      showLoading('Appending pages from PDF...');
+      try {
+        const { PDFDocument } = window.PDFLib;
+        const baseDoc = await PDFDocument.load(state.pdfBytes);
+        const appendBuffer = await file.arrayBuffer();
+        const appendDoc = await PDFDocument.load(appendBuffer);
+
+        const appendIndices = appendDoc.getPageIndices();
+        const copiedPages = await baseDoc.copyPages(appendDoc, appendIndices);
+        for (const page of copiedPages) {
+          baseDoc.addPage(page);
+        }
+
+        const newBytes = await baseDoc.save();
+        const prevTotal = state.totalPages;
+        const oldAnnotations = { ...state.annotations };
+        const oldRotations = { ...state.pageRotations };
+
+        state.pdfBytes = newBytes.slice();
+        const loadingTask = window.pdfjsLib.getDocument({ data: state.pdfBytes.slice() });
+        state.pdfDocProxy = await loadingTask.promise;
+        state.totalPages = state.pdfDocProxy.numPages;
+
+        for (let p = 1; p <= state.totalPages; p++) {
+          if (p <= prevTotal) {
+            state.annotations[p] = oldAnnotations[p] || [];
+            state.pageRotations[p] = oldRotations[p] || 0;
+          } else {
+            state.annotations[p] = [];
+            state.pageRotations[p] = 0;
+          }
+        }
+
+        sidebarCount.textContent = state.totalPages;
+        totPageSpan.textContent = state.totalPages;
+        saveHistory();
+        await renderThumbnails();
+        await renderCurrentPage();
+      } catch (err) {
+        console.error('Failed to append PDF:', err);
+        alert('Failed to append PDF: ' + err.message);
       } finally {
         hideLoading();
       }
