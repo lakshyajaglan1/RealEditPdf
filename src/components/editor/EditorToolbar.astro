@@ -316,6 +316,62 @@
         <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="1">100%</button>
         <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="1.5">150%</button>
       </div>
+
+      <!-- Rotation Controls (Any Angle from 0° to 360°) -->
+      <div class="flex items-center gap-1.5 border-l border-hairline/80 pl-2">
+        <span class="text-[11px] font-mono text-mute">Rotate:</span>
+        <button
+          id="btn-prop-rotate-ccw"
+          type="button"
+          class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
+          title="Rotate -15° (Counter-Clockwise)"
+        >
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+        </button>
+        <!-- Continuous Angle Slider for Any Angle -->
+        <input
+          type="range"
+          id="prop-rotate-slider"
+          min="0"
+          max="360"
+          value="0"
+          class="h-1.5 w-18 accent-blue-600 cursor-pointer"
+          title="Drag slider to rotate to any angle (0° to 360°)"
+        />
+        <button
+          id="btn-prop-rotate-cw"
+          type="button"
+          class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
+          title="Rotate +15° (Clockwise)"
+        >
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
+          </svg>
+        </button>
+        <div class="relative flex items-center">
+          <input
+            type="number"
+            id="prop-rotate-angle"
+            min="0"
+            max="360"
+            step="1"
+            value="0"
+            class="h-7 w-12 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+            title="Type exact rotation angle in degrees"
+          />
+          <span class="absolute right-1 text-[10px] font-mono text-mute pointer-events-none">°</span>
+        </div>
+        <button
+          id="btn-prop-rotate-reset"
+          type="button"
+          class="h-7 px-1.5 rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-[10px] font-mono text-mute hover:text-ink transition-colors cursor-pointer"
+          title="Reset rotation to 0°"
+        >
+          0°
+        </button>
+      </div>
     </div>
 
     <!-- Color Palette -->

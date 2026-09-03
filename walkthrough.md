@@ -50,12 +50,34 @@ We have completely modernized the user interface of **RealPdfEdit** to provide a
   - [`pdf-to-images.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/pages/pdf-to-images.astro)
 - **Footer ([`Footer.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/components/Footer.astro))**: Added modern brand gradient badge, live system indicator, and hover link micro-translations.
 
+### 6. Free 360° Any-Angle Rotation System for Signatures & Stamps
+- **Continuous 360° Freehand Canvas Handle**:
+  - Prominent 24px circular rotation handle with a rotate arrow badge positioned above the element.
+  - When the signature, stamp, or image is selected, the rotation handle and outline ring are **always visible** with high contrast.
+  - Dragging the handle uses **delta-based pointer angle tracking**, eliminating any jumping or stuttering, allowing effortless, fluid continuous rotation to **any arbitrary angle** (e.g. `17°`, `43°`, `112°`, etc.).
+  - Displays a **Live Floating Degree Tooltip Badge** directly above the handle showing real-time degrees (`45°`).
+  - Holding the `Shift` key snaps rotation to 15° increments.
+- **Continuous Property Inspector Rotation Slider**:
+  - Added a smooth **0°–360° Range Slider** (`#prop-rotate-slider`) in the top property inspector bar for instant scrubbing.
+  - Step buttons for quick `↺ -15°` and `↻ +15°` micro-adjustments.
+  - Direct numeric angle input (`°`) accepting user-typed exact degree values (e.g. `45°`, `135°`).
+  - Quick `0° Reset` button to immediately restore horizontal alignment.
+- **Modal Angle Sliders & Live Tilt Previews**:
+  - **Stamp Modal ([`StampModal.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/components/editor/StampModal.astro))**: Added a smooth **-180° to +180° Angle Slider** with live degree readout. Moving the slider live-tilts all stamp preset cards (`APPROVED`, `CONFIDENTIAL`, etc.) in the grid in real-time before inserting!
+  - **Signature Modal ([`SignatureModal.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/components/editor/SignatureModal.astro))**: Added an angle slider (-180° to +180°) that live-rotates the signature preview canvas, allowing signatures to be signed or inserted at any slant.
+- **High-Fidelity PDF Export via `pdf-lib`**:
+  - Uses center-point trigonometric coordinate transformation (`x = cx - w/2*cos + h/2*sin`, `y = cy - w/2*sin - h/2*cos`, `rotate: degrees(-rotDeg)`) to burn arbitrary rotation angles into exported PDF files with pixel-perfect fidelity.
+
 ---
 
 ## Verification Results
 
 1. **Build Validation**:
-   - Ran `npm run build`: All 7 static pages built cleanly in **670ms** without any errors or missing styles.
+   - Ran `npm run build`: All 7 static pages built cleanly without any errors or missing styles.
 2. **Browser Subagent Testing**:
-   - Tested on `http://localhost:4321/`.
-   - Verified sample invoice loading, canvas rendering, text tool inspector, e-signature generation, stamp insertion, watermark application, theme switching (Light / Dark), and secondary tool navigation.
+   - Verified the Stamp Modal continuous angle slider (-180° to +180°) and real-time live preview tilting.
+   - Inserted stamp onto canvas with custom rotation.
+   - Tested free-hand canvas handle rotation by dragging across arbitrary angles.
+   - Tested live angle tooltip badge updating dynamically during mouse dragging.
+   - Tested top Property Inspector controls: continuous slider, direct degree typing (`45°`), `↺ -15°` / `↻ +15°` micro-steps, and `0°` reset.
+   - Verified high-resolution rendering and Save & Download PDF export.
