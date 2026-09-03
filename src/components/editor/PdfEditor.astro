@@ -430,22 +430,22 @@ import ImageCropModal from './ImageCropModal.astro';
                 <button type="button" class="annot-del-btn h-5 w-5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs flex items-center justify-center shadow-xs transition-all cursor-pointer" title="Delete">&times;</button>
               </div>
 
-              <!-- Top Center Interactive Rotation Handle & Stem (Always visible when selected) -->
-              <div class="annot-rotate-stem absolute -top-5 left-1/2 -translate-x-1/2 w-0.5 h-4 bg-blue-500 pointer-events-none ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity"></div>
-              <div class="annot-rotate-handle absolute -top-8 left-1/2 -translate-x-1/2 h-6 w-6 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-md cursor-grab active:cursor-grabbing flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-30 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}" title="Drag freely to rotate at any angle (Hold Shift to snap 15°)">
-                <svg class="h-3.5 w-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <!-- Top Center Dedicated Rotation Handle & Stem -->
+              <div class="annot-rotate-stem absolute -top-6 left-1/2 -translate-x-1/2 w-0.5 h-5 bg-blue-500 pointer-events-none ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity"></div>
+              <div class="annot-rotate-handle absolute -top-11 left-1/2 -translate-x-1/2 h-7 w-7 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg border-2 border-white cursor-grab active:cursor-grabbing flex items-center justify-center transition-all hover:scale-115 active:scale-95 z-40 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}" title="Drag with mouse or scroll wheel to rotate">
+                <svg class="h-4 w-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </div>
-              <div class="annot-rotate-badge absolute -top-15 left-1/2 -translate-x-1/2 hidden px-2 py-0.5 rounded-full bg-zinc-900 text-white text-[10px] font-mono font-bold shadow-lg border border-white/20 whitespace-nowrap pointer-events-none z-40">
+              <div class="annot-rotate-badge absolute -top-17 left-1/2 -translate-x-1/2 hidden px-2.5 py-0.5 rounded-full bg-zinc-900 text-white text-[11px] font-mono font-bold shadow-lg border border-white/20 whitespace-nowrap pointer-events-none z-50">
                 ${rot}°
               </div>
 
-              <!-- Corner Resize Handles (SE, SW, NE, NW) -->
-              <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-se-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-30" title="Drag to resize"></div>
-              <div class="annot-resize-handle-sw absolute -bottom-1.5 -left-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-sw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-30" title="Drag to resize"></div>
-              <div class="annot-resize-handle-ne absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-ne-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-30" title="Drag to resize"></div>
-              <div class="annot-resize-handle-nw absolute -top-1.5 -left-1.5 h-3.5 w-3.5 rounded-full bg-link border-2 border-white shadow-xs cursor-nw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-30" title="Drag to resize"></div>
+              <!-- 4 Corner Resize Handles (SE, SW, NE, NW) -->
+              <div class="annot-resize-handle absolute -bottom-2 -right-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-se-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to resize"></div>
+              <div class="annot-resize-handle-sw absolute -bottom-2 -left-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-sw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to resize"></div>
+              <div class="annot-resize-handle-ne absolute -top-2 -right-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-ne-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to resize"></div>
+              <div class="annot-resize-handle-nw absolute -top-2 -left-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-nw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to resize"></div>
             </div>
           `;
         } else if (annot.type === 'redact') {
@@ -517,6 +517,15 @@ import ImageCropModal from './ImageCropModal.astro';
         if (e.target.classList.contains('annot-crop-btn') || e.target.closest('.annot-crop-btn')) return;
         if (e.target.classList.contains('annot-rotate-btn') || e.target.closest('.annot-rotate-btn')) return;
         if (e.target.classList.contains('annot-rotate-handle') || e.target.closest('.annot-rotate-handle')) return;
+        if (e.target.classList.contains('annot-rot-corner') || e.target.closest('.annot-rot-corner')) return;
+
+        // If holding Alt OR Right-Clicking: start mouse rotation directly anywhere on the element!
+        if (e.altKey || e.button === 2) {
+          e.preventDefault();
+          e.stopPropagation();
+          startMouseRotation(e);
+          return;
+        }
 
         isDragging = true;
         startX = e.clientX;
@@ -569,61 +578,102 @@ import ImageCropModal from './ImageCropModal.astro';
         });
       }
 
-      // Interactive Freehand Rotate Handle (Any Angle)
+      // Unified Mouse Rotation Engine (Continuous, zero-jump)
+      function startMouseRotation(e) {
+        selectAnnotation(annot);
+        const rotWrapper = el.querySelector('.annot-rot-wrapper');
+        const rotBadge = el.querySelector('.annot-rotate-badge');
+        const rect = (rotWrapper || el).getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        let lastAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+        let currentRotation = annot.rotation || 0;
+
+        if (rotBadge) {
+          rotBadge.classList.remove('hidden');
+          rotBadge.textContent = `${((Math.round(currentRotation) % 360) + 360) % 360}°`;
+        }
+        document.body.style.userSelect = 'none';
+
+        function onRotateMouseMove(moveEvent) {
+          const currentAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
+          let delta = currentAngle - lastAngle;
+          // Smooth boundary wrap-around
+          if (delta > 180) delta -= 360;
+          if (delta < -180) delta += 360;
+
+          currentRotation += delta;
+          lastAngle = currentAngle;
+
+          let deg = currentRotation;
+          if (moveEvent.shiftKey) {
+            deg = Math.round(deg / 15) * 15;
+          }
+          const normalized = ((Math.round(deg) % 360) + 360) % 360;
+          updateAnnotRotation(annot, normalized, false);
+          if (rotBadge) {
+            rotBadge.textContent = `${normalized}°`;
+          }
+        }
+
+        function onRotateMouseUp() {
+          if (rotBadge) rotBadge.classList.add('hidden');
+          document.body.style.userSelect = '';
+          document.removeEventListener('mousemove', onRotateMouseMove);
+          document.removeEventListener('mouseup', onRotateMouseUp);
+          saveHistory();
+        }
+
+        document.addEventListener('mousemove', onRotateMouseMove);
+        document.addEventListener('mouseup', onRotateMouseUp);
+      }
+
+      // Top Rotation Handle (Mouse Drag)
       const rotateHandle = el.querySelector('.annot-rotate-handle');
       if (rotateHandle) {
         rotateHandle.addEventListener('mousedown', (e) => {
           e.stopPropagation();
           e.preventDefault();
-          selectAnnotation(annot);
-
-          const rotWrapper = el.querySelector('.annot-rot-wrapper');
-          const rotBadge = el.querySelector('.annot-rotate-badge');
-          const rect = (rotWrapper || el).getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          const startPointerAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-          const startAnnotAngle = annot.rotation || 0;
-
-          if (rotBadge) {
-            rotBadge.classList.remove('hidden');
-            rotBadge.textContent = `${((Math.round(startAnnotAngle) % 360) + 360) % 360}°`;
-          }
-          document.body.style.userSelect = 'none';
-
-          function onRotateMouseMove(moveEvent) {
-            const currentPointerAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
-            const delta = currentPointerAngle - startPointerAngle;
-            let deg = startAnnotAngle + delta;
-            if (moveEvent.shiftKey) {
-              deg = Math.round(deg / 15) * 15;
-            }
-            const normalized = ((Math.round(deg) % 360) + 360) % 360;
-            updateAnnotRotation(annot, normalized, false);
-            if (rotBadge) {
-              rotBadge.textContent = `${normalized}°`;
-            }
-          }
-
-          function onRotateMouseUp() {
-            if (rotBadge) rotBadge.classList.add('hidden');
-            document.body.style.userSelect = '';
-            document.removeEventListener('mousemove', onRotateMouseMove);
-            document.removeEventListener('mouseup', onRotateMouseUp);
-            saveHistory();
-          }
-
-          document.addEventListener('mousemove', onRotateMouseMove);
-          document.addEventListener('mouseup', onRotateMouseUp);
+          startMouseRotation(e);
         });
       }
 
-      // Multi-corner resize handling
+      // Mouse Wheel Rotation: Scroll wheel directly over element rotates it!
+      el.addEventListener('wheel', (e) => {
+        if (annot.type === 'signature' || annot.type === 'stamp' || annot.type === 'image') {
+          e.preventDefault();
+          e.stopPropagation();
+          selectAnnotation(annot);
+          const step = e.shiftKey ? 15 : (e.altKey ? 1 : 5);
+          const dir = e.deltaY < 0 ? step : -step;
+          const newAngle = ((Math.round((annot.rotation || 0) + dir) % 360) + 360) % 360;
+          updateAnnotRotation(annot, newAngle, true);
+          const rotBadge = el.querySelector('.annot-rotate-badge');
+          if (rotBadge) {
+            rotBadge.classList.remove('hidden');
+            rotBadge.textContent = `${newAngle}°`;
+            clearTimeout(rotBadge._hideTimer);
+            rotBadge._hideTimer = setTimeout(() => rotBadge.classList.add('hidden'), 800);
+          }
+        }
+      }, { passive: false });
+
+      // Prevent default right-click menu when using right-click to rotate
+      el.addEventListener('contextmenu', (e) => {
+        if (annot.type === 'signature' || annot.type === 'stamp' || annot.type === 'image') {
+          e.preventDefault();
+        }
+      });
+
+      // Multi-corner resize handling (100% Reliable Mouse Resizing Alongside Rotation)
       function setupResize(handleEl, direction) {
         if (!handleEl) return;
         handleEl.addEventListener('mousedown', (e) => {
           e.stopPropagation();
           e.preventDefault();
+          selectAnnotation(annot);
+
           const rStartX = e.clientX;
           const rStartY = e.clientY;
           const startWidth = annot.width || (annot.type === 'shape' ? 120 : (annot.type === 'redact' ? 140 : 160));
@@ -633,9 +683,45 @@ import ImageCropModal from './ImageCropModal.astro';
           const isProportional = (annot.type === 'signature' || annot.type === 'image' || annot.type === 'stamp');
           const aspectRatio = startWidth / (startHeight || 1);
 
+          // Center coordinates for angle-agnostic proportional scaling
+          const rotWrapper = el.querySelector('.annot-rot-wrapper');
+          const rRect = (rotWrapper || el).getBoundingClientRect();
+          const screenCenterX = rRect.left + rRect.width / 2;
+          const screenCenterY = rRect.top + rRect.height / 2;
+          const startDist = Math.hypot(rStartX - screenCenterX, rStartY - screenCenterY) || 1;
+          const centerPdfX = startX + startWidth / 2;
+          const centerPdfY = startY + startHeight / 2;
+
           document.body.style.userSelect = 'none';
 
           function onResizeMouseMove(moveEv) {
+            if (isProportional) {
+              const currentDist = Math.hypot(moveEv.clientX - screenCenterX, moveEv.clientY - screenCenterY);
+              const scale = Math.max(0.15, Math.min(6.0, currentDist / startDist));
+              const newWidth = Math.max(30, Math.round(startWidth * scale));
+              const newHeight = Math.max(15, Math.round(newWidth / aspectRatio));
+              const newX = Math.round(centerPdfX - newWidth / 2);
+              const newY = Math.round(centerPdfY - newHeight / 2);
+
+              annot.width = newWidth;
+              annot.height = newHeight;
+              annot.x = Math.max(0, newX);
+              annot.y = Math.max(0, newY);
+              el.style.left = annot.x + 'px';
+              el.style.top = annot.y + 'px';
+
+              const img = el.querySelector('img');
+              if (img) {
+                img.style.width = newWidth + 'px';
+                img.style.height = newHeight + 'px';
+              }
+              const propW = document.getElementById('prop-img-w');
+              const propH = document.getElementById('prop-img-h');
+              if (propW && state.selectedAnnotationId === annot.id) propW.value = newWidth;
+              if (propH && state.selectedAnnotationId === annot.id) propH.value = newHeight;
+              return;
+            }
+
             const dx = moveEv.clientX - rStartX;
             const dy = moveEv.clientY - rStartY;
 
@@ -646,18 +732,18 @@ import ImageCropModal from './ImageCropModal.astro';
 
             if (direction === 'se') {
               newWidth = Math.max(30, Math.round(startWidth + dx));
-              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight + dy));
+              newHeight = Math.max(15, Math.round(startHeight + dy));
             } else if (direction === 'sw') {
               newWidth = Math.max(30, Math.round(startWidth - dx));
-              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight + dy));
+              newHeight = Math.max(15, Math.round(startHeight + dy));
               newX = startX + (startWidth - newWidth);
             } else if (direction === 'ne') {
               newWidth = Math.max(30, Math.round(startWidth + dx));
-              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight - dy));
+              newHeight = Math.max(15, Math.round(startHeight - dy));
               newY = startY + (startHeight - newHeight);
             } else if (direction === 'nw') {
               newWidth = Math.max(30, Math.round(startWidth - dx));
-              newHeight = isProportional ? Math.max(20, Math.round(newWidth / aspectRatio)) : Math.max(15, Math.round(startHeight - dy));
+              newHeight = Math.max(15, Math.round(startHeight - dy));
               newX = startX + (startWidth - newWidth);
               newY = startY + (startHeight - newHeight);
             }
@@ -669,18 +755,7 @@ import ImageCropModal from './ImageCropModal.astro';
             el.style.left = annot.x + 'px';
             el.style.top = annot.y + 'px';
 
-            // Update DOM element directly for high performance
-            if (annot.type === 'signature' || annot.type === 'image' || annot.type === 'stamp') {
-              const img = el.querySelector('img');
-              if (img) {
-                img.style.width = newWidth + 'px';
-                img.style.height = newHeight + 'px';
-              }
-              const propW = document.getElementById('prop-img-w');
-              const propH = document.getElementById('prop-img-h');
-              if (propW && state.selectedAnnotationId === annot.id) propW.value = newWidth;
-              if (propH && state.selectedAnnotationId === annot.id) propH.value = newHeight;
-            } else if (annot.type === 'redact') {
+            if (annot.type === 'redact') {
               const box = el.querySelector('.annot-redact-box');
               if (box) {
                 box.style.width = newWidth + 'px';
@@ -2201,8 +2276,10 @@ import ImageCropModal from './ImageCropModal.astro';
 
       if (state.currentPage) {
         state.annotations[state.currentPage].push(newSign);
+        state.selectedAnnotationId = newSign.id;
         saveHistory();
         renderAnnotationsLayer();
+        selectAnnotation(newSign);
       }
 
       signModal?.classList.add('hidden');
@@ -2285,8 +2362,10 @@ import ImageCropModal from './ImageCropModal.astro';
           rotation: selectedStampAngle !== undefined ? selectedStampAngle : -12,
         };
         state.annotations[state.currentPage].push(newStamp);
+        state.selectedAnnotationId = newStamp.id;
         saveHistory();
         renderAnnotationsLayer();
+        selectAnnotation(newStamp);
         stampModal?.classList.add('hidden');
       });
     });
@@ -2324,8 +2403,10 @@ import ImageCropModal from './ImageCropModal.astro';
         rotation: selectedStampAngle !== undefined ? selectedStampAngle : -12,
       };
       state.annotations[state.currentPage].push(newStamp);
+      state.selectedAnnotationId = newStamp.id;
       saveHistory();
       renderAnnotationsLayer();
+      selectAnnotation(newStamp);
       stampModal?.classList.add('hidden');
     });
 
@@ -2349,6 +2430,7 @@ import ImageCropModal from './ImageCropModal.astro';
             height: 140,
           };
           state.annotations[state.currentPage].push(newImg);
+          state.selectedAnnotationId = newImg.id;
           saveHistory();
           renderAnnotationsLayer();
           selectAnnotation(newImg);

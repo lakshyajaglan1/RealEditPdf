@@ -50,34 +50,28 @@ We have completely modernized the user interface of **RealPdfEdit** to provide a
   - [`pdf-to-images.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/pages/pdf-to-images.astro)
 - **Footer ([`Footer.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/components/Footer.astro))**: Added modern brand gradient badge, live system indicator, and hover link micro-translations.
 
-### 6. Free 360° Any-Angle Rotation System for Signatures & Stamps
-- **Continuous 360° Freehand Canvas Handle**:
-  - Prominent 24px circular rotation handle with a rotate arrow badge positioned above the element.
-  - When the signature, stamp, or image is selected, the rotation handle and outline ring are **always visible** with high contrast.
-  - Dragging the handle uses **delta-based pointer angle tracking**, eliminating any jumping or stuttering, allowing effortless, fluid continuous rotation to **any arbitrary angle** (e.g. `17°`, `43°`, `112°`, etc.).
-  - Displays a **Live Floating Degree Tooltip Badge** directly above the handle showing real-time degrees (`45°`).
-  - Holding the `Shift` key snaps rotation to 15° increments.
-- **Continuous Property Inspector Rotation Slider**:
-  - Added a smooth **0°–360° Range Slider** (`#prop-rotate-slider`) in the top property inspector bar for instant scrubbing.
-  - Step buttons for quick `↺ -15°` and `↻ +15°` micro-adjustments.
-  - Direct numeric angle input (`°`) accepting user-typed exact degree values (e.g. `45°`, `135°`).
-  - Quick `0° Reset` button to immediately restore horizontal alignment.
-- **Modal Angle Sliders & Live Tilt Previews**:
-  - **Stamp Modal ([`StampModal.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/components/editor/StampModal.astro))**: Added a smooth **-180° to +180° Angle Slider** with live degree readout. Moving the slider live-tilts all stamp preset cards (`APPROVED`, `CONFIDENTIAL`, etc.) in the grid in real-time before inserting!
-  - **Signature Modal ([`SignatureModal.astro`](file:///var/home/lakshya/Documents/realfileedit.com/src/components/editor/SignatureModal.astro))**: Added an angle slider (-180° to +180°) that live-rotates the signature preview canvas, allowing signatures to be signed or inserted at any slant.
-- **High-Fidelity PDF Export via `pdf-lib`**:
-  - Uses center-point trigonometric coordinate transformation (`x = cx - w/2*cos + h/2*sin`, `y = cy - w/2*sin - h/2*cos`, `rotate: degrees(-rotDeg)`) to burn arbitrary rotation angles into exported PDF files with pixel-perfect fidelity.
+### 6. Seamless Simultaneous Mouse Resizing & 360° Rotation System
+- **Non-Conflicting Dedicated Canvas Handles**:
+  - **4 Corner Resize Handles (NW, NE, SW, SE)**: Prominent crisp white circular handles with blue border and elevated z-index (`z-40`, `cursor: nwse-resize` / `nesw-resize`). Dedicated 100% to **mouse resizing** with zero interference or overlap from rotation zones.
+  - **Angle-Agnostic Proportional Resizing Engine**: Resizing rotated elements uses center-anchored distance scaling. Pulling any corner handle outward scales the element smoothly up; pushing inward scales it down, maintaining locked aspect ratios and keeping the center anchored regardless of whether the element is rotated at `0°`, `-12°`, `48°`, `90°`, or `180°`!
+  - **Top-Center Dedicated Rotation Handle**: Positioned at `-top-11` with a clean vertical stem line (`z-40`, `h-7 w-7`), dedicated exclusively to **mouse rotation**. Dragging it rotates continuously with real-time degrees displayed in a live floating badge.
+- **Additional Mouse Rotation Modes**:
+  - **Mouse Wheel / Scroll**: Simply hover your cursor over the element and scroll the mouse wheel to rotate it degree-by-degree (5° per notch, 15° with `Shift`, 1° with `Alt`).
+  - **Alt + Mouse Drag & Right-Click Drag**: Dragging anywhere on the element while holding `Alt` or using the right mouse button rotates it directly.
+  - **Quick Rotate Action Button**: The floating action pill includes a `Rotate (+90°)` button.
+- **Auto-Selection on Insertion**:
+  - Signatures, stamps, and images are immediately selected on placement so that all 4 corner resize handles and the top rotation handle are visible and active.
+- **Continuous Property Inspector Controls**:
+  - Includes a smooth 0°–360° range slider, micro-step buttons (`↺ -15°` / `↻ +15°`), direct degree typing, and `0° Reset`.
 
 ---
 
 ## Verification Results
 
 1. **Build Validation**:
-   - Ran `npm run build`: All 7 static pages built cleanly without any errors or missing styles.
+   - Ran `npm run build`: All 7 static pages built cleanly in 620ms without any errors.
 2. **Browser Subagent Testing**:
-   - Verified the Stamp Modal continuous angle slider (-180° to +180°) and real-time live preview tilting.
-   - Inserted stamp onto canvas with custom rotation.
-   - Tested free-hand canvas handle rotation by dragging across arbitrary angles.
-   - Tested live angle tooltip badge updating dynamically during mouse dragging.
-   - Tested top Property Inspector controls: continuous slider, direct degree typing (`45°`), `↺ -15°` / `↻ +15°` micro-steps, and `0°` reset.
-   - Verified high-resolution rendering and Save & Download PDF export.
+   - Tested corner handle dragging: enlarged stamp from `160px × 60px` to `430px × 161px`.
+   - Tested top rotate handle dragging: smoothly rotated stamp from `0°` to `48°`.
+   - Tested simultaneous resize while rotated: dragged corner handle while the stamp remained rotated at `48°`, resizing smoothly from `430px × 161px` to `232px × 87px` without any alignment jitter or conflict.
+   - Recording saved: [`test_resize_and_rotate`](file:///home/lakshya/.gemini/antigravity-ide/brain/ecf29810-5590-49ea-a3d0-9d60274922dd/test_resize_and_rotate_1788399947059.webp).
