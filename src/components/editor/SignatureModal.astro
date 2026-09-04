@@ -1,5 +1,44 @@
 ---
 // SignatureModal.astro - E-Signature Creator (Draw, Type, Upload)
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+interface Props {
+  t?: (key: string) => string;
+}
+const { t: tProp } = Astro.props as Props;
+const lang = getLangFromUrl(Astro.url);
+const t = tProp ?? useTranslations(lang);
+
+const s = {
+  title: t('sign.title'),
+  tabDraw: t('sign.tabDraw'),
+  tabType: t('sign.tabType'),
+  tabUpload: t('sign.tabUpload'),
+  inkColor: t('sign.inkColor'),
+  inkBlack: t('sign.inkBlack'),
+  inkRoyalBlue: t('sign.inkRoyalBlue'),
+  inkDarkNavy: t('sign.inkDarkNavy'),
+  inkPurple: t('sign.inkPurple'),
+  inkCrimson: t('sign.inkCrimson'),
+  inkEmerald: t('sign.inkEmerald'),
+  customInk: t('sign.customInk'),
+  clearCanvas: t('sign.clearCanvas'),
+  signAbove: t('sign.signAbove'),
+  yourName: t('sign.yourName'),
+  namePlaceholder: t('sign.namePlaceholder'),
+  selectStyle: t('sign.selectStyle'),
+  clickOrDrag: t('sign.clickOrDrag'),
+  uploadHint: t('sign.uploadHint'),
+  transparencyProcessed: t('sign.transparencyProcessed'),
+  chooseAnother: t('sign.chooseAnother'),
+  rotate90Title: t('sign.rotate90Title'),
+  rotate90: t('sign.rotate90'),
+  rotationAngle: t('sign.rotationAngle'),
+  angleSliderTitle: t('sign.angleSliderTitle'),
+  saveForReuse: t('sign.saveForReuse'),
+  cancel: t('sign.cancel'),
+  insert: t('sign.insert'),
+};
 ---
 
 <div id="signature-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 hidden">
@@ -12,7 +51,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
           </svg>
         </div>
-        <h3 class="text-[17px] font-bold tracking-tight text-ink">Create E-Signature</h3>
+        <h3 class="text-[17px] font-bold tracking-tight text-ink">{s.title}</h3>
       </div>
       <button id="btn-close-sign-modal" class="text-mute hover:text-ink text-xl leading-none p-1.5 rounded-lg hover:bg-hairline-soft transition-colors cursor-pointer">&times;</button>
     </div>
@@ -20,31 +59,31 @@
     <!-- Tabs: Draw / Type / Upload -->
     <div class="mt-5 flex rounded-xl border border-hairline/80 bg-hairline-soft/80 p-1 text-[13px] font-medium">
       <button id="sign-tab-draw" class="flex-1 rounded-lg py-1.5 text-center bg-canvas-elevated text-ink font-semibold shadow-sm transition-all cursor-pointer">
-        Draw
+        {s.tabDraw}
       </button>
       <button id="sign-tab-type" class="flex-1 rounded-lg py-1.5 text-center text-body hover:text-ink transition-all cursor-pointer">
-        Type
+        {s.tabType}
       </button>
       <button id="sign-tab-upload" class="flex-1 rounded-lg py-1.5 text-center text-body hover:text-ink transition-all cursor-pointer">
-        Upload
+        {s.tabUpload}
       </button>
     </div>
 
     <!-- Common Ink Color Selector -->
     <div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-b border-hairline/80 pb-3 text-[12px]">
       <div class="flex items-center gap-2.5">
-        <span class="text-mute font-mono text-[11px] uppercase tracking-wider font-semibold">Ink Color:</span>
+        <span class="text-mute font-mono text-[11px] uppercase tracking-wider font-semibold">{s.inkColor}</span>
         <div class="flex items-center gap-2" id="sign-ink-colors">
-          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#171717] ring-2 ring-blue-500 cursor-pointer hover:scale-110 transition-transform" data-color="#171717" title="Black"></button>
-          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#0070f3] cursor-pointer hover:scale-110 transition-transform" data-color="#0070f3" title="Royal Blue"></button>
-          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#0c2340] cursor-pointer hover:scale-110 transition-transform" data-color="#0c2340" title="Dark Navy"></button>
-          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#7928ca] cursor-pointer hover:scale-110 transition-transform" data-color="#7928ca" title="Purple"></button>
-          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#b91c1c] cursor-pointer hover:scale-110 transition-transform" data-color="#b91c1c" title="Crimson Red"></button>
-          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#047857] cursor-pointer hover:scale-110 transition-transform" data-color="#047857" title="Emerald Green"></button>
-          <input type="color" id="sign-custom-color" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline p-0 bg-transparent" title="Custom Ink Color" />
+          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#171717] ring-2 ring-blue-500 cursor-pointer hover:scale-110 transition-transform" data-color="#171717" title={s.inkBlack}></button>
+          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#0070f3] cursor-pointer hover:scale-110 transition-transform" data-color="#0070f3" title={s.inkRoyalBlue}></button>
+          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#0c2340] cursor-pointer hover:scale-110 transition-transform" data-color="#0c2340" title={s.inkDarkNavy}></button>
+          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#7928ca] cursor-pointer hover:scale-110 transition-transform" data-color="#7928ca" title={s.inkPurple}></button>
+          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#b91c1c] cursor-pointer hover:scale-110 transition-transform" data-color="#b91c1c" title={s.inkCrimson}></button>
+          <button class="sign-ink-color h-5 w-5 rounded-full bg-[#047857] cursor-pointer hover:scale-110 transition-transform" data-color="#047857" title={s.inkEmerald}></button>
+          <input type="color" id="sign-custom-color" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline p-0 bg-transparent" title={s.customInk} />
         </div>
       </div>
-      <button id="btn-clear-draw-sign" class="text-rose-600 dark:text-rose-400 hover:underline text-[12px] font-medium cursor-pointer">Clear Canvas</button>
+      <button id="btn-clear-draw-sign" class="text-rose-600 dark:text-rose-400 hover:underline text-[12px] font-medium cursor-pointer">{s.clearCanvas}</button>
     </div>
 
     <!-- Tab 1: Draw Surface -->
@@ -52,7 +91,7 @@
       <div class="relative rounded-xl border border-hairline bg-white shadow-inner overflow-hidden">
         <canvas id="sign-draw-canvas" width="460" height="180" class="w-full h-44 cursor-crosshair touch-none rounded-xl"></canvas>
         <div class="absolute bottom-2.5 left-3.5 text-[11px] font-mono text-neutral-400 pointer-events-none select-none">
-          Sign above line
+          {s.signAbove}
         </div>
         <div class="absolute bottom-7 left-3.5 right-3.5 border-b border-dashed border-neutral-300 pointer-events-none"></div>
       </div>
@@ -61,18 +100,18 @@
     <!-- Tab 2: Type Signature -->
     <div id="sign-pane-type" class="mt-4 space-y-3.5 hidden">
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1.5">Your Full Name</label>
+        <label class="block text-[12px] font-medium text-body mb-1.5">{s.yourName}</label>
         <input
           type="text"
           id="sign-type-input"
-          placeholder="e.g. John Doe"
+          placeholder={s.namePlaceholder}
           value="John Doe"
           class="w-full rounded-xl border border-hairline bg-canvas px-3.5 py-2.5 text-[15px] text-ink outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
       <div class="space-y-2 pt-1">
-        <span class="text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">Select Calligraphy Style:</span>
+        <span class="text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">{s.selectStyle}</span>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="sign-font-options">
           <label class="sign-font-opt flex items-center justify-center p-3.5 rounded-xl border-2 border-blue-500 bg-canvas-elevated cursor-pointer shadow-sm">
             <input type="radio" name="sign-style" value="'Dancing Script', cursive" checked class="hidden" />
@@ -103,30 +142,30 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 dark:text-cyan-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
-        <p class="text-[14px] font-semibold text-ink">Click or drag an image of your signature</p>
-        <p class="text-[12px] text-mute mt-1">PNG, JPG, WebP (White background is automatically made transparent)</p>
+        <p class="text-[14px] font-semibold text-ink">{s.clickOrDrag}</p>
+        <p class="text-[12px] text-mute mt-1">{s.uploadHint}</p>
         <input type="file" id="sign-upload-input" accept="image/*" class="hidden" />
       </div>
 
       <div id="sign-upload-preview-container" class="hidden flex-col items-center justify-center p-4 border border-hairline rounded-xl bg-canvas">
         <div class="p-3 bg-white/90 rounded-lg border border-hairline shadow-inner max-w-full flex items-center justify-center">
-          <img id="sign-upload-preview" class="max-h-24 max-w-full object-contain" alt="Uploaded signature" />
+          <img id="sign-upload-preview" class="max-h-24 max-w-full object-contain" alt={s.clickOrDrag} />
         </div>
         <div class="mt-2.5 flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
-            <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">✓ Transparency processed</span>
-            <button id="btn-reupload-sign" type="button" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">Choose another</button>
+            <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">{s.transparencyProcessed}</span>
+            <button id="btn-reupload-sign" type="button" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">{s.chooseAnother}</button>
           </div>
           <button
             type="button"
             id="btn-rotate-uploaded-sign"
             class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-ink text-[11px] font-medium transition-colors cursor-pointer shadow-xs"
-            title="Rotate uploaded signature 90° clockwise"
+            title={s.rotate90Title}
           >
             <svg class="h-3.5 w-3.5 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span>Rotate 90°</span>
+            <span>{s.rotate90}</span>
           </button>
         </div>
       </div>
@@ -136,7 +175,7 @@
     <div class="mt-4 rounded-xl border border-hairline/80 bg-hairline-soft/40 px-3.5 py-2.5 text-[12px] space-y-2">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="text-mute font-mono text-[11px] uppercase tracking-wider font-semibold">Rotation Angle:</span>
+          <span class="text-mute font-mono text-[11px] uppercase tracking-wider font-semibold">{s.rotationAngle}</span>
           <span id="sign-angle-display" class="font-mono text-xs font-bold text-blue-600 dark:text-cyan-400">0°</span>
         </div>
         <div class="flex items-center gap-1" id="sign-angle-options">
@@ -157,7 +196,7 @@
           max="180"
           value="0"
           class="flex-1 h-1.5 accent-blue-600 cursor-pointer"
-          title="Drag slider to set any rotation angle (-180° to 180°)"
+          title={s.angleSliderTitle}
         />
         <span class="text-[10px] font-mono text-mute">+180°</span>
       </div>
@@ -167,15 +206,15 @@
     <div class="mt-4 flex items-center justify-between border-t border-hairline/80 pt-4">
       <label class="flex items-center gap-2 text-[12px] text-body cursor-pointer select-none">
         <input type="checkbox" id="sign-save-local" checked class="rounded-sm accent-blue-600" />
-        <span>Save signature for 1-click reuse</span>
+        <span>{s.saveForReuse}</span>
       </label>
 
       <div class="flex items-center gap-2.5">
         <button id="btn-cancel-sign" class="rounded-xl border border-hairline bg-canvas-elevated px-4 py-2 text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer">
-          Cancel
+          {s.cancel}
         </button>
         <button id="btn-insert-sign" class="rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-2 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
-          Insert Signature
+          {s.insert}
         </button>
       </div>
     </div>

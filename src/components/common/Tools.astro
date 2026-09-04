@@ -1,9 +1,14 @@
 ---
+import { useTranslations, getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
 interface Props {
   activeTool?: string;
 }
 
 const { activeTool = 'editor' } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translate = useTranslatedPath();
 ---
 
 <!-- Tools Section: shared pill-tab navigation strip rendered on every page -->
@@ -11,40 +16,40 @@ const { activeTool = 'editor' } = Astro.props;
   <div class="mx-auto flex h-12 w-full max-w-[1760px] items-center justify-center px-3 sm:px-6 lg:px-8 xl:px-12">
     <nav class="flex items-center gap-1 rounded-full border border-hairline bg-canvas-elevated/60 backdrop-blur p-1 text-[13px] font-medium text-body shadow-whisper overflow-x-auto no-scrollbar">
       <a
-        href="/"
+        href={translate('/', lang)}
         class={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
-        PDF Editor
+        {t('tools.pdfEditor')}
       </a>
       <a
-        href="/merge-pdf"
+        href={translate('/merge-pdf', lang)}
         class={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'merge' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
-        Merge
+        {t('tools.merge')}
       </a>
       <a
-        href="/split-pdf"
+        href={translate('/split-pdf', lang)}
         class={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'split' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
-        Split
+        {t('tools.split')}
       </a>
       <a
-        href="/sign-pdf"
+        href={translate('/sign-pdf', lang)}
         class={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'sign' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
-        Sign
+        {t('tools.sign')}
       </a>
       <a
-        href="/pdf-to-images"
+        href={translate('/pdf-to-images', lang)}
         class={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'convert' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
-        Images
+        {t('tools.images')}
       </a>
       <a
-        href="/compress-pdf"
+        href={translate('/compress-pdf', lang)}
         class={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'compress' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
-        Compress
+        {t('tools.compress')}
       </a>
     </nav>
   </div>

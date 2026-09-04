@@ -1,8 +1,9 @@
 ---
 // FAQ Section Component with JSON-LD Structured Data
-// Answers 15 essential SEO queries for PDF editing
+// Answers 15 essential SEO queries for PDF editing.
+// All visible text (questions, answers, UI labels) is sourced from t().
 
-export interface FaqItem {
+interface FaqItem {
   id: string;
   question: string;
   category: 'free' | 'devices' | 'howto' | 'basics';
@@ -12,141 +13,146 @@ export interface FaqItem {
   answerJsonLd: string;
 }
 
+interface Props {
+  t: (key: string) => string;
+}
+const { t } = Astro.props as Props;
+
 const faqs: FaqItem[] = [
   {
     id: "faq-how-to-edit-pdf",
-    question: "how to edit a pdf",
+    question: t('faq.q1'),
     category: "howto",
-    categoryLabel: "How-To Guide",
+    categoryLabel: t('faq.category.howto'),
     shortKeywords: "how to edit a pdf online free tools modify text sign redact",
-    answerHtml: `<p>To edit a PDF, open your document in <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a> by dragging and dropping your file into the editor workspace or clicking <strong>Select PDF Document</strong>. Once loaded, choose the <strong>Text tool</strong> to add new text or enable the <strong>Whiteout</strong> feature to cleanly mask and replace outdated sentences. You can also draw or type e-signatures, blackout confidential numbers with irreversible vector redaction, and open the <strong>Page Organizer</strong> to reorder, rotate, or delete sheets. When finished, click <strong>Download PDF</strong> to export your updated document immediately.</p>`,
-    answerJsonLd: "<p>To edit a PDF, open your document in RealEditPDF by dragging and dropping your file into the editor workspace or clicking Select PDF Document. Once loaded, choose the Text tool to add new text or enable the Whiteout feature to cleanly mask and replace outdated sentences. You can also draw or type e-signatures, blackout confidential numbers with irreversible vector redaction, and open the Page Organizer to reorder, rotate, or delete sheets. When finished, click Download PDF to export your updated document immediately.</p>"
+    answerHtml: t('faq.q1a'),
+    answerJsonLd: t('faq.q1a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-how-to-edit-pdf-for-free",
-    question: "how to edit a pdf for free",
+    question: t('faq.q2'),
     category: "free",
-    categoryLabel: "Free Editing",
+    categoryLabel: t('faq.category.free'),
     shortKeywords: "how to edit a pdf for free no subscription no watermark zero cost unlimited",
-    answerHtml: `<p>You can edit a PDF for free with zero subscriptions, watermarks, or credit card requirements using <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a>. Unlike traditional cloud services that restrict free users to 1–2 documents per day or lock text modification behind premium plans, RealEditPDF processes everything 100% client-side via WebAssembly. This allows you to edit text, redact private data, sign forms, and rearrange pages at full original quality without paying a penny.</p>`,
-    answerJsonLd: "<p>You can edit a PDF for free with zero subscriptions, watermarks, or credit card requirements using RealEditPDF. Unlike traditional cloud services that restrict free users to 1–2 documents per day or lock text modification behind premium plans, RealEditPDF processes everything 100% client-side via WebAssembly. This allows you to edit text, redact private data, sign forms, and rearrange pages at full original quality without paying a penny.</p>"
+    answerHtml: t('faq.q2a'),
+    answerJsonLd: t('faq.q2a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-how-to-edit-pdf-on-mac",
-    question: "how to edit a pdf on mac",
+    question: t('faq.q3'),
     category: "devices",
-    categoryLabel: "macOS",
+    categoryLabel: t('faq.category.devices'),
     shortKeywords: "how to edit a pdf on mac free safari chrome preview alternative adobe acrobat",
-    answerHtml: `<p>To edit a PDF on Mac for free without buying Adobe Acrobat, open Safari or Google Chrome and navigate to <a href="https://realeditpdf.com/" class="text-link font-semibold underline hover:text-ink">RealEditPDF.com</a>. While macOS includes the built-in Preview app, Preview cannot overwrite existing text or apply permanent data redactions. With RealEditPDF, simply drag your PDF from Finder into the browser window to insert text, cover and update paragraphs, draw legal signatures, stamp custom watermarks, and reorder pages. All processing runs locally in your Mac browser's memory for maximum speed and privacy.</p>`,
-    answerJsonLd: "<p>To edit a PDF on Mac for free without buying Adobe Acrobat, open Safari or Google Chrome and navigate to RealEditPDF.com. While macOS includes the built-in Preview app, Preview cannot overwrite existing text or apply permanent data redactions. With RealEditPDF, simply drag your PDF from Finder into the browser window to insert text, cover and update paragraphs, draw legal signatures, stamp custom watermarks, and reorder pages. All processing runs locally in your Mac browser's memory for maximum speed and privacy.</p>"
+    answerHtml: t('faq.q3a'),
+    answerJsonLd: t('faq.q3a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-what-is-a-100-free-pdf-editor",
-    question: "What is a 100% free PDF editor?",
+    question: t('faq.q4'),
     category: "free",
-    categoryLabel: "Free Editing",
+    categoryLabel: t('faq.category.free'),
     shortKeywords: "what is a 100% free pdf editor realeditpdf zero limits open source client side",
-    answerHtml: `<p>A 100% free PDF editor is a tool that provides unrestricted document editing capabilities without hidden charges, subscriptions, task limits, or branded watermarks. <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a> is 100% free forever because it is architected with client-side WebAssembly (WASM). By utilizing your computer or phone's local processing power rather than costly cloud servers, RealEditPDF provides unlimited text editing, digital signing, document redaction, and page management completely free of charge.</p>`,
-    answerJsonLd: "<p>A 100% free PDF editor is a tool that provides unrestricted document editing capabilities without hidden charges, subscriptions, task limits, or branded watermarks. RealEditPDF is 100% free forever because it is architected with client-side WebAssembly (WASM). By utilizing your computer or phone's local processing power rather than costly cloud servers, RealEditPDF provides unlimited text editing, digital signing, document redaction, and page management completely free of charge.</p>"
+    answerHtml: t('faq.q4a'),
+    answerJsonLd: t('faq.q4a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-can-i-edit-my-own-pdf",
-    question: "Can I edit my own PDF?",
+    question: t('faq.q5'),
     category: "howto",
-    categoryLabel: "How-To Guide",
+    categoryLabel: t('faq.category.howto'),
     shortKeywords: "can i edit my own pdf resume contract invoice forms personal files",
-    answerHtml: `<p>Yes, you can easily edit your own PDF documents. Whether it is an employment resume, a business contract, a rental lease, or a tax form, simply drag your file into <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a>. You can add new text, mask outdated information using the whiteout tool, insert checkboxes, place your signature, and organize pages. Because your files remain entirely in your local browser sandbox, your personal information is never uploaded to remote servers.</p>`,
-    answerJsonLd: "<p>Yes, you can easily edit your own PDF documents. Whether it is an employment resume, a business contract, a rental lease, or a tax form, simply drag your file into RealEditPDF. You can add new text, mask outdated information using the whiteout tool, insert checkboxes, place your signature, and organize pages. Because your files remain entirely in your local browser sandbox, your personal information is never uploaded to remote servers.</p>"
+    answerHtml: t('faq.q5a'),
+    answerJsonLd: t('faq.q5a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-can-i-edit-a-pdf-file-online",
-    question: "Can I edit a PDF file online?",
+    question: t('faq.q6'),
     category: "howto",
-    categoryLabel: "Online Editing",
+    categoryLabel: t('faq.category.howto'),
     shortKeywords: "can i edit a pdf file online in browser web app chrome safari no download",
-    answerHtml: `<p>Yes, you can edit PDF files online directly in your web browser without installing any desktop programs or browser extensions. Open <a href="https://realeditpdf.com/" class="text-link font-semibold underline hover:text-ink">RealEditPDF.com</a> in Chrome, Safari, Firefox, or Edge. You can modify text, annotate passages, sign documents, blackout sensitive data, and reorder pages in real time, then download your finalized PDF file immediately.</p>`,
-    answerJsonLd: "<p>Yes, you can edit PDF files online directly in your web browser without installing any desktop programs or browser extensions. Open RealEditPDF.com in Chrome, Safari, Firefox, or Edge. You can modify text, annotate passages, sign documents, blackout sensitive data, and reorder pages in real time, then download your finalized PDF file immediately.</p>"
+    answerHtml: t('faq.q6a'),
+    answerJsonLd: t('faq.q6a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-can-i-edit-a-pdf-on-my-phone",
-    question: "Can I edit a PDF on my phone?",
+    question: t('faq.q7'),
     category: "devices",
-    categoryLabel: "Mobile",
+    categoryLabel: t('faq.category.devices'),
     shortKeywords: "can i edit a pdf on my phone iphone android ipad mobile browser",
-    answerHtml: `<p>Yes, you can edit PDFs directly on your smartphone (iPhone, iPad, or Android) without downloading extra apps from the App Store or Google Play. Open your mobile browser (such as Safari or Chrome) and go to <a href="https://realeditpdf.com/" class="text-link font-semibold underline hover:text-ink">RealEditPDF.com</a>. Tap <strong>Select PDF Document</strong> to choose a file from your device or cloud storage (Files app, iCloud, Google Drive). You can pinch to zoom, add typography, draw signatures with your touchscreen, and download the finished PDF in seconds.</p>`,
-    answerJsonLd: "<p>Yes, you can edit PDFs directly on your smartphone (iPhone, iPad, or Android) without downloading extra apps from the App Store or Google Play. Open your mobile browser (such as Safari or Chrome) and go to RealEditPDF.com. Tap Select PDF Document to choose a file from your device or cloud storage (Files app, iCloud, Google Drive). You can pinch to zoom, add typography, draw signatures with your touchscreen, and download the finished PDF in seconds.</p>"
+    answerHtml: t('faq.q7a'),
+    answerJsonLd: t('faq.q7a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-how-do-i-open-a-pdf-file",
-    question: "How do I open a PDF file?",
+    question: t('faq.q8'),
     category: "basics",
-    categoryLabel: "PDF Basics",
+    categoryLabel: t('faq.category.basics'),
     shortKeywords: "how do i open a pdf file browser reader view edit acrobat alternative",
-    answerHtml: `<p>You can open a PDF file on any computer or mobile device by double-clicking it to view in standard web browsers like Chrome, Safari, Edge, or Firefox. If you want to view and edit a PDF at the same time without installing standalone reader software, visit <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a> and select your file. It renders instantaneously in your browser canvas ready for immediate text edits, signing, and page management.</p>`,
-    answerJsonLd: "<p>You can open a PDF file on any computer or mobile device by double-clicking it to view in standard web browsers like Chrome, Safari, Edge, or Firefox. If you want to view and edit a PDF at the same time without installing standalone reader software, visit RealEditPDF and select your file. It renders instantaneously in your browser canvas ready for immediate text edits, signing, and page management.</p>"
+    answerHtml: t('faq.q8a'),
+    answerJsonLd: t('faq.q8a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-what-is-a-pdf-file-used-for",
-    question: "What is a PDF file used for?",
+    question: t('faq.q9'),
     category: "basics",
-    categoryLabel: "PDF Basics",
+    categoryLabel: t('faq.category.basics'),
     shortKeywords: "what is a pdf file used for portable document format contracts invoices printing",
-    answerHtml: `<p>A PDF (Portable Document Format) is a universal document format designed by Adobe and standardized by ISO to present documents consistently across all software, hardware, and operating systems. PDF files are primarily used for contracts, employment agreements, business invoices, tax forms, eBooks, and printable brochures because they preserve exact typography, graphics, page numbering, and layouts on every device.</p>`,
-    answerJsonLd: "<p>A PDF (Portable Document Format) is a universal document format designed by Adobe and standardized by ISO to present documents consistently across all software, hardware, and operating systems. PDF files are primarily used for contracts, employment agreements, business invoices, tax forms, eBooks, and printable brochures because they preserve exact typography, graphics, page numbering, and layouts on every device.</p>"
+    answerHtml: t('faq.q9a'),
+    answerJsonLd: t('faq.q9a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-which-pdf-is-free-to-edit",
-    question: "Which PDF is free to edit?",
+    question: t('faq.q10'),
     category: "free",
-    categoryLabel: "Free Editing",
+    categoryLabel: t('faq.category.free'),
     shortKeywords: "which pdf is free to edit word google docs scans invoices non password protected",
-    answerHtml: `<p>Any standard, unencrypted PDF document is free to edit using <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a>. Whether your PDF was generated from Microsoft Word, exported from Google Docs, scanned from a physical document, or received via email, you can edit it for free. As long as the file does not have a restrictive owner password, you can modify text, annotate, e-sign, redact, and rearrange pages at no charge.</p>`,
-    answerJsonLd: "<p>Any standard, unencrypted PDF document is free to edit using RealEditPDF. Whether your PDF was generated from Microsoft Word, exported from Google Docs, scanned from a physical document, or received via email, you can edit it for free. As long as the file does not have a restrictive owner password, you can modify text, annotate, e-sign, redact, and rearrange pages at no charge.</p>"
+    answerHtml: t('faq.q10a'),
+    answerJsonLd: t('faq.q10a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-can-i-edit-a-pdf-without-paying",
-    question: "Can I edit a PDF without paying?",
+    question: t('faq.q11'),
     category: "free",
-    categoryLabel: "Free Editing",
+    categoryLabel: t('faq.category.free'),
     shortKeywords: "can i edit a pdf without paying free no credit card no trial no subscription",
-    answerHtml: `<p>Yes, you can edit a PDF completely without paying. While enterprise tools like Adobe Acrobat Pro cost $13 to $20 per month, <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a> offers all essential document editing features—including text insertion, smart whiteout replacement, e-signatures, permanent redactions, and page reorganization—100% free of charge with no trial period, no paywalls, and no credit card required.</p>`,
-    answerJsonLd: "<p>Yes, you can edit a PDF completely without paying. While enterprise tools like Adobe Acrobat Pro cost $13 to $20 per month, RealEditPDF offers all essential document editing features—including text insertion, smart whiteout replacement, e-signatures, permanent redactions, and page reorganization—100% free of charge with no trial period, no paywalls, and no credit card required.</p>"
+    answerHtml: t('faq.q11a'),
+    answerJsonLd: t('faq.q11a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-can-i-edit-a-pdf-without-adobe",
-    question: "Can I edit a PDF without Adobe?",
+    question: t('faq.q12'),
     category: "howto",
-    categoryLabel: "Alternative",
+    categoryLabel: t('faq.category.howto'),
     shortKeywords: "can i edit a pdf without adobe acrobat creative cloud web alternative",
-    answerHtml: `<p>Yes, you do not need Adobe Acrobat or an Adobe Creative Cloud subscription to edit PDF files. Web-based editors like <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a> provide a complete set of editing tools directly inside your web browser. You can modify text, fill forms, draw signatures, blackout private details, and reorder pages without installing Adobe software or paying costly recurring fees.</p>`,
-    answerJsonLd: "<p>Yes, you do not need Adobe Acrobat or an Adobe Creative Cloud subscription to edit PDF files. Web-based editors like RealEditPDF provide a complete set of editing tools directly inside your web browser. You can modify text, fill forms, draw signatures, blackout private details, and reorder pages without installing Adobe software or paying costly recurring fees.</p>"
+    answerHtml: t('faq.q12a'),
+    answerJsonLd: t('faq.q12a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-can-i-edit-a-pdf-for-free-online",
-    question: "Can I edit a PDF for free online?",
+    question: t('faq.q13'),
     category: "free",
-    categoryLabel: "Online Editing",
+    categoryLabel: t('faq.category.free'),
     shortKeywords: "can i edit a pdf for free online website no registration instant",
-    answerHtml: `<p>Yes, you can edit a PDF for free online at <a href="https://realeditpdf.com/" class="text-link font-semibold underline hover:text-ink">RealEditPDF.com</a>. Simply visit the site on your computer or mobile device, drop your PDF into the editor, and begin editing immediately. There is no user registration, no email verification, and no software installation required. Your document remains securely inside your browser memory for total privacy.</p>`,
-    answerJsonLd: "<p>Yes, you can edit a PDF for free online at RealEditPDF.com. Simply visit the site on your computer or mobile device, drop your PDF into the editor, and begin editing immediately. There is no user registration, no email verification, and no software installation required. Your document remains securely inside your browser memory for total privacy.</p>"
+    answerHtml: t('faq.q13a'),
+    answerJsonLd: t('faq.q13a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-what-is-the-best-pdf-editor",
-    question: "What is the best PDF editor?",
+    question: t('faq.q14'),
     category: "howto",
-    categoryLabel: "Best Editor",
+    categoryLabel: t('faq.category.howto'),
     shortKeywords: "what is the best pdf editor top rated private free webassembly smallpdf ilovepdf alternative",
-    answerHtml: `<p>The best PDF editor for speed, security, and everyday use is <a href="#editor-anchor" class="text-link font-semibold underline hover:text-ink">RealEditPDF</a>. Unlike cloud converters that store your private documents on external servers and enforce daily task caps, RealEditPDF runs 100% in-browser with zero file limits, complete data privacy, and instant WebAssembly rendering. For complex high-end commercial prepress, Adobe Acrobat Pro is traditional, but for free, effortless text editing, signing, and organizing, RealEditPDF is the top-rated browser choice.</p>`,
-    answerJsonLd: "<p>The best PDF editor for speed, security, and everyday use is RealEditPDF. Unlike cloud converters that store your private documents on external servers and enforce daily task caps, RealEditPDF runs 100% in-browser with zero file limits, complete data privacy, and instant WebAssembly rendering. For complex high-end commercial prepress, Adobe Acrobat Pro is traditional, but for free, effortless text editing, signing, and organizing, RealEditPDF is the top-rated browser choice.</p>"
+    answerHtml: t('faq.q14a'),
+    answerJsonLd: t('faq.q14a').replace(/<[^>]+>/g, '')
   },
   {
     id: "faq-how-to-edit-a-pdf-online-on-a-phone",
-    question: "How to edit a PDF online on a phone?",
+    question: t('faq.q15'),
     category: "devices",
-    categoryLabel: "Mobile Guide",
+    categoryLabel: t('faq.category.devices'),
     shortKeywords: "how to edit a pdf online on a phone iphone android touchscreen signature text",
-    answerHtml: `<p>To edit a PDF online on a phone, launch your mobile browser (Safari on iPhone or Chrome on Android) and go to <a href="https://realeditpdf.com/" class="text-link font-semibold underline hover:text-ink">RealEditPDF.com</a>. Tap <strong>Select PDF Document</strong> to choose a file from your phone storage or cloud files. Use the touch-optimized toolbar to insert typography, mask and update text with whiteout, sign documents using your fingertip, or delete and rotate pages. Once done, tap <strong>Download PDF</strong> to save the modified document directly to your smartphone.</p>`,
-    answerJsonLd: "<p>To edit a PDF online on a phone, launch your mobile browser (Safari on iPhone or Chrome on Android) and go to RealEditPDF.com. Tap Select PDF Document to choose a file from your phone storage or cloud files. Use the touch-optimized toolbar to insert typography, mask and update text with whiteout, sign documents using your fingertip, or delete and rotate pages. Once done, tap Download PDF to save the completed document directly to your phone's downloads.</p>"
+    answerHtml: t('faq.q15a'),
+    answerJsonLd: t('faq.q15a').replace(/<[^>]+>/g, '')
   }
 ];
 
@@ -163,11 +169,15 @@ const faqJsonLd = {
     }
   }))
 };
+
+const searchPlaceholderText = t('faq.searchPlaceholder');
+const searchLabelText = t('faq.searchLabel');
+const clearSearchText = t('faq.clearSearch');
 ---
 
 <section id="faq" class="py-12 sm:py-20 scroll-mt-20">
   <div class="glass-card rounded-2xl p-6 sm:p-8 lg:p-10 border border-hairline bg-canvas-elevated/70 shadow-sm space-y-8">
-    
+
     <!-- Section Header with Badges & Counter -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-hairline pb-6">
       <div class="space-y-2 max-w-2xl">
@@ -175,15 +185,15 @@ const faqJsonLd = {
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Frequently Asked Questions</span>
+          <span>{t('faq.badge')}</span>
           <span class="text-hairline">•</span>
-          <span class="text-mute">{faqs.length} Answers</span>
+          <span class="text-mute">{faqs.length} {t('faq.countSuffix')}</span>
         </div>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
-          Frequently Asked Questions About PDF Editing
+          {t('faq.title')}
         </h2>
         <p class="text-sm text-body leading-relaxed">
-          Detailed answers to common questions about editing, signing, redacting, and managing PDF documents online for free.
+          {t('faq.subtitle')}
         </p>
       </div>
 
@@ -197,7 +207,7 @@ const faqJsonLd = {
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
-          <span>Expand All</span>
+          <span>{t('faq.expandAll')}</span>
         </button>
         <button
           type="button"
@@ -207,7 +217,7 @@ const faqJsonLd = {
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
           </svg>
-          <span>Collapse All</span>
+          <span>{t('faq.collapseAll')}</span>
         </button>
       </div>
     </div>
@@ -225,15 +235,15 @@ const faqJsonLd = {
           <input
             type="text"
             id="faq-search-input"
-            placeholder="Search FAQs (e.g., mac, phone, free, text, adobe, sign)..."
+            placeholder={searchPlaceholderText}
             class="w-full pl-10 pr-9 py-2.5 rounded-xl border border-hairline bg-canvas text-ink placeholder:text-mute text-sm focus:outline-none focus:ring-2 focus:ring-link/30 focus:border-link transition-all"
-            aria-label="Search frequently asked questions"
+            aria-label={searchLabelText}
           />
           <button
             type="button"
             id="faq-search-clear"
             class="absolute inset-y-0 right-0 pr-3 flex items-center text-mute hover:text-ink hidden cursor-pointer"
-            aria-label="Clear search"
+            aria-label={clearSearchText}
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -243,7 +253,7 @@ const faqJsonLd = {
 
         <!-- Live FAQ Counter Indicator -->
         <div id="faq-match-count" class="text-xs font-mono text-mute px-1 self-center shrink-0">
-          Showing <span id="faq-count-num" class="font-bold text-ink">{faqs.length}</span> of {faqs.length} questions
+          {t('faq.showing')} <span id="faq-count-num" class="font-bold text-ink">{faqs.length}</span> {t('faq.of')} {faqs.length} {t('faq.questions')}
         </div>
       </div>
 
@@ -254,35 +264,35 @@ const faqJsonLd = {
           data-category="all"
           class="faq-filter-chip active rounded-full px-3 py-1 text-xs font-medium border border-link bg-link text-white shadow-whisper transition-all cursor-pointer"
         >
-          All ({faqs.length})
+          {t('faq.catAll')} ({faqs.length})
         </button>
         <button
           type="button"
           data-category="free"
           class="faq-filter-chip rounded-full px-3 py-1 text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink hover:bg-canvas-elevated transition-all cursor-pointer"
         >
-          Free & Unlimited ({faqs.filter(f => f.category === 'free').length})
+          {t('faq.catFree')} ({faqs.filter(f => f.category === 'free').length})
         </button>
         <button
           type="button"
           data-category="devices"
           class="faq-filter-chip rounded-full px-3 py-1 text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink hover:bg-canvas-elevated transition-all cursor-pointer"
         >
-          Mac & Mobile ({faqs.filter(f => f.category === 'devices').length})
+          {t('faq.catDevices')} ({faqs.filter(f => f.category === 'devices').length})
         </button>
         <button
           type="button"
           data-category="howto"
           class="faq-filter-chip rounded-full px-3 py-1 text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink hover:bg-canvas-elevated transition-all cursor-pointer"
         >
-          How-To Guides ({faqs.filter(f => f.category === 'howto').length})
+          {t('faq.catHowto')} ({faqs.filter(f => f.category === 'howto').length})
         </button>
         <button
           type="button"
           data-category="basics"
           class="faq-filter-chip rounded-full px-3 py-1 text-xs font-medium border border-hairline bg-canvas text-body hover:text-ink hover:bg-canvas-elevated transition-all cursor-pointer"
         >
-          PDF Basics ({faqs.filter(f => f.category === 'basics').length})
+          {t('faq.catBasics')} ({faqs.filter(f => f.category === 'basics').length})
         </button>
       </div>
     </div>
@@ -324,14 +334,14 @@ const faqJsonLd = {
 
       <!-- Zero search results fallback notice -->
       <div id="faq-no-results" class="hidden rounded-xl border border-dashed border-hairline p-8 text-center bg-canvas/40 space-y-2">
-        <p class="text-base font-semibold text-ink">No matching questions found</p>
-        <p class="text-sm text-mute">Try searching for different keywords such as "mac", "sign", "free", or "phone".</p>
+        <p class="text-base font-semibold text-ink">{t('faq.noResults')}</p>
+        <p class="text-sm text-mute">{t('faq.noResultsHint')}</p>
         <button
           type="button"
           id="faq-reset-filter-btn"
           class="mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-hairline bg-canvas hover:bg-canvas-elevated text-xs font-semibold text-link transition-colors shadow-whisper cursor-pointer"
         >
-          Reset Search Filters
+          {t('faq.reset')}
         </button>
       </div>
     </div>
@@ -439,7 +449,7 @@ const faqJsonLd = {
           searchInput.value = '';
           currentQuery = '';
           if (clearBtn) clearBtn.classList.add('hidden');
-          
+
           categoryPills.forEach(p => {
             const isAll = p.getAttribute('data-category') === 'all';
             if (isAll) {

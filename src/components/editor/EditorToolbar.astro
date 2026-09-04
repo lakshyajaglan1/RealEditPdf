@@ -1,5 +1,110 @@
 ---
 // EditorToolbar.astro - Vercel Geist Style Toolbar
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+interface Props {
+  t?: (key: string) => string;
+}
+const { t: tProp } = Astro.props as Props;
+const lang = getLangFromUrl(Astro.url);
+const t = tProp ?? useTranslations(lang);
+
+const tb = {
+  select: t('toolbar.select'),
+  selectTitle: t('toolbar.selectTitle'),
+  text: t('toolbar.text'),
+  textTitle: t('toolbar.textTitle'),
+  draw: t('toolbar.draw'),
+  drawTitle: t('toolbar.drawTitle'),
+  drawOptionsTitle: t('toolbar.drawOptionsTitle'),
+  drawSettings: t('toolbar.drawSettings'),
+  penSize: t('toolbar.penSize'),
+  opacity: t('toolbar.opacity'),
+  penColor: t('toolbar.penColor'),
+  whiteoutTitle: t('toolbar.whiteoutTitle'),
+  highlight: t('toolbar.highlight'),
+  highlightTitle: t('toolbar.highlightTitle'),
+  highlightOptionsTitle: t('toolbar.highlightOptionsTitle'),
+  highlighterSettings: t('toolbar.highlighterSettings'),
+  softMarker: t('toolbar.softMarker'),
+  intensity: t('toolbar.intensity'),
+  highlightArea: t('toolbar.highlightArea'),
+  highlightColor: t('toolbar.highlightColor'),
+  lemonYellow: t('toolbar.lemonYellow'),
+  limeGreen: t('toolbar.limeGreen'),
+  skyCyan: t('toolbar.skyCyan'),
+  rosePink: t('toolbar.rosePink'),
+  amberOrange: t('toolbar.amberOrange'),
+  softLavender: t('toolbar.softLavender'),
+  shapes: t('toolbar.shapes'),
+  shapesTitle: t('toolbar.shapesTitle'),
+  rect: t('toolbar.rect'),
+  roundedBox: t('toolbar.roundedBox'),
+  circleEllipse: t('toolbar.circleEllipse'),
+  straightLine: t('toolbar.straightLine'),
+  arrow: t('toolbar.arrow'),
+  checkmark: t('toolbar.checkmark'),
+  crossMark: t('toolbar.crossMark'),
+  sign: t('toolbar.sign'),
+  signTitle: t('toolbar.signTitle'),
+  image: t('toolbar.image'),
+  imageTitle: t('toolbar.imageTitle'),
+  crop: t('toolbar.crop'),
+  cropTitle: t('toolbar.cropTitle'),
+  stamp: t('toolbar.stamp'),
+  stampTitle: t('toolbar.stampTitle'),
+  redact: t('toolbar.redact'),
+  redactTitle: t('toolbar.redactTitle'),
+  watermark: t('toolbar.watermark'),
+  watermarkTitle: t('toolbar.watermarkTitle'),
+  undoTitle: t('toolbar.undoTitle'),
+  redoTitle: t('toolbar.redoTitle'),
+  zoomOut: t('toolbar.zoomOut'),
+  zoomIn: t('toolbar.zoomIn'),
+  rotate: t('toolbar.rotate'),
+  rotateTitle: t('toolbar.rotateTitle'),
+  cropPage: t('toolbar.cropPage'),
+  cropPageTitle: t('toolbar.cropPageTitle'),
+  newSession: t('toolbar.newSession'),
+  newSessionTitle: t('toolbar.newSessionTitle'),
+  resetPage: t('toolbar.resetPage'),
+  resetPageTitle: t('toolbar.resetPageTitle'),
+  resetAll: t('toolbar.resetAll'),
+  resetAllTitle: t('toolbar.resetAllTitle'),
+  pages: t('toolbar.pages'),
+  pagesTitle: t('toolbar.pagesTitle'),
+  save: t('toolbar.save'),
+  saveDownload: t('toolbar.saveDownload'),
+  saveDownloadTitle: t('toolbar.saveDownloadTitle'),
+  element: t('toolbar.element'),
+  cropResize: t('toolbar.cropResize'),
+  cropResizeTitle: t('toolbar.cropResizeTitle'),
+  width: t('toolbar.width'),
+  height: t('toolbar.height'),
+  propLockTitle: t('toolbar.propLockTitle'),
+  rotateLabel: t('toolbar.rotateLabel'),
+  rotateCw15: t('toolbar.rotateCw15'),
+  rotateCcw15: t('toolbar.rotateCcw15'),
+  rotateSlider: t('toolbar.rotateSlider'),
+  rotateAngle: t('toolbar.rotateAngle'),
+  rotateReset: t('toolbar.rotateReset'),
+  highlightSize: t('toolbar.highlightSize'),
+  highlightSwatch: t('toolbar.highlightSwatch'),
+  color: t('toolbar.color'),
+  penStrokeSize: t('toolbar.penStrokeSize'),
+  penStroke: t('toolbar.penStroke'),
+  whiteoutColor: t('toolbar.whiteoutColor'),
+  thickness: t('toolbar.thickness'),
+  forward: t('toolbar.forward'),
+  forwardTitle: t('toolbar.forwardTitle'),
+  backward: t('toolbar.backward'),
+  backwardTitle: t('toolbar.backwardTitle'),
+  delete: t('toolbar.delete'),
+  deleteTitle: t('toolbar.deleteTitle'),
+  toggleWatermarkTitle: t('toolbar.toggleWatermarkTitle'),
+  underText: t('toolbar.underText'),
+  wmLayerDefault: t('toolbar.wmLayerDefault'),
+};
 ---
 
 <div class="relative z-30 w-full border-b border-hairline bg-canvas-elevated/90 backdrop-blur-xl px-2.5 sm:px-4 py-2 text-ink shadow-whisper select-none">
@@ -12,24 +117,24 @@
         <button
           id="tool-select"
           class="tool-btn active flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium transition-all duration-150 cursor-pointer"
-          title="Select & Move (V)"
+          title={tb.selectTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
           </svg>
-          <span class="hidden md:inline">Select</span>
+          <span class="hidden md:inline">{tb.select}</span>
         </button>
 
         <!-- Add Text -->
         <button
           id="tool-text"
           class="tool-btn flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
-          title="Add & Write Text (T)"
+          title={tb.textTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
           </svg>
-          <span class="hidden md:inline">Text</span>
+          <span class="hidden md:inline">{tb.text}</span>
         </button>
 
         <!-- Freehand Pen with Dropdown / Size & Options -->
@@ -37,19 +142,19 @@
           <button
             id="tool-draw"
             class="tool-btn flex h-8 items-center gap-1.5 rounded-l-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
-            title="Draw Pen (D)"
+            title={tb.drawTitle}
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
-            <span class="hidden md:inline">Draw</span>
+            <span class="hidden md:inline">{tb.draw}</span>
             <span id="draw-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#171717] ring-1 ring-hairline inline-block ml-0.5"></span>
           </button>
           <button
             id="btn-draw-options"
             type="button"
             class="flex h-8 w-5 items-center justify-center rounded-r-lg border-l border-hairline/60 text-mute hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer"
-            title="Pen Size & Stroke Options"
+            title={tb.drawOptionsTitle}
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-70" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -59,14 +164,14 @@
           <!-- Draw Quick Options Dropdown -->
           <div id="draw-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-64 max-w-[calc(100vw-32px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
             <div class="mb-2 flex items-center justify-between">
-              <span class="text-[12px] font-semibold text-ink">Draw Pen Settings</span>
+              <span class="text-[12px] font-semibold text-ink">{tb.drawSettings}</span>
               <span id="dropdown-draw-size-val" class="font-mono text-[11px] font-bold text-blue-600 dark:text-cyan-400">2px</span>
             </div>
-            
+
             <!-- Pen Size Slider -->
             <div class="space-y-1.5 mb-3">
               <div class="flex items-center justify-between text-[11px] text-mute">
-                <span>Pen Size (Thickness):</span>
+                <span>{tb.penSize}</span>
                 <div id="dropdown-draw-preview-dot" class="h-2 w-2 rounded-full bg-ink inline-block transition-all"></div>
               </div>
               <input
@@ -89,7 +194,7 @@
             <!-- Pen Opacity Slider -->
             <div class="space-y-1.5 mb-3 border-t border-hairline/70 pt-2.5">
               <div class="flex items-center justify-between text-[11px] text-mute">
-                <span>Opacity:</span>
+                <span>{tb.opacity}</span>
                 <span id="dropdown-draw-opacity-val" class="font-mono text-[11px] text-ink font-semibold">100%</span>
               </div>
               <input
@@ -105,7 +210,7 @@
 
             <!-- Color Palette -->
             <div class="border-t border-hairline/70 pt-2.5">
-              <span class="text-[11px] text-mute block mb-1.5">Pen Color:</span>
+              <span class="text-[11px] text-mute block mb-1.5">{tb.penColor}</span>
               <div class="flex items-center gap-1.5">
                 <input type="color" id="dropdown-draw-color-picker" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
                 <div class="flex items-center gap-1">
@@ -114,7 +219,7 @@
                   <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#2563eb] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#2563eb"></button>
                   <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#10b981] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#10b981"></button>
                   <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#f59e0b] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f59e0b"></button>
-                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#ffffff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#ffffff" title="Whiteout Pen"></button>
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#ffffff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#ffffff" title={tb.whiteoutTitle}></button>
                 </div>
               </div>
             </div>
@@ -126,19 +231,19 @@
           <button
             id="tool-highlight"
             class="tool-btn flex h-8 items-center gap-1.5 rounded-l-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
-            title="Highlighter (H)"
+            title={tb.highlightTitle}
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" clip-rule="evenodd" />
             </svg>
-            <span class="hidden md:inline">Highlight</span>
+            <span class="hidden md:inline">{tb.highlight}</span>
             <span id="highlight-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#fef08a] ring-1 ring-hairline inline-block ml-0.5"></span>
           </button>
           <button
             id="btn-highlight-options"
             type="button"
             class="flex h-8 w-5 items-center justify-center rounded-r-lg border-l border-hairline/60 text-mute hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer"
-            title="Highlight Size, Intensity & Options"
+            title={tb.highlightOptionsTitle}
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-70" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -148,14 +253,14 @@
           <!-- Highlight Options Dropdown -->
           <div id="highlight-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-72 max-w-[calc(100vw-32px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
             <div class="mb-2 flex items-center justify-between">
-              <span class="text-[12px] font-semibold text-ink">Highlighter Settings</span>
-              <span id="dropdown-hl-badge" class="rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">Soft Marker</span>
+              <span class="text-[12px] font-semibold text-ink">{tb.highlighterSettings}</span>
+              <span id="dropdown-hl-badge" class="rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">{tb.softMarker}</span>
             </div>
 
             <!-- Intensity Slider -->
             <div class="space-y-1.5 mb-3">
               <div class="flex items-center justify-between text-[11px]">
-                <span class="text-mute font-medium">Intensity (Opacity):</span>
+                <span class="text-mute font-medium">{tb.intensity}</span>
                 <span id="dropdown-hl-intensity-val" class="font-mono font-bold text-[11px] text-ink">35%</span>
               </div>
               <input
@@ -168,17 +273,17 @@
                 class="h-1.5 w-full accent-amber-500 cursor-pointer"
               />
               <div class="flex items-center justify-between gap-1 pt-1">
-                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.2">Light 20%</button>
-                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.35">Std 35%</button>
-                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.6">Med 60%</button>
-                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.9">Solid 90%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.2">20%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.35">35%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.6">60%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.9">90%</button>
               </div>
             </div>
 
             <!-- Size of Highlight Area Slider -->
             <div class="space-y-1.5 mb-3 border-t border-hairline/70 pt-2.5">
               <div class="flex items-center justify-between text-[11px]">
-                <span class="text-mute font-medium">Highlight Area Size:</span>
+                <span class="text-mute font-medium">{tb.highlightArea}</span>
                 <span id="dropdown-hl-size-val" class="font-mono font-bold text-[11px] text-ink">24px</span>
               </div>
               <input
@@ -204,16 +309,16 @@
 
             <!-- Color Palette -->
             <div class="border-t border-hairline/70 pt-2.5">
-              <span class="text-[11px] text-mute block mb-1.5">Highlight Color:</span>
+              <span class="text-[11px] text-mute block mb-1.5">{tb.highlightColor}</span>
               <div class="flex items-center gap-1.5">
                 <input type="color" id="dropdown-hl-color-picker" value="#fef08a" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
                 <div class="flex items-center gap-1">
-                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#fef08a] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fef08a" title="Lemon Yellow"></button>
-                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#86efac] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#86efac" title="Lime Green"></button>
-                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#7dd3fc] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#7dd3fc" title="Sky Cyan"></button>
-                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#f472b6] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f472b6" title="Rose Pink"></button>
-                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#fed7aa] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fed7aa" title="Amber Orange"></button>
-                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#e9d5ff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#e9d5ff" title="Soft Lavender"></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#fef08a] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fef08a" title={tb.lemonYellow}></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#86efac] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#86efac" title={tb.limeGreen}></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#7dd3fc] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#7dd3fc" title={tb.skyCyan}></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#f472b6] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f472b6" title={tb.rosePink}></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#fed7aa] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fed7aa" title={tb.amberOrange}></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#e9d5ff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#e9d5ff" title={tb.softLavender}></button>
                 </div>
               </div>
             </div>
@@ -225,13 +330,13 @@
           <button
             id="tool-shape-btn"
             class="tool-btn flex h-8 items-center gap-1 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
-            title="Insert Shapes"
+            title={tb.shapesTitle}
             type="button"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2" />
             </svg>
-            <span class="hidden md:inline">Shapes</span>
+            <span class="hidden md:inline">{tb.shapes}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-60 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
@@ -240,25 +345,25 @@
           <!-- Shapes Menu -->
           <div id="shapes-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-48 max-w-[calc(100vw-32px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-1.5 shadow-floating">
             <button type="button" data-shape="rect" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="h-3.5 w-3.5 border-2 border-ink rounded-none inline-block"></span> <span>Rectangle</span>
+              <span class="h-3.5 w-3.5 border-2 border-ink rounded-none inline-block"></span> <span>{tb.rect}</span>
             </button>
             <button type="button" data-shape="rounded-rect" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="h-3.5 w-3.5 border-2 border-ink rounded-sm inline-block"></span> <span>Rounded Box</span>
+              <span class="h-3.5 w-3.5 border-2 border-ink rounded-sm inline-block"></span> <span>{tb.roundedBox}</span>
             </button>
             <button type="button" data-shape="circle" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="h-3.5 w-3.5 border-2 border-ink rounded-full inline-block"></span> <span>Circle / Ellipse</span>
+              <span class="h-3.5 w-3.5 border-2 border-ink rounded-full inline-block"></span> <span>{tb.circleEllipse}</span>
             </button>
             <button type="button" data-shape="line" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="h-0.5 w-4 bg-ink inline-block"></span> <span>Straight Line</span>
+              <span class="h-0.5 w-4 bg-ink inline-block"></span> <span>{tb.straightLine}</span>
             </button>
             <button type="button" data-shape="arrow" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="text-xs font-bold">➔</span> <span>Arrow</span>
+              <span class="text-xs font-bold">➔</span> <span>{tb.arrow}</span>
             </button>
             <button type="button" data-shape="check" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✓</span> <span>Checkmark</span>
+              <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✓</span> <span>{tb.checkmark}</span>
             </button>
             <button type="button" data-shape="cross" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
-              <span class="text-xs font-bold text-rose-600 dark:text-rose-400">✕</span> <span>Cross Mark</span>
+              <span class="text-xs font-bold text-rose-600 dark:text-rose-400">✕</span> <span>{tb.crossMark}</span>
             </button>
           </div>
         </div>
@@ -270,24 +375,24 @@
         <button
           id="btn-open-sign-modal"
           class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer whitespace-nowrap"
-          title="Sign Document (S)"
+          title={tb.signTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
           </svg>
-          <span class="hidden md:inline">Sign</span>
+          <span class="hidden md:inline">{tb.sign}</span>
         </button>
 
         <!-- Image Inserter -->
         <button
           id="btn-add-image"
           class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer whitespace-nowrap"
-          title="Insert Image"
+          title={tb.imageTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <span class="hidden md:inline">Image</span>
+          <span class="hidden md:inline">{tb.image}</span>
         </button>
         <input type="file" id="image-file-input" accept="image/*" class="hidden" />
 
@@ -295,46 +400,46 @@
         <button
           id="btn-crop-image-tool"
           class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer whitespace-nowrap"
-          title="Resize / Crop Image"
+          title={tb.cropTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
           </svg>
-          <span class="hidden md:inline">Crop</span>
+          <span class="hidden md:inline">{tb.crop}</span>
         </button>
 
         <!-- Stamp Modal Trigger -->
         <button
           id="btn-open-stamp-modal"
           class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer whitespace-nowrap"
-          title="Add Stamp (Approved, Confidential, etc.)"
+          title={tb.stampTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
-          <span class="hidden md:inline">Stamp</span>
+          <span class="hidden md:inline">{tb.stamp}</span>
         </button>
 
         <!-- Redaction / Blackout -->
         <button
           id="tool-redact"
           class="tool-btn flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer whitespace-nowrap"
-          title="Redact / Blackout sensitive text"
+          title={tb.redactTitle}
         >
           <div class="h-3.5 w-3.5 bg-black border border-hairline rounded-xs"></div>
-          <span class="hidden md:inline">Redact</span>
+          <span class="hidden md:inline">{tb.redact}</span>
         </button>
 
         <!-- Watermark & Page Numbering -->
         <button
           id="btn-open-watermark-modal"
           class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer whitespace-nowrap"
-          title="Watermark & Page Numbers"
+          title={tb.watermarkTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
           </svg>
-          <span class="hidden md:inline">Watermark</span>
+          <span class="hidden md:inline">{tb.watermark}</span>
         </button>
       </div>
     </div>
@@ -345,12 +450,12 @@
       <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-0.5 min-w-0 flex-1 2xl:flex-initial">
         <!-- Undo / Redo Segment -->
         <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-0.5 shrink-0">
-          <button id="btn-undo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors cursor-pointer" title="Undo (Ctrl+Z)" disabled>
+          <button id="btn-undo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors cursor-pointer" title={tb.undoTitle} disabled>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
             </svg>
           </button>
-          <button id="btn-redo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors cursor-pointer" title="Redo (Ctrl+Y)" disabled>
+          <button id="btn-redo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors cursor-pointer" title={tb.redoTitle} disabled>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
             </svg>
@@ -359,13 +464,13 @@
 
         <!-- Zoom Controls Segment -->
         <div class="hidden sm:flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-1 shrink-0">
-          <button id="btn-zoom-out" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer" title="Zoom Out">
+          <button id="btn-zoom-out" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer" title={tb.zoomOut}>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
             </svg>
           </button>
           <span id="zoom-percentage" class="min-w-[36px] text-center font-mono text-[11px] font-semibold text-ink">100%</span>
-          <button id="btn-zoom-in" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer" title="Zoom In">
+          <button id="btn-zoom-in" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer" title={tb.zoomIn}>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -376,37 +481,37 @@
         <button
           id="btn-rotate-page"
           class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
-          title="Rotate Current Page (90° CW)"
+          title={tb.rotateTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span class="hidden lg:inline">Rotate</span>
+          <span class="hidden lg:inline">{tb.rotate}</span>
         </button>
 
         <!-- Crop Page Button (Crop/Resize Uploaded PDF Page) -->
         <button
           id="btn-crop-page"
           class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
-          title="Crop / Resize Uploaded PDF Page"
+          title={tb.cropPageTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
           </svg>
-          <span class="hidden lg:inline">Crop Page</span>
+          <span class="hidden lg:inline">{tb.cropPage}</span>
         </button>
 
         <!-- Start New Session Button -->
         <button
           id="btn-new-session"
           class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
-          title="Start a new session (Open fresh PDF document)"
+          title={tb.newSessionTitle}
           type="button"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
-          <span class="hidden lg:inline">New Session</span>
+          <span class="hidden lg:inline">{tb.newSession}</span>
         </button>
 
         <!-- Reset Segment (Single Page Reset & All Pages 1-Click Reset) -->
@@ -415,26 +520,26 @@
           <button
             id="btn-reset-page"
             class="flex h-7 items-center gap-1 sm:gap-1.5 rounded-lg px-1.5 sm:px-2 text-[11px] sm:text-[12px] font-medium text-body hover:bg-canvas-elevated hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer"
-            title="Reset changes on current page"
+            title={tb.resetPageTitle}
             type="button"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span class="hidden xl:inline">Reset Page</span>
+            <span class="hidden xl:inline">{tb.resetPage}</span>
           </button>
 
           <!-- Reset All Pages (1 Click) -->
           <button
             id="btn-reset-all"
             class="flex h-7 items-center gap-1 sm:gap-1.5 rounded-lg px-1.5 sm:px-2 text-[11px] sm:text-[12px] font-medium text-rose-600/90 dark:text-rose-400 hover:bg-canvas-elevated hover:text-rose-600 transition-colors cursor-pointer"
-            title="Reset changes across all pages in a single click"
+            title={tb.resetAllTitle}
             type="button"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
-            <span class="hidden xl:inline">Reset All</span>
+            <span class="hidden xl:inline">{tb.resetAll}</span>
           </button>
         </div>
 
@@ -442,12 +547,12 @@
         <button
           id="btn-toggle-sidebar"
           class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2.5 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
-          title="Toggle Page Thumbnails"
+          title={tb.pagesTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
           </svg>
-          <span class="hidden sm:inline">Pages</span>
+          <span class="hidden sm:inline">{tb.pages}</span>
         </button>
       </div>
 
@@ -456,12 +561,13 @@
         <button
           id="btn-export-pdf"
           class="flex h-8 sm:h-9 items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-3 sm:px-4 text-[12px] sm:text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+          title={tb.saveDownloadTitle}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
-          <span class="hidden sm:inline">Save & Download</span>
-          <span class="inline sm:hidden">Save</span>
+          <span class="hidden sm:inline">{tb.saveDownload}</span>
+          <span class="inline sm:hidden">{tb.save}</span>
         </button>
       </div>
     </div>
@@ -501,21 +607,21 @@
         id="btn-prop-crop-modal"
         type="button"
         class="flex h-7 items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-2.5 text-[11px] font-semibold text-white shadow-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer"
-        title="Open Crop & Resize Studio"
+        title={tb.cropResizeTitle}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
         </svg>
-        <span>Crop / Resize</span>
+        <span>{tb.cropResize}</span>
       </button>
 
       <!-- Quick Numeric Dimensions -->
       <div class="flex items-center gap-1 text-[11px] font-mono text-mute">
-        <span>W:</span>
-        <input type="number" id="prop-img-w" min="20" max="2000" class="h-7 w-16 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500" title="Image Width in pixels" />
-        <span>H:</span>
-        <input type="number" id="prop-img-h" min="20" max="2000" class="h-7 w-16 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500" title="Image Height in pixels" />
-        <button id="btn-prop-img-lock" type="button" class="flex h-7 px-1.5 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-ink text-[11px] font-mono transition-colors cursor-pointer" title="Proportional Aspect Ratio Lock">
+        <span>{tb.width}:</span>
+        <input type="number" id="prop-img-w" min="20" max="2000" class="h-7 w-16 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500" title={tb.width} />
+        <span>{tb.height}:</span>
+        <input type="number" id="prop-img-h" min="20" max="2000" class="h-7 w-16 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500" title={tb.height} />
+        <button id="btn-prop-img-lock" type="button" class="flex h-7 px-1.5 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-ink text-[11px] font-mono transition-colors cursor-pointer" title={tb.propLockTitle}>
           <span id="prop-img-lock-icon">🔒</span>
         </button>
       </div>
@@ -534,23 +640,23 @@
         id="btn-prop-wm-toggle-layer"
         type="button"
         class="flex h-7 items-center gap-1.5 rounded-lg border border-hairline bg-canvas-elevated hover:bg-hairline-soft px-2 text-[11px] font-medium text-ink transition-colors cursor-pointer shadow-xs"
-        title="Toggle Watermark Layer: Under PDF Text vs Over PDF Text"
+        title={tb.toggleWatermarkTitle}
       >
         <svg class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
-        <span id="prop-wm-layer-text">Under Text</span>
+        <span id="prop-wm-layer-text">{tb.wmLayerDefault}</span>
       </button>
     </div>
 
     <!-- Dedicated Rotation Controls Group (Any Angle from 0° to 360°) -->
     <div id="prop-rotate-group" class="hidden items-center gap-1.5 border-l border-hairline/80 pl-2">
-      <span class="text-[11px] font-mono text-mute">Rotate:</span>
+      <span class="text-[11px] font-mono text-mute">{tb.rotateLabel}:</span>
       <button
         id="btn-prop-rotate-ccw"
         type="button"
         class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
-        title="Rotate -15° (Counter-Clockwise)"
+        title={tb.rotateCcw15}
       >
         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
@@ -564,13 +670,13 @@
         max="360"
         value="0"
         class="h-1.5 w-18 accent-blue-600 cursor-pointer"
-        title="Drag slider to rotate to any angle (0° to 360°)"
+        title={tb.rotateSlider}
       />
       <button
         id="btn-prop-rotate-cw"
         type="button"
         class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
-        title="Rotate +15° (Clockwise)"
+        title={tb.rotateCw15}
       >
         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
@@ -585,7 +691,7 @@
           step="1"
           value="0"
           class="h-7 w-12 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
-          title="Type exact rotation angle in degrees"
+          title={tb.rotateAngle}
         />
         <span class="absolute right-1 text-[10px] font-mono text-mute pointer-events-none">°</span>
       </div>
@@ -593,7 +699,7 @@
         id="btn-prop-rotate-reset"
         type="button"
         class="h-7 px-1.5 rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-[10px] font-mono text-mute hover:text-ink transition-colors cursor-pointer"
-        title="Reset rotation to 0°"
+        title={tb.rotateReset}
       >
         0°
       </button>
@@ -603,11 +709,11 @@
     <div id="prop-highlight-group" class="hidden flex flex-wrap items-center gap-2.5">
       <!-- Size of Highlight Area Slider -->
       <div class="flex items-center gap-1.5">
-        <span class="text-mute text-[11px] font-medium">Highlight Size:</span>
-        <input type="range" id="prop-highlight-size" min="8" max="72" step="2" value="24" class="h-1.5 w-20 accent-amber-500 cursor-pointer" title="Size of Highlight Area" />
+        <span class="text-mute text-[11px] font-medium">{tb.highlightSize}:</span>
+        <input type="range" id="prop-highlight-size" min="8" max="72" step="2" value="24" class="h-1.5 w-20 accent-amber-500 cursor-pointer" title={tb.highlightSize} />
         <span id="prop-highlight-size-val" class="font-mono text-[11px] font-bold text-ink min-w-[30px]">24px</span>
         <!-- Live Visual Preview -->
-        <span id="prop-highlight-preview" class="h-3.5 w-6 rounded-xs bg-[#fef08a] opacity-35 border border-hairline inline-block" title="Current highlight swatch"></span>
+        <span id="prop-highlight-preview" class="h-3.5 w-6 rounded-xs bg-[#fef08a] opacity-35 border border-hairline inline-block" title={tb.highlightSwatch}></span>
       </div>
 
       <!-- Quick Size Badges -->
@@ -620,8 +726,8 @@
 
       <!-- Highlight Intensity (Opacity) Slider -->
       <div class="flex items-center gap-1.5 border-l border-hairline/80 pl-2">
-        <span class="text-mute text-[11px] font-medium">Intensity:</span>
-        <input type="range" id="prop-highlight-opacity" min="0.10" max="1.0" step="0.05" value="0.35" class="h-1.5 w-20 accent-amber-500 cursor-pointer" title="Highlight Intensity / Transparency" />
+        <span class="text-mute text-[11px] font-medium">{tb.intensity}:</span>
+        <input type="range" id="prop-highlight-opacity" min="0.10" max="1.0" step="0.05" value="0.35" class="h-1.5 w-20 accent-amber-500 cursor-pointer" title={tb.intensity} />
         <span id="prop-highlight-opacity-val" class="font-mono text-[11px] font-bold text-ink min-w-[32px]">35%</span>
       </div>
 
@@ -636,15 +742,15 @@
 
     <!-- Highlight Color Palette (Vibrant highlighters) -->
     <div id="prop-highlight-color-group" class="hidden flex items-center gap-1.5">
-      <span class="text-mute text-[11px] font-medium">Color:</span>
+      <span class="text-mute text-[11px] font-medium">{tb.color}:</span>
       <input type="color" id="prop-highlight-color-picker" value="#fef08a" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
       <div class="flex items-center gap-1 ml-0.5">
-        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#fef08a] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fef08a" title="Lemon Yellow"></button>
-        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#86efac] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#86efac" title="Lime Green"></button>
-        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#7dd3fc] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#7dd3fc" title="Sky Cyan"></button>
-        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#f472b6] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f472b6" title="Rose Pink"></button>
-        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#fed7aa] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fed7aa" title="Amber Orange"></button>
-        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#e9d5ff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#e9d5ff" title="Soft Lavender"></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#fef08a] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fef08a" title={tb.lemonYellow}></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#86efac] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#86efac" title={tb.limeGreen}></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#7dd3fc] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#7dd3fc" title={tb.skyCyan}></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#f472b6] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f472b6" title={tb.rosePink}></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#fed7aa] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fed7aa" title={tb.amberOrange}></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#e9d5ff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#e9d5ff" title={tb.softLavender}></button>
       </div>
     </div>
 
@@ -652,11 +758,11 @@
     <div id="prop-draw-group" class="hidden flex flex-wrap items-center gap-2.5">
       <!-- Pen Size Slider -->
       <div class="flex items-center gap-1.5">
-        <span class="text-mute text-[11px] font-medium">Pen Size:</span>
-        <input type="range" id="prop-draw-size" min="1" max="40" value="2" class="h-1.5 w-20 accent-blue-600 cursor-pointer" title="Pen Stroke Size / Thickness" />
+        <span class="text-mute text-[11px] font-medium">{tb.penSize}:</span>
+        <input type="range" id="prop-draw-size" min="1" max="40" value="2" class="h-1.5 w-20 accent-blue-600 cursor-pointer" title={tb.penStrokeSize} />
         <span id="prop-draw-size-val" class="font-mono text-[11px] font-bold text-ink min-w-[28px]">2px</span>
         <!-- Live Visual Preview Dot -->
-        <span id="prop-draw-preview" class="h-2 w-2 rounded-full bg-ink inline-block" title="Current pen stroke"></span>
+        <span id="prop-draw-preview" class="h-2 w-2 rounded-full bg-ink inline-block" title={tb.penStroke}></span>
       </div>
 
       <!-- Quick Size Badges -->
@@ -670,15 +776,15 @@
 
       <!-- Pen Opacity Slider -->
       <div class="flex items-center gap-1.5 border-l border-hairline/80 pl-2">
-        <span class="text-mute text-[11px] font-medium">Opacity:</span>
-        <input type="range" id="prop-draw-opacity" min="0.1" max="1.0" step="0.05" value="1.0" class="h-1.5 w-18 accent-blue-600 cursor-pointer" title="Pen Opacity" />
+        <span class="text-mute text-[11px] font-medium">{tb.opacity}:</span>
+        <input type="range" id="prop-draw-opacity" min="0.1" max="1.0" step="0.05" value="1.0" class="h-1.5 w-18 accent-blue-600 cursor-pointer" title={tb.opacity} />
         <span id="prop-draw-opacity-val" class="font-mono text-[11px] font-bold text-ink min-w-[32px]">100%</span>
       </div>
     </div>
 
     <!-- Color Palette (General: Pen, Shapes, Text) -->
     <div id="prop-color-group" class="flex items-center gap-1.5">
-      <span class="text-mute text-[11px] font-medium">Color:</span>
+      <span class="text-mute text-[11px] font-medium">{tb.color}:</span>
       <input type="color" id="prop-color-picker" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
       <div class="flex items-center gap-1 ml-0.5">
         <button class="color-preset h-4.5 w-4.5 rounded-full bg-[#171717] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#171717"></button>
@@ -686,41 +792,41 @@
         <button class="color-preset h-4.5 w-4.5 rounded-full bg-[#0070f3] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#0070f3"></button>
         <button class="color-preset h-4.5 w-4.5 rounded-full bg-[#10b981] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#10b981"></button>
         <button class="color-preset h-4.5 w-4.5 rounded-full bg-[#f5a623] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f5a623"></button>
-        <button class="color-preset h-4.5 w-4.5 rounded-full bg-[#ffffff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#ffffff" title="Whiteout"></button>
+        <button class="color-preset h-4.5 w-4.5 rounded-full bg-[#ffffff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#ffffff" title={tb.whiteoutColor}></button>
       </div>
     </div>
 
     <!-- Stroke / Thickness (For Shapes) -->
     <div id="prop-stroke-group" class="flex items-center gap-1.5">
-      <span class="text-mute text-[11px] font-medium">Thickness:</span>
+      <span class="text-mute text-[11px] font-medium">{tb.thickness}:</span>
       <input type="range" id="prop-stroke-width" min="1" max="24" value="2" class="h-1.5 w-18 accent-blue-600 cursor-pointer" />
       <span id="prop-stroke-val" class="font-mono text-[11px] text-mute">2px</span>
     </div>
 
     <!-- Opacity (For Shapes / Images / Watermarks) -->
     <div id="prop-opacity-group" class="flex items-center gap-1.5">
-      <span class="text-mute text-[11px] font-medium">Opacity:</span>
+      <span class="text-mute text-[11px] font-medium">{tb.opacity}:</span>
       <input type="range" id="prop-opacity" min="0.1" max="1" step="0.05" value="1" class="h-1.5 w-18 accent-blue-600 cursor-pointer" />
       <span id="prop-opacity-val" class="font-mono text-[11px] text-mute">100%</span>
     </div>
 
     <!-- Layer Ordering (Bring Forward / Send Backward) -->
     <div id="prop-layer-group" class="flex items-center gap-1 border-l border-hairline/80 pl-2">
-      <button id="btn-layer-forward" type="button" class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas-elevated px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Bring Forward">
-        <span>▲ Forward</span>
+      <button id="btn-layer-forward" type="button" class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas-elevated px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={tb.forwardTitle}>
+        <span>▲ {tb.forward}</span>
       </button>
-      <button id="btn-layer-backward" type="button" class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas-elevated px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Send Backward">
-        <span>▼ Backward</span>
+      <button id="btn-layer-backward" type="button" class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas-elevated px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={tb.backwardTitle}>
+        <span>▼ {tb.backward}</span>
       </button>
     </div>
 
     <!-- Delete Selected Element -->
     <div class="ml-auto flex items-center gap-1">
-      <button id="btn-delete-element" class="flex h-7 items-center gap-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 px-2.5 text-[11px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-all cursor-pointer" title="Delete Element (Del)">
+      <button id="btn-delete-element" class="flex h-7 items-center gap-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 px-2.5 text-[11px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-all cursor-pointer" title={tb.deleteTitle}>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>
-        <span>Delete</span>
+        <span>{tb.delete}</span>
       </button>
     </div>
   </div>

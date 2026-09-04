@@ -3,6 +3,9 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Tools from '../components/common/Tools.astro';
 import Footer from '../components/Footer.astro';
+import HreflangTags from '../components/i18n/HreflangTags.astro';
+import { languages, type LangCode } from '../i18n/ui';
+import { getLangFromUrl, useTranslatedPath } from '../i18n/utils';
 
 interface Props {
   title?: string;
@@ -12,6 +15,8 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   activeTool?: string;
+  /** Override the language detection (defaults to deriving from URL) */
+  lang?: LangCode;
 }
 
 const {
@@ -22,11 +27,16 @@ const {
   ogImage = 'https://realeditpdf.com/og-image.png',
   ogType = 'website',
   activeTool = 'editor',
+  lang,
 } = Astro.props;
+
+const currentLang: LangCode = lang ?? getLangFromUrl(Astro.url);
+const langMeta = languages[currentLang];
+const translate = useTranslatedPath();
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang={langMeta.htmlLang} class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -66,13 +76,16 @@ const {
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href={canonicalUrl} />
 
+    <!-- Hreflang: every supported language + x-default -->
+    <HreflangTags />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="RealEditPDF" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={langMeta.ogLocale} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:type" content="image/png" />

@@ -1,0 +1,92 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { languages, type LangCode } from '../../i18n/ui';
+import { useTranslations, useTranslatedPath } from '../../i18n/utils';
+
+export async function getStaticPaths() {
+  const nonDefault = (Object.keys(languages) as LangCode[]).filter(l => l !== 'en');
+  return nonDefault.map(lang => ({ params: { lang }, props: { lang } }));
+}
+
+interface Props { lang: LangCode; }
+const { lang } = Astro.props as Props;
+const t = useTranslations(lang);
+const translate = useTranslatedPath(lang);
+const message = 'Something went wrong on our side. The server hit an unexpected error while handling your request.';
+---
+
+<Layout
+  title={`${t('500.title')} — RealEditPDF`}
+  description={t('500.untouchedBody')}
+  canonicalUrl={`https://realeditpdf.com/${lang}/500`}
+  activeTool="editor"
+  lang={lang}
+>
+  <div class="relative py-16 md:py-24 hero-mesh-gradient border-b border-hairline overflow-hidden">
+    <div class="hero-mesh-blob bg-rose-400/25 dark:bg-rose-500/15 w-[420px] h-[420px] -top-20 -left-24 rounded-full"></div>
+    <div class="hero-mesh-blob bg-amber-400/20 dark:bg-amber-500/10 w-[380px] h-[380px] top-10 right-[-80px] rounded-full"></div>
+
+    <div class="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated/70 px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-mute backdrop-blur">
+        <span class="h-1.5 w-1.5 rounded-full bg-error animate-pulse-glow"></span>
+        Error 500
+      </div>
+
+      <h1 class="mt-6 text-6xl sm:text-7xl md:text-8xl font-bold tracking-display text-ink leading-none">
+        5<span class="bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">0</span>0
+      </h1>
+
+      <h2 class="mt-4 text-2xl sm:text-3xl font-bold tracking-heading-lg text-ink">
+        {t('500.title')}
+      </h2>
+
+      <p class="mt-3 text-[14px] sm:text-[16px] text-body max-w-xl mx-auto leading-relaxed">
+        {message}
+      </p>
+
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          href={translate('/')}
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-floating hover:shadow-glow-primary transition-all duration-200"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          {t('500.retry')}
+        </a>
+        <a
+          href={translate('/')}
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-6 py-3 text-sm font-semibold text-ink hover:border-cyan/40 hover:shadow-whisper transition-all duration-200"
+        >
+          {t('500.home')}
+        </a>
+        <a
+          href={translate('/contact')}
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-6 py-3 text-sm font-semibold text-ink hover:border-cyan/40 hover:shadow-whisper transition-all duration-200"
+        >
+          {t('500.report')}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <section class="py-12 sm:py-16 bg-canvas">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-8 shadow-whisper">
+        <div class="flex items-start gap-4">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-base sm:text-lg font-semibold text-ink">{t('500.untouched')}</h3>
+            <p class="mt-1 text-[13px] sm:text-[14px] text-body leading-relaxed">
+              {t('500.untouchedBody')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

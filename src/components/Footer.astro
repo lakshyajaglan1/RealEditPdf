@@ -1,5 +1,10 @@
 ---
+import { useTranslations, getLangFromUrl, useTranslatedPath } from '../i18n/utils';
+
 const year = new Date().getFullYear();
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translate = useTranslatedPath();
 ---
 
 <footer class="w-full border-t border-hairline bg-canvas-elevated/40 backdrop-blur-md py-16 text-body relative overflow-hidden">
@@ -16,64 +21,64 @@ const year = new Date().getFullYear();
           </span>
         </div>
         <p class="max-w-sm text-[13px] leading-relaxed text-body">
-          The ultimate client-side PDF studio. Edit text, draw, sign, redact, reorder, merge, and split PDFs with complete privacy. No daily limits, no paywalls, and zero server uploads.
+          {t('footer.tagline')}
         </p>
         <div class="flex items-center gap-2 pt-1 text-[12px] font-mono text-mute">
           <span class="relative flex h-2 w-2">
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
           </span>
-          <span>100% Client-Side WebAssembly</span>
+          <span>{t('footer.status')}</span>
         </div>
       </div>
 
       <!-- Col 2: Core Editing Tools -->
       <div class="space-y-3">
-        <h4 class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">Edit & Sign</h4>
+        <h4 class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">{t('footer.col1.title')}</h4>
         <ul class="space-y-2 text-[13px]">
-          <li><a href="/" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Full PDF Editor</a></li>
-          <li><a href="/sign-pdf" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">E-Sign PDF</a></li>
-          <li><a href="/" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Redact & Blackout</a></li>
-          <li><a href="/" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Add Text & Annotate</a></li>
-          <li><a href="/" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Watermark & Numbering</a></li>
+          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.editor')}</a></li>
+          <li><a href={translate('/sign-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.sign')}</a></li>
+          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.redact')}</a></li>
+          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.annotate')}</a></li>
+          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.watermark')}</a></li>
         </ul>
       </div>
 
       <!-- Col 3: Organize & Convert -->
       <div class="space-y-3">
-        <h4 class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">Organize</h4>
+        <h4 class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">{t('footer.col2.title')}</h4>
         <ul class="space-y-2 text-[13px]">
-          <li><a href="/merge-pdf" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Merge PDFs</a></li>
-          <li><a href="/split-pdf" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Split & Extract Pages</a></li>
-          <li><a href="/" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Rotate & Reorder</a></li>
-          <li><a href="/compress-pdf" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Compress PDF</a></li>
-          <li><a href="/pdf-to-images" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">PDF to PNG / JPG</a></li>
+          <li><a href={translate('/merge-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.merge')}</a></li>
+          <li><a href={translate('/split-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.split')}</a></li>
+          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.rotate')}</a></li>
+          <li><a href={translate('/compress-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.compress')}</a></li>
+          <li><a href={translate('/pdf-to-images', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.images')}</a></li>
         </ul>
       </div>
 
       <!-- Col 4: Trust & Specs -->
       <div class="space-y-3">
-        <h4 class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">Trust & Help</h4>
+        <h4 class="font-mono text-[11px] font-bold uppercase tracking-wider text-ink">{t('footer.col3.title')}</h4>
         <ul class="space-y-2 text-[13px]">
-          <li><a href="/#faq" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">PDF FAQs & Answers</a></li>
-          <li><a href="/privacy" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Privacy Guarantee</a></li>
-          <li><a href="/privacy#gdpr" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">GDPR & HIPAA Compliance</a></li>
-          <li><a href="/privacy#offline" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Offline Mode (PWA)</a></li>
-          <li><a href="/about" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">About Us</a></li>
-          <li><a href="/terms" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Terms & Conditions</a></li>
-          <li><a href="/contact" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Contact Us</a></li>
-          <li><a href="/#comparison" class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">Why We Beat Smallpdf</a></li>
+          <li><a href={translate('/', lang) + '#faq'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.faq')}</a></li>
+          <li><a href={translate('/privacy', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.privacy')}</a></li>
+          <li><a href={translate('/privacy', lang) + '#gdpr'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.gdpr')}</a></li>
+          <li><a href={translate('/privacy', lang) + '#offline'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.offline')}</a></li>
+          <li><a href={translate('/about', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.about')}</a></li>
+          <li><a href={translate('/terms', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.terms')}</a></li>
+          <li><a href={translate('/contact', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.contact')}</a></li>
+          <li><a href={translate('/', lang) + '#comparison'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col3.compare')}</a></li>
         </ul>
       </div>
     </div>
 
     <!-- Bottom Hairline Bar -->
     <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-hairline pt-8 text-[12px] text-mute sm:flex-row">
-      <p>© {year} RealEditPDF (realeditpdf.com). 100% Free & Unlimited Client-Side PDF Tools.</p>
+      <p>© {year} RealEditPDF (realeditpdf.com). {t('footer.copyright')}</p>
       <div class="flex items-center gap-4 font-mono text-[11px]">
         <span class="inline-flex items-center gap-1.5">
           <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-          All Systems Operational
+          {t('footer.statusIndicator')}
         </span>
       </div>
     </div>

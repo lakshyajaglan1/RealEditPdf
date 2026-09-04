@@ -1,0 +1,36 @@
+---
+import { languages, defaultLang, showDefaultLang, type LangCode } from '../../i18n/ui';
+import { useTranslatedPath, getRouteFromUrl, getLangFromUrl } from '../../i18n/utils';
+
+const currentLang = getLangFromUrl(Astro.url);
+const currentRoute = getRouteFromUrl(Astro.url);
+const translate = useTranslatedPath();
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://realeditpdf.com';
+
+function buildHrefForLang(lang: LangCode): string {
+  if (currentRoute === '' || currentRoute === 'index') {
+    return translate('/', lang);
+  }
+  return translate(`/${currentRoute}`, lang);
+}
+---
+
+{Object.values(languages).map((l) => {
+  const href = buildHrefForLang(l.code as LangCode);
+  const absolute = href.startsWith('http') ? href : `${siteUrl}${href}`;
+  return (
+    <link
+      rel="alternate"
+      hreflang={l.htmlLang}
+      href={absolute}
+    />
+  );
+})}
+
+{/* x-default: points to the default-language version of the page */}
+{(() => {
+  const def = defaultLang;
+  const href = buildHrefForLang(def);
+  const absolute = href.startsWith('http') ? href : `${siteUrl}${href}`;
+  return <link rel="alternate" hreflang="x-default" href={absolute} />;
+})()}

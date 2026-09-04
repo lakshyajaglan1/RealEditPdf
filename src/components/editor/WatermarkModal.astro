@@ -1,5 +1,49 @@
 ---
 // WatermarkModal.astro - Watermark & Header/Footer Page Numbers
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+interface Props {
+  t?: (key: string) => string;
+}
+const { t: tProp } = Astro.props as Props;
+const lang = getLangFromUrl(Astro.url);
+const t = tProp ?? useTranslations(lang);
+
+const s = {
+  title: t('wm.title'),
+  tabWatermark: t('wm.tabWatermark'),
+  tabPageNumbers: t('wm.tabPageNumbers'),
+  watermarkText: t('wm.watermarkText'),
+  placeholder: t('wm.placeholder'),
+  layerPosition: t('wm.layerPosition'),
+  recommended: t('wm.recommended'),
+  underText: t('wm.underText'),
+  overText: t('wm.overText'),
+  rotationAngle: t('wm.rotationAngle'),
+  angleSliderTitle: t('wm.angleSliderTitle'),
+  opacity: t('wm.opacity'),
+  fontSize: t('wm.fontSize'),
+  sizeSmall: t('wm.sizeSmall'),
+  sizeMedium: t('wm.sizeMedium'),
+  sizeLarge: t('wm.sizeLarge'),
+  sizeXLarge: t('wm.sizeXLarge'),
+  color: t('wm.color'),
+  red: t('wm.red'),
+  slate: t('wm.slate'),
+  blue: t('wm.blue'),
+  amber: t('wm.amber'),
+  emerald: t('wm.emerald'),
+  livePreview: t('wm.livePreview'),
+  currentPage: t('wm.currentPage'),
+  applyAll: t('wm.applyAll'),
+  format: t('wm.format'),
+  position: t('wm.position'),
+  posBottomCenter: t('wm.posBottomCenter'),
+  posBottomRight: t('wm.posBottomRight'),
+  posTopRight: t('wm.posTopRight'),
+  posBottomLeft: t('wm.posBottomLeft'),
+  addPageNumbers: t('wm.addPageNumbers'),
+};
 ---
 
 <div id="watermark-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 hidden">
@@ -12,7 +56,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
           </svg>
         </div>
-        <h3 class="text-[17px] font-bold tracking-tight text-ink">Watermark & Page Numbers</h3>
+        <h3 class="text-[17px] font-bold tracking-tight text-ink">{s.title}</h3>
       </div>
       <button id="btn-close-watermark-modal" class="text-mute hover:text-ink text-xl leading-none p-1.5 rounded-lg hover:bg-hairline-soft transition-colors cursor-pointer">&times;</button>
     </div>
@@ -20,21 +64,21 @@
     <!-- Mode Selector Tabs -->
     <div class="mt-5 flex rounded-xl border border-hairline/80 bg-hairline-soft/80 p-1 text-[13px] font-medium">
       <button id="watermark-tab-wm" class="flex-1 rounded-lg py-1.5 text-center bg-canvas-elevated text-ink font-semibold shadow-sm transition-all cursor-pointer">
-        Watermark
+        {s.tabWatermark}
       </button>
       <button id="watermark-tab-pg" class="flex-1 rounded-lg py-1.5 text-center text-body hover:text-ink transition-all cursor-pointer">
-        Page Numbering
+        {s.tabPageNumbers}
       </button>
     </div>
 
     <!-- Pane 1: Watermark -->
     <div id="watermark-pane-wm" class="mt-4 space-y-4">
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1.5">Watermark Text</label>
+        <label class="block text-[12px] font-medium text-body mb-1.5">{s.watermarkText}</label>
         <input
           type="text"
           id="wm-text-input"
-          placeholder="e.g. CONFIDENTIAL or SAMPLE"
+          placeholder={s.placeholder}
           value="CONFIDENTIAL"
           class="w-full rounded-xl border border-hairline bg-canvas px-3.5 py-2 text-[13px] font-medium text-ink outline-none uppercase focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         />
@@ -43,8 +87,8 @@
       <!-- Layering / Position (Under vs Over Original PDF Text) -->
       <div>
         <label class="block text-[12px] font-medium text-body mb-1.5 flex items-center justify-between">
-          <span>Layer Position</span>
-          <span class="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 font-semibold uppercase">Recommended</span>
+          <span>{s.layerPosition}</span>
+          <span class="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 font-semibold uppercase">{s.recommended}</span>
         </label>
         <div class="grid grid-cols-2 gap-2 rounded-xl border border-hairline bg-hairline-soft/60 p-1 text-[12px]">
           <label class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg cursor-pointer transition-all border border-transparent font-medium has-[:checked]:bg-canvas-elevated has-[:checked]:text-ink has-[:checked]:border-hairline has-[:checked]:shadow-xs text-body hover:text-ink">
@@ -52,14 +96,14 @@
             <svg class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            <span>Under PDF Text</span>
+            <span>{s.underText}</span>
           </label>
           <label class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg cursor-pointer transition-all border border-transparent font-medium has-[:checked]:bg-canvas-elevated has-[:checked]:text-ink has-[:checked]:border-hairline has-[:checked]:shadow-xs text-body hover:text-ink">
             <input type="radio" name="wm-layer-pos" id="wm-layer-over" value="over" class="hidden" />
             <svg class="h-3.5 w-3.5 text-body" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
             </svg>
-            <span>Over PDF Text</span>
+            <span>{s.overText}</span>
           </label>
         </div>
       </div>
@@ -67,7 +111,7 @@
       <!-- Rotation Angle (Any angle from -180° to 180° + Presets) -->
       <div>
         <div class="flex items-center justify-between mb-1.5">
-          <label class="text-[12px] font-medium text-body">Rotation Angle</label>
+          <label class="text-[12px] font-medium text-body">{s.rotationAngle}</label>
           <div class="flex items-center gap-1">
             <input
               type="number"
@@ -91,7 +135,7 @@
           step="1"
           value="-45"
           class="w-full accent-blue-600 cursor-pointer"
-          title="Drag to rotate watermark to any angle (-180° to 180°)"
+          title={s.angleSliderTitle}
         />
 
         <!-- Angle Preset Chips -->
@@ -106,31 +150,31 @@
       <!-- Opacity & Font Size -->
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-[12px] font-medium text-body mb-1.5">Opacity: <span id="wm-opacity-label" class="font-mono text-mute">20%</span></label>
+          <label class="block text-[12px] font-medium text-body mb-1.5">{s.opacity} <span id="wm-opacity-label" class="font-mono text-mute">20%</span></label>
           <input type="range" id="wm-opacity-slider" min="0.05" max="0.8" step="0.05" value="0.2" class="w-full accent-blue-600 cursor-pointer" />
         </div>
         <div>
-          <label class="block text-[12px] font-medium text-body mb-1.5">Font Size</label>
+          <label class="block text-[12px] font-medium text-body mb-1.5">{s.fontSize}</label>
           <select id="wm-size-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[12px] text-ink outline-none focus:border-blue-500">
-            <option value="32">32px (Small)</option>
-            <option value="48" selected>48px (Medium)</option>
-            <option value="64">64px (Large)</option>
-            <option value="80">80px (Extra Large)</option>
+            <option value="32">{s.sizeSmall}</option>
+            <option value="48" selected>{s.sizeMedium}</option>
+            <option value="64">{s.sizeLarge}</option>
+            <option value="80">{s.sizeXLarge}</option>
           </select>
         </div>
       </div>
 
       <!-- Color Selection -->
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1.5">Watermark Color</label>
+        <label class="block text-[12px] font-medium text-body mb-1.5">{s.color}</label>
         <div class="flex items-center gap-2">
           <input type="color" id="wm-color-picker" value="#ef4444" class="h-8 w-9 cursor-pointer rounded-xl border border-hairline p-0" />
           <div class="flex items-center gap-1.5">
-            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#ef4444;" data-color="#ef4444" title="Red"></button>
-            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#64748b;" data-color="#64748b" title="Slate Gray"></button>
-            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#2563eb;" data-color="#2563eb" title="Blue"></button>
-            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#d97706;" data-color="#d97706" title="Amber"></button>
-            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#059669;" data-color="#059669" title="Emerald"></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#ef4444;" data-color="#ef4444" title={s.red}></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#64748b;" data-color="#64748b" title={s.slate}></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#2563eb;" data-color="#2563eb" title={s.blue}></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#d97706;" data-color="#d97706" title={s.amber}></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#059669;" data-color="#059669" title={s.emerald}></button>
           </div>
         </div>
       </div>
@@ -149,18 +193,18 @@
             class="inline-block font-extrabold tracking-widest uppercase transition-transform select-none"
             style="color: #ef4444; opacity: 0.2; transform: rotate(-45deg); font-size: 24px; font-family: system-ui, sans-serif;"
           >
-            CONFIDENTIAL
+            {s.placeholder.split(' or ')[0]?.replace('e.g. ', '').toUpperCase() || 'CONFIDENTIAL'}
           </span>
         </div>
-        <span class="text-[10px] font-mono text-mute">Live Preview (Rotates with angle & slider)</span>
+        <span class="text-[10px] font-mono text-mute">{s.livePreview}</span>
       </div>
 
       <div class="grid grid-cols-2 gap-2 pt-1">
         <button id="btn-apply-watermark-cur" class="rounded-xl border border-hairline bg-canvas-elevated hover:bg-hairline-soft py-2.5 text-[12px] font-semibold text-ink shadow-xs active:scale-95 transition-all cursor-pointer">
-          Current Page Only
+          {s.currentPage}
         </button>
         <button id="btn-apply-watermark" class="rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 py-2.5 text-[12px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
-          Apply to All Pages
+          {s.applyAll}
         </button>
       </div>
     </div>
@@ -168,7 +212,7 @@
     <!-- Pane 2: Page Numbers -->
     <div id="watermark-pane-pg" class="mt-4 space-y-4 hidden">
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1.5">Format</label>
+        <label class="block text-[12px] font-medium text-body mb-1.5">{s.format}</label>
         <select id="pg-format-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[13px] text-ink outline-none font-mono focus:border-blue-500">
           <option value="Page {n} of {total}" selected>Page 1 of 5</option>
           <option value="{n} / {total}">1 / 5</option>
@@ -178,17 +222,17 @@
       </div>
 
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1.5">Position</label>
+        <label class="block text-[12px] font-medium text-body mb-1.5">{s.position}</label>
         <select id="pg-position-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[13px] text-ink outline-none focus:border-blue-500">
-          <option value="bottom-center" selected>Bottom Center</option>
-          <option value="bottom-right">Bottom Right</option>
-          <option value="top-right">Top Right</option>
-          <option value="bottom-left">Bottom Left</option>
+          <option value="bottom-center" selected>{s.posBottomCenter}</option>
+          <option value="bottom-right">{s.posBottomRight}</option>
+          <option value="top-right">{s.posTopRight}</option>
+          <option value="bottom-left">{s.posBottomLeft}</option>
         </select>
       </div>
 
       <button id="btn-apply-pagenumbers" class="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
-        Add Page Numbers to All Pages
+        {s.addPageNumbers}
       </button>
     </div>
   </div>

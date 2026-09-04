@@ -1,0 +1,94 @@
+---
+// Single dynamic page for every (lang, translated-slug) combination.
+//
+// `getStaticPaths` enumerates every translated slug from `routeTranslations`
+// (e.g. /it/unisci-pdf, /fr/fusionner-pdf, /es/combinar-pdf, ...) so each
+// link produced by the language picker, hreflang tags, and useTranslatedPath()
+// resolves to a real static page instead of a 404.
+//
+// The page body itself is the matching component from src/components/pages/,
+// dispatched by canonical slug. The same components are reused by the root
+// EN pages via the literal-English `enT` helper, so there is exactly one
+// source of truth for each tool/info page's markup and client-side script.
+
+import Layout from '../../layouts/Layout.astro';
+import HomeBody from '../../components/pages/HomeBody.astro';
+import MergePdfBody from '../../components/pages/MergePdfBody.astro';
+import SplitPdfBody from '../../components/pages/SplitPdfBody.astro';
+import SignPdfBody from '../../components/pages/SignPdfBody.astro';
+import CompressPdfBody from '../../components/pages/CompressPdfBody.astro';
+import PdfToImagesBody from '../../components/pages/PdfToImagesBody.astro';
+import AboutBody from '../../components/pages/AboutBody.astro';
+import ContactBody from '../../components/pages/ContactBody.astro';
+import PrivacyBody from '../../components/pages/PrivacyBody.astro';
+import TermsBody from '../../components/pages/TermsBody.astro';
+import { useTranslations } from '../../i18n/utils';
+import { routeTranslations, getCanonicalSlug, defaultLang, type LangCode, languages } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  const paths: Array<{
+    params: { lang: string; slug: string };
+    props: { lang: LangCode; slug: string; canonical: string };
+  }> = [];
+
+  for (const lang of Object.keys(languages) as LangCode[]) {
+    if (lang === defaultLang) continue; // English routes are file-system routes (no prefix)
+    const translations = routeTranslations[lang] || {};
+    for (const [canonical, translated] of Object.entries(translations)) {
+      paths.push({
+        params: { lang, slug: translated },
+        props: { lang, slug: translated, canonical },
+      });
+    }
+  }
+  return paths;
+}
+
+const { lang, slug, canonical } = Astro.props as {
+  lang: LangCode;
+  slug: string;
+  canonical: string;
+};
+const t = useTranslations(lang);
+
+// canonical -> activeTool + title/description keys
+const pageMeta: Record<string, { activeTool: string; titleKey: string; descKey: string }> = {
+  'about':           { activeTool: 'about',    titleKey: 'about.title',    descKey: 'about.subtitle' },
+  'contact':         { activeTool: 'contact',  titleKey: 'contact.title',  descKey: 'contact.subtitle' },
+  'privacy':         { activeTool: 'privacy',  titleKey: 'privacy.title',  descKey: 'privacy.subtitle' },
+  'terms':           { activeTool: 'terms',    titleKey: 'terms.title',    descKey: 'terms.subtitle' },
+  'merge-pdf':       { activeTool: 'merge',    titleKey: 'merge.title',    descKey: 'merge.subtitle' },
+  'split-pdf':       { activeTool: 'split',    titleKey: 'split.title',    descKey: 'split.subtitle' },
+  'sign-pdf':        { activeTool: 'sign',     titleKey: 'sign.title',     descKey: 'sign.subtitle' },
+  'compress-pdf':    { activeTool: 'compress', titleKey: 'compress.title', descKey: 'compress.subtitle' },
+  'pdf-to-images':   { activeTool: 'convert',  titleKey: 'images.title',   descKey: 'images.subtitle' },
+};
+
+const meta = pageMeta[canonical] ?? { activeTool: 'editor', titleKey: '', descKey: '' };
+const title = `${t(meta.titleKey as any) || canonical} — RealEditPDF`;
+const description = t(meta.descKey as any) || '';
+const canonicalUrl = `https://realeditpdf.com/${lang}/${slug}/`;
+
+// Dispatch to the right body component based on canonical slug
+const Component = ({
+  'about': AboutBody,
+  'contact': ContactBody,
+  'privacy': PrivacyBody,
+  'terms': TermsBody,
+  'merge-pdf': MergePdfBody,
+  'split-pdf': SplitPdfBody,
+  'sign-pdf': SignPdfBody,
+  'compress-pdf': CompressPdfBody,
+  'pdf-to-images': PdfToImagesBody,
+} as Record<string, any>)[canonical];
+---
+
+<Layout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  activeTool={meta.activeTool}
+  lang={lang}
+>
+  {Component ? <Component t={t} /> : null}
+</Layout>

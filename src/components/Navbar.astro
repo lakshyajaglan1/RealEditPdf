@@ -1,16 +1,22 @@
 ---
+import LanguagePicker from './i18n/LanguagePicker.astro';
+import { useTranslations, getLangFromUrl, useTranslatedPath } from '../i18n/utils';
+
 interface Props {
   activeTool?: string;
 }
 
 const { activeTool = 'editor' } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translate = useTranslatedPath();
 ---
 
 <header class="sticky top-0 z-50 w-full glass-panel transition-all">
   <div class="mx-auto flex h-16 w-full max-w-[1760px] items-center justify-between gap-4 px-3 sm:px-6 lg:px-8 xl:px-12">
     <!-- Logo & Brand -->
     <div class="flex items-center gap-6">
-      <a href="/" class="group flex items-center gap-2.5 transition-transform hover:scale-[1.02]">
+      <a href={translate('/', lang)} class="group flex items-center gap-2.5 transition-transform hover:scale-[1.02]">
         <div class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-[#2563eb] text-white font-bold text-base sm:text-lg select-none shadow-sm transition-transform duration-200 group-hover:scale-105">
           R
         </div>
@@ -25,7 +31,7 @@ const { activeTool = 'editor' } = Astro.props;
           <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
         </span>
-        <span class="tracking-wide">100% Client-Side Private</span>
+        <span class="tracking-wide">{t('brand.tagline')}</span>
       </div>
     </div>
 
@@ -42,39 +48,42 @@ const { activeTool = 'editor' } = Astro.props;
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7M4 18v-7M14 18l3-3m0 0l3 3m-3-3v7" />
         </svg>
-        <span>Tools</span>
+        <span>{t('nav.tools')}</span>
         <svg id="tools-menu-chevron" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
         </svg>
       </button>
       <a
-        href="/about"
+        href={translate('/about', lang)}
         class={`rounded-full px-3 py-1.5 transition-all duration-200 hover:text-ink hover:bg-hairline-soft/80 ${activeTool === 'about' ? 'text-ink font-semibold' : ''}`}
       >
-        About
+        {t('nav.about')}
       </a>
       <a
-        href="/privacy"
+        href={translate('/privacy', lang)}
         class={`rounded-full px-3 py-1.5 transition-all duration-200 hover:text-ink hover:bg-hairline-soft/80 ${activeTool === 'privacy' ? 'text-ink font-semibold' : ''}`}
       >
-        Privacy
+        {t('nav.privacy')}
       </a>
       <a
-        href="/terms"
+        href={translate('/terms', lang)}
         class={`rounded-full px-3 py-1.5 transition-all duration-200 hover:text-ink hover:bg-hairline-soft/80 ${activeTool === 'terms' ? 'text-ink font-semibold' : ''}`}
       >
-        Terms
+        {t('nav.terms')}
       </a>
       <a
-        href="/contact"
+        href={translate('/contact', lang)}
         class={`rounded-full px-3 py-1.5 transition-all duration-200 hover:text-ink hover:bg-hairline-soft/80 ${activeTool === 'contact' ? 'text-ink font-semibold' : ''}`}
       >
-        Contact
+        {t('nav.contact')}
       </a>
     </nav>
 
     <!-- Right Actions -->
     <div class="flex items-center gap-2 sm:gap-2.5">
+      <!-- Language Picker -->
+      <LanguagePicker />
+
       <!-- Dark/Light Theme Switcher -->
       <button
         id="btn-theme-toggle"
@@ -100,8 +109,8 @@ const { activeTool = 'editor' } = Astro.props;
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
         </svg>
-        <span class="hidden xs:inline sm:inline">Upload PDF</span>
-        <span class="inline xs:hidden sm:hidden">Upload</span>
+        <span class="hidden xs:inline sm:inline">{t('nav.uploadPdf')}</span>
+        <span class="inline xs:hidden sm:hidden">{t('nav.upload')}</span>
       </a>
 
       <!-- Mobile Hamburger Toggle Button -->
@@ -135,78 +144,78 @@ const { activeTool = 'editor' } = Astro.props;
           <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
         </span>
-        <span class="tracking-wide">100% Client-Side Private • Zero Cloud Uploads</span>
+        <span class="tracking-wide">{t('mobile.privacyBadge')}</span>
       </div>
 
       <a
-        href="/"
+        href={translate('/', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>PDF Editor Studio</span>
-        <span class="text-xs opacity-60">Edit & Redact</span>
+        <span>{t('mobile.pdfEditor')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subEditor')}</span>
       </a>
       <a
-        href="/merge-pdf"
+        href={translate('/merge-pdf', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'merge' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Merge PDF</span>
-        <span class="text-xs opacity-60">Combine Files</span>
+        <span>{t('mobile.merge')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subMerge')}</span>
       </a>
       <a
-        href="/split-pdf"
+        href={translate('/split-pdf', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'split' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Split & Extract</span>
-        <span class="text-xs opacity-60">Select Pages</span>
+        <span>{t('mobile.split')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subSplit')}</span>
       </a>
       <a
-        href="/sign-pdf"
+        href={translate('/sign-pdf', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'sign' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Sign Document</span>
-        <span class="text-xs opacity-60">Draw & Type</span>
+        <span>{t('mobile.sign')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subSign')}</span>
       </a>
       <a
-        href="/pdf-to-images"
+        href={translate('/pdf-to-images', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'convert' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>PDF to Images</span>
-        <span class="text-xs opacity-60">PNG & JPG</span>
+        <span>{t('mobile.images')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subImages')}</span>
       </a>
       <a
-        href="/compress-pdf"
+        href={translate('/compress-pdf', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'compress' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Compress PDF</span>
-        <span class="text-xs opacity-60">Reduce Size</span>
+        <span>{t('mobile.compress')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subCompress')}</span>
       </a>
       <a
-        href="/privacy"
+        href={translate('/privacy', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'privacy' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Privacy Guarantee</span>
-        <span class="text-xs opacity-60">GDPR & Offline</span>
+        <span>{t('mobile.privacyBadge')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subPrivacy')}</span>
       </a>
       <a
-        href="/about"
+        href={translate('/about', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'about' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>About</span>
-        <span class="text-xs opacity-60">Our story</span>
+        <span>{t('mobile.about')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subAbout')}</span>
       </a>
       <a
-        href="/terms"
+        href={translate('/terms', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'terms' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Terms</span>
-        <span class="text-xs opacity-60">Conditions</span>
+        <span>{t('mobile.terms')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subTerms')}</span>
       </a>
       <a
-        href="/contact"
+        href={translate('/contact', lang)}
         class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'contact' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
       >
-        <span>Contact</span>
-        <span class="text-xs opacity-60">Reach out</span>
+        <span>{t('mobile.contact')}</span>
+        <span class="text-xs opacity-60">{t('mobile.subContact')}</span>
       </a>
     </div>
   </div>
@@ -248,8 +257,6 @@ const { activeTool = 'editor' } = Astro.props;
     }
 
     // Tools pill-strip toggle (navbar "Tools" button)
-    // State is persisted in localStorage so the strip stays open across page navigations
-    // until the user explicitly closes it by clicking the "Tools" button again.
     const toolsTrigger = document.getElementById('tools-menu-trigger');
     const toolsStrip = document.getElementById('tools-strip');
     const toolsChevron = document.getElementById('tools-menu-chevron');
@@ -275,7 +282,6 @@ const { activeTool = 'editor' } = Astro.props;
       }
     }
 
-    // Restore previous open state on every page load
     if (toolsStrip) {
       let initiallyOpen = false;
       try { initiallyOpen = localStorage.getItem(TOOLS_STRIP_KEY) === '1'; } catch (_) {}
@@ -289,16 +295,14 @@ const { activeTool = 'editor' } = Astro.props;
         setToolsStripOpen(!isOpen);
       });
 
-      // Close the strip when the user clicks any other navbar "section" link
-      // (About, Privacy, Terms, Contact) — they live inside <header> so the
-      // generic outside-click handler below won't catch them.
-      const sectionLinks = document.querySelectorAll(
-        'header a[href="/about"], header a[href="/privacy"], header a[href="/terms"], header a[href="/contact"]'
-      );
+      // Close the strip when the user clicks any other navbar "section" link.
+      // Match on any /<lang>/<route> or root /<route> shape so localized paths work.
+      const sectionLinks = document.querySelectorAll('header a[href]');
       sectionLinks.forEach((link) => {
-        link.addEventListener('click', () => {
-          setToolsStripOpen(false);
-        });
+        const href = link.getAttribute('href') || '';
+        if (/^(\/[\w-]+)?\/(about|privacy|terms|contact)(\/|$)/.test(href) || /^\/(about|privacy|terms|contact)(\/|$)/.test(href)) {
+          link.addEventListener('click', () => setToolsStripOpen(false));
+        }
       });
 
       // Close the strip when clicking anywhere outside the navbar or the strip itself
@@ -318,7 +322,7 @@ const { activeTool = 'editor' } = Astro.props;
       });
     }
 
-    // Functional Upload PDF Navbar CTA Button
+    // Functional Upload PDF Navbar CTA Button — works in default (/) and any /<lang>/ route
     const navCtaBtn = document.getElementById('nav-cta-button');
     if (navCtaBtn) {
       navCtaBtn.addEventListener('click', (e) => {
@@ -346,9 +350,13 @@ const { activeTool = 'editor' } = Astro.props;
         }
 
         // Priority 3: Informational pages without file inputs (e.g. /privacy)
-        // Store trigger flag and route to home editor
+        // Store trigger flag and route to the localized home editor anchor
         sessionStorage.setItem('trigger_pdf_upload', '1');
-        window.location.href = '/#editor-anchor';
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        // If the first segment is a 2-letter language code, prepend it to the home path
+        const isLangPrefix = pathParts[0] && /^[a-z]{2}$/.test(pathParts[0]);
+        const homeHref = isLangPrefix ? `/${pathParts[0]}/#editor-anchor` : '/#editor-anchor';
+        window.location.href = homeHref;
       });
     }
 
@@ -383,7 +391,6 @@ const { activeTool = 'editor' } = Astro.props;
       });
     }
 
-    // Close mobile drawer when clicking a link inside it
     const mobileLinks = document.querySelectorAll('.mobile-nav-link');
     mobileLinks.forEach(link => {
       link.addEventListener('click', () => {
@@ -391,7 +398,6 @@ const { activeTool = 'editor' } = Astro.props;
       });
     });
 
-    // Close when clicking outside header
     document.addEventListener('click', (e) => {
       if (mobileNavDrawer && !mobileNavDrawer.classList.contains('hidden')) {
         const header = mobileMenuToggle?.closest('header');
@@ -401,7 +407,6 @@ const { activeTool = 'editor' } = Astro.props;
       }
     });
 
-    // Close on escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileNavDrawer && !mobileNavDrawer.classList.contains('hidden')) {
         toggleMobileMenu(false);

@@ -1,10 +1,49 @@
 ---
 // ImageCropModal.astro - Interactive Image Cropping & Resizing Studio
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+interface Props {
+  t?: (key: string) => string;
+}
+const { t: tProp } = Astro.props as Props;
+const lang = getLangFromUrl(Astro.url);
+const t = tProp ?? useTranslations(lang);
+
+const cropStrings = {
+  title: t('crop.title'),
+  subtitle: t('crop.subtitle'),
+  close: t('crop.close'),
+  aspectRatio: t('crop.aspectRatio'),
+  free: t('crop.free'),
+  square: t('crop.square'),
+  ratio43: t('crop.ratio43'),
+  ratio169: t('crop.ratio169'),
+  ratio32: t('crop.ratio32'),
+  original: t('crop.original'),
+  canvasSize: t('crop.canvasSize'),
+  lockTitle: t('crop.lockTitle'),
+  lockProportional: t('crop.lockProportional'),
+  unlockFree: t('crop.unlockFree'),
+  widthLabel: t('crop.widthLabel'),
+  heightLabel: t('crop.heightLabel'),
+  scaleLabel: t('crop.scaleLabel'),
+  transform: t('crop.transform'),
+  rotateLeft: t('crop.rotateLeft'),
+  rotateRight: t('crop.rotateRight'),
+  flipH: t('crop.flipH'),
+  flipV: t('crop.flipV'),
+  flipHTitle: t('crop.flipHTitle'),
+  flipVTitle: t('crop.flipVTitle'),
+  resetCrop: t('crop.resetCrop'),
+  finalDimensions: t('crop.finalDimensions'),
+  cancel: t('crop.cancel'),
+  applySave: t('crop.applySave'),
+};
 ---
 
 <div id="image-crop-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-3 sm:p-6 hidden select-none">
   <div class="relative flex flex-col w-full max-w-4xl max-h-[92vh] rounded-2xl border border-hairline bg-canvas-elevated shadow-floating overflow-hidden animate-fade-in text-ink">
-    
+
     <!-- Modal Header -->
     <div class="flex items-center justify-between border-b border-hairline/80 px-5 py-3.5 bg-canvas-elevated/95">
       <div class="flex items-center gap-2.5">
@@ -14,22 +53,22 @@
           </svg>
         </div>
         <div>
-          <h3 class="text-[16px] font-bold tracking-tight text-ink leading-tight">Crop & Resize Image</h3>
-          <p class="text-[11px] text-mute font-mono">Adjust crop bounds, rotate, or set exact pixel dimensions</p>
+          <h3 class="text-[16px] font-bold tracking-tight text-ink leading-tight">{cropStrings.title}</h3>
+          <p class="text-[11px] text-mute font-mono">{cropStrings.subtitle}</p>
         </div>
       </div>
-      <button id="btn-close-crop-modal" class="text-mute hover:text-ink text-2xl leading-none p-1.5 rounded-lg hover:bg-hairline-soft transition-colors cursor-pointer" title="Close">&times;</button>
+      <button id="btn-close-crop-modal" class="text-mute hover:text-ink text-2xl leading-none p-1.5 rounded-lg hover:bg-hairline-soft transition-colors cursor-pointer" title={cropStrings.close}>&times;</button>
     </div>
 
     <!-- Modal Content: Workspace + Controls Panel -->
     <div class="flex flex-col lg:flex-row flex-1 overflow-hidden">
-      
+
       <!-- Crop Stage (Visual Canvas Area) -->
       <div id="crop-stage-container" class="relative flex-1 bg-zinc-950 flex items-center justify-center p-4 sm:p-6 overflow-hidden min-h-[320px] max-h-[55vh] lg:max-h-[68vh]">
         <!-- Centered Interactive Crop Frame Wrapper -->
         <div id="crop-wrapper" class="relative inline-block select-none shadow-2xl">
           <!-- The source image displayed -->
-          <img id="crop-image" src="" alt="Crop Preview" class="block max-h-[48vh] max-w-full object-contain pointer-events-none select-none" draggable="false" />
+          <img id="crop-image" src="" alt={cropStrings.title} class="block max-h-[48vh] max-w-full object-contain pointer-events-none select-none" draggable="false" />
 
           <!-- Darkened Overlay Mask outside Crop Box -->
           <div id="crop-overlay-mask" class="absolute inset-0 pointer-events-none"></div>
@@ -50,21 +89,13 @@
             </div>
 
             <!-- Resize Handles (8 Points: 4 corners + 4 edges) -->
-            <!-- NW Corner -->
             <div class="crop-handle absolute -top-1.5 -left-1.5 h-3.5 w-3.5 rounded-xs bg-white border border-black/40 shadow-xs cursor-nwse-resize" data-handle="nw"></div>
-            <!-- NE Corner -->
             <div class="crop-handle absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-xs bg-white border border-black/40 shadow-xs cursor-nesw-resize" data-handle="ne"></div>
-            <!-- SW Corner -->
             <div class="crop-handle absolute -bottom-1.5 -left-1.5 h-3.5 w-3.5 rounded-xs bg-white border border-black/40 shadow-xs cursor-nesw-resize" data-handle="sw"></div>
-            <!-- SE Corner -->
             <div class="crop-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-xs bg-white border border-black/40 shadow-xs cursor-nwse-resize" data-handle="se"></div>
-            <!-- Top Edge -->
             <div class="crop-handle absolute -top-1 left-1/2 -translate-x-1/2 h-2.5 w-6 rounded-xs bg-white border border-black/40 shadow-xs cursor-ns-resize" data-handle="n"></div>
-            <!-- Bottom Edge -->
             <div class="crop-handle absolute -bottom-1 left-1/2 -translate-x-1/2 h-2.5 w-6 rounded-xs bg-white border border-black/40 shadow-xs cursor-ns-resize" data-handle="s"></div>
-            <!-- Left Edge -->
             <div class="crop-handle absolute top-1/2 -translate-y-1/2 -left-1 h-6 w-2.5 rounded-xs bg-white border border-black/40 shadow-xs cursor-ew-resize" data-handle="w"></div>
-            <!-- Right Edge -->
             <div class="crop-handle absolute top-1/2 -translate-y-1/2 -right-1 h-6 w-2.5 rounded-xs bg-white border border-black/40 shadow-xs cursor-ew-resize" data-handle="e"></div>
 
             <!-- Dimensions Badge on Crop Box -->
@@ -77,28 +108,28 @@
 
       <!-- Controls Sidebar / Panel -->
       <div class="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-hairline/80 bg-canvas p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto max-h-[38vh] lg:max-h-[68vh]">
-        
+
         <!-- Aspect Ratio Selection -->
         <div class="space-y-2">
-          <label class="block text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">Aspect Ratio</label>
+          <label class="block text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">{cropStrings.aspectRatio}</label>
           <div class="grid grid-cols-3 gap-1.5" id="crop-aspect-buttons">
             <button type="button" data-ratio="free" class="crop-ratio-btn active rounded-lg border border-hairline bg-canvas-elevated px-2 py-1.5 text-center text-[12px] font-medium transition-all hover:bg-hairline-soft cursor-pointer">
-              Free
+              {cropStrings.free}
             </button>
             <button type="button" data-ratio="1:1" class="crop-ratio-btn rounded-lg border border-hairline bg-canvas px-2 py-1.5 text-center text-[12px] font-medium transition-all hover:bg-hairline-soft cursor-pointer">
-              1:1 Square
+              {cropStrings.square}
             </button>
             <button type="button" data-ratio="4:3" class="crop-ratio-btn rounded-lg border border-hairline bg-canvas px-2 py-1.5 text-center text-[12px] font-medium transition-all hover:bg-hairline-soft cursor-pointer">
-              4:3
+              {cropStrings.ratio43}
             </button>
             <button type="button" data-ratio="16:9" class="crop-ratio-btn rounded-lg border border-hairline bg-canvas px-2 py-1.5 text-center text-[12px] font-medium transition-all hover:bg-hairline-soft cursor-pointer">
-              16:9 Wide
+              {cropStrings.ratio169}
             </button>
             <button type="button" data-ratio="3:2" class="crop-ratio-btn rounded-lg border border-hairline bg-canvas px-2 py-1.5 text-center text-[12px] font-medium transition-all hover:bg-hairline-soft cursor-pointer">
-              3:2 Photo
+              {cropStrings.ratio32}
             </button>
             <button type="button" data-ratio="orig" class="crop-ratio-btn rounded-lg border border-hairline bg-canvas px-2 py-1.5 text-center text-[12px] font-medium transition-all hover:bg-hairline-soft cursor-pointer">
-              Original
+              {cropStrings.original}
             </button>
           </div>
         </div>
@@ -106,25 +137,25 @@
         <!-- Resize Dimensions (Width & Height in Pixels) -->
         <div class="space-y-2 pt-2 border-t border-hairline/60">
           <div class="flex items-center justify-between">
-            <label class="text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">Canvas Size on Page</label>
-            <button id="btn-toggle-crop-ratio-lock" type="button" class="flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-cyan-400 hover:underline cursor-pointer" title="Lock aspect ratio">
-              <span id="crop-ratio-lock-icon">🔒 Proportional</span>
+            <label class="text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">{cropStrings.canvasSize}</label>
+            <button id="btn-toggle-crop-ratio-lock" type="button" class="flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-cyan-400 hover:underline cursor-pointer" title={cropStrings.lockTitle}>
+              <span id="crop-ratio-lock-icon">{cropStrings.lockProportional}</span>
             </button>
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <span class="text-[10px] font-mono text-mute mb-1 block">Width (px)</span>
+              <span class="text-[10px] font-mono text-mute mb-1 block">{cropStrings.widthLabel}</span>
               <input type="number" id="crop-input-w" min="20" max="4000" class="w-full rounded-lg border border-hairline bg-canvas-elevated px-2.5 py-1.5 text-[13px] font-mono text-ink focus:border-blue-500 focus:outline-none" />
             </div>
             <div>
-              <span class="text-[10px] font-mono text-mute mb-1 block">Height (px)</span>
+              <span class="text-[10px] font-mono text-mute mb-1 block">{cropStrings.heightLabel}</span>
               <input type="number" id="crop-input-h" min="20" max="4000" class="w-full rounded-lg border border-hairline bg-canvas-elevated px-2.5 py-1.5 text-[13px] font-mono text-ink focus:border-blue-500 focus:outline-none" />
             </div>
           </div>
 
           <!-- Quick Scale Presets -->
           <div class="flex items-center gap-1.5 pt-1">
-            <span class="text-[10px] font-mono text-mute">Scale:</span>
+            <span class="text-[10px] font-mono text-mute">{cropStrings.scaleLabel}</span>
             <button type="button" data-scale="0.5" class="crop-scale-preset-btn rounded border border-hairline px-1.5 py-0.5 text-[11px] font-mono text-body hover:bg-hairline-soft transition-colors cursor-pointer">50%</button>
             <button type="button" data-scale="0.75" class="crop-scale-preset-btn rounded border border-hairline px-1.5 py-0.5 text-[11px] font-mono text-body hover:bg-hairline-soft transition-colors cursor-pointer">75%</button>
             <button type="button" data-scale="1" class="crop-scale-preset-btn rounded border border-hairline px-1.5 py-0.5 text-[11px] font-mono text-body hover:bg-hairline-soft transition-colors cursor-pointer">100%</button>
@@ -135,31 +166,31 @@
 
         <!-- Rotate & Flip Controls -->
         <div class="space-y-2 pt-2 border-t border-hairline/60">
-          <label class="block text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">Transform</label>
+          <label class="block text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">{cropStrings.transform}</label>
           <div class="grid grid-cols-4 gap-1.5">
-            <button id="btn-crop-rotate-left" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title="Rotate 90° CCW">
+            <button id="btn-crop-rotate-left" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title={cropStrings.rotateLeft}>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
               </svg>
               <span class="text-[10px] mt-0.5 font-mono">-90°</span>
             </button>
-            <button id="btn-crop-rotate-right" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title="Rotate 90° CW">
+            <button id="btn-crop-rotate-right" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title={cropStrings.rotateRight}>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
               </svg>
               <span class="text-[10px] mt-0.5 font-mono">+90°</span>
             </button>
-            <button id="btn-crop-flip-h" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title="Flip Horizontally">
+            <button id="btn-crop-flip-h" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title={cropStrings.flipHTitle}>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
-              <span class="text-[10px] mt-0.5 font-mono">Flip H</span>
+              <span class="text-[10px] mt-0.5 font-mono">{cropStrings.flipH}</span>
             </button>
-            <button id="btn-crop-flip-v" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title="Flip Vertically">
+            <button id="btn-crop-flip-v" type="button" class="flex flex-col items-center justify-center rounded-lg border border-hairline bg-canvas-elevated py-1.5 text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer" title={cropStrings.flipVTitle}>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4" />
               </svg>
-              <span class="text-[10px] mt-0.5 font-mono">Flip V</span>
+              <span class="text-[10px] mt-0.5 font-mono">{cropStrings.flipV}</span>
             </button>
           </div>
         </div>
@@ -167,7 +198,7 @@
         <!-- Reset Button -->
         <div class="pt-1">
           <button id="btn-crop-reset" type="button" class="w-full text-center rounded-lg border border-hairline/80 py-1.5 text-[12px] font-medium text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer">
-            ↺ Reset Crop & Transforms
+            ↺ {cropStrings.resetCrop}
           </button>
         </div>
       </div>
@@ -176,18 +207,18 @@
     <!-- Modal Footer -->
     <div class="flex items-center justify-between border-t border-hairline/80 px-5 py-3 bg-canvas-elevated/95">
       <div class="text-[11px] font-mono text-mute flex items-center gap-2">
-        <span>Final Dimensions:</span>
+        <span>{cropStrings.finalDimensions}</span>
         <span id="crop-output-dimensions" class="font-bold text-ink">0 × 0 px</span>
       </div>
       <div class="flex items-center gap-2.5">
         <button id="btn-cancel-crop" type="button" class="rounded-xl border border-hairline bg-canvas px-4 py-2 text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-all cursor-pointer">
-          Cancel
+          {cropStrings.cancel}
         </button>
         <button id="btn-apply-crop" type="button" class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-2 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
           </svg>
-          <span>Apply & Save to PDF</span>
+          <span>{cropStrings.applySave}</span>
         </button>
       </div>
     </div>
@@ -201,3 +232,5 @@
     font-weight: 600;
   }
 </style>
+</content>
+</invoke>

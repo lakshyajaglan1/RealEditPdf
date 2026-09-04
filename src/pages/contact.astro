@@ -1,79 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ContactBody from '../components/pages/ContactBody.astro';
+import { enT } from '../components/pages/enT';
 ---
 <Layout
   title="Contact Us — RealEditPDF"
   description="Get in touch with the RealEditPDF team for support, questions, or feedback."
   activeTool="contact"
 >
-  <div class="py-12 md:py-20 hero-mesh-gradient border-b border-hairline">
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-display text-ink break-words">
-        Contact Us
-      </h1>
-      <p class="mt-3 sm:mt-4 text-[14px] sm:text-[16px] text-body max-w-2xl mx-auto">
-        We'd love to hear from you. Whether you have questions, feedback, or need support, please reach out using the form below or contact us directly.
-      </p>
-    </div>
-  </div>
-
-  <section class="py-12 sm:py-16 bg-canvas">
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
-      <!-- Contact Info -->
-      <div class="rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-8 shadow-whisper space-y-4">
-        <h2 class="text-lg sm:text-xl font-bold text-ink">Get in Touch</h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <p class="text-[12px] sm:text-[13px] font-medium text-ink">Email</p>
-            <a href="mailto:contact@realeditpdf.com" class="text-[13px] sm:text-[14px] text-body hover:underline transition-colors">contact@realeditpdf.com</a>
-          </div>
-          <div>
-            <p class="text-[12px] sm:text-[13px] font-medium text-ink">Website</p>
-            <a href="https://realeditpdf.com" target="_blank" rel="noopener" class="text-[13px] sm:text-[14px] text-body hover:underline transition-colors">realeditpdf.com</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Contact Form -->
-      <div class="rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-8 shadow-whisper space-y-4">
-        <h2 class="text-lg sm:text-xl font-bold text-ink">Send us a message</h2>
-
-        <form class="space-y-4">
-          <div>
-            <label class="block text-[12px] sm:text-[13px] font-medium text-ink mb-2">Name</label>
-            <input type="text" name="name" placeholder="Your name" required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 transition-colors">
-          </div>
-          <div>
-            <label class="block text-[12px] sm:text-[13px] font-medium text-ink mb-2">Email</label>
-            <input type="email" name="email" placeholder="your@email.com" required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 transition-colors">
-          </div>
-          <div>
-            <label class="block text-[12px] sm:text-[13px] font-medium text-ink mb-2">Message</label>
-            <textarea name="message" rows="4" placeholder="How can we help you?" required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 resize-h transition-colors"></textarea>
-          </div>
-          <button type="submit" class="w-full sm:w-auto rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-floating hover:shadow-glow-primary transition-all duration-200">
-            <span class="flex items-center justify-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-3-3m0 0V10m3 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Send Message
-            </span>
-          </button>
-        </form>
-      </div>
-
-      <!-- Social / Quick Links -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-        <div>
-          <p class="text-[12px] sm:text-[13px] font-medium text-ink">Quick Links</p>
-          <ul class="space-y-2 mt-2 text-[13px] sm:text-[14px]">
-            <li><a href="/about" class="text-body hover:underline transition-colors">About Us</a></li>
-            <li><a href="/terms" class="text-body hover:underline transition-colors">Terms & Conditions</a></li>
-            <li><a href="/privacy" class="text-body hover:underline transition-colors">Privacy Policy</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
+  <ContactBody t={enT} />
 </Layout>

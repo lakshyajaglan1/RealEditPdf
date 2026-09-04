@@ -1,0 +1,112 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PdfEditor from '../../components/editor/PdfEditor.astro';
+import SeoContent from '../../components/seo/SeoContent.astro';
+import { languages, routeTranslations, type LangCode } from '../../i18n/ui';
+import { useTranslations, getRouteFromUrl } from '../../i18n/utils';
+
+export async function getStaticPaths() {
+  // For every non-default language, generate /<lang>/ with its own translated slug
+  // The default language (English) lives at the root pages, not here.
+  const nonDefault = (Object.keys(languages) as LangCode[]).filter(l => l !== 'en');
+  return nonDefault.map(lang => ({
+    params: { lang },
+    props: { lang },
+  }));
+}
+
+interface Props { lang: LangCode; }
+const { lang } = Astro.props as Props;
+const t = useTranslations(lang);
+const meta = languages[lang];
+
+// Build the canonical URL for this localized page (self-referential)
+const slug = ''; // home
+const translatedSlug = routeTranslations[lang]?.[slug] ?? '';
+const pathForCanonical = `/${lang}/${translatedSlug}`.replace(/\/+$/, '/');
+const canonicalUrl = `https://realeditpdf.com${pathForCanonical === '//' ? '/' : pathForCanonical}`;
+---
+
+<Layout
+  title={`${t('hero.title1')} ${t('hero.title2')} — RealEditPDF`}
+  description={t('hero.subtitle')}
+  canonicalUrl={canonicalUrl}
+  activeTool="editor"
+  lang={lang}
+>
+  <!-- Hero Section with Ambient Glow & Modern Studio Mount -->
+  <section class="relative overflow-hidden pt-6 pb-14 md:pt-10 md:pb-20 hero-mesh-gradient border-b border-hairline">
+    <div class="hero-mesh-blob -top-24 left-1/4 h-96 w-96 rounded-full bg-cyan-500/15 animate-pulse-glow"></div>
+    <div class="hero-mesh-blob -top-12 right-1/4 h-96 w-96 rounded-full bg-indigo-500/15"></div>
+
+    <div class="relative z-10 mx-auto w-full max-w-[1760px] px-3 sm:px-6 lg:px-8 xl:px-12">
+      <div class="flex flex-col items-center text-center max-w-3xl mx-auto mb-8">
+        <div class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas-elevated/90 px-3.5 py-1 text-[11px] font-mono text-ink shadow-whisper mb-3">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+          </span>
+          <span class="uppercase tracking-wider font-semibold text-emerald-600 dark:text-emerald-400">{t('hero.badge')}</span>
+          <span class="text-hairline">•</span>
+          <span class="text-mute">{t('hero.limits')}</span>
+        </div>
+
+        <h1 class="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-display text-ink break-words">
+          {t('hero.title1')} <span class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">{t('hero.title2')}</span>
+        </h1>
+        <p class="mt-3 text-[14px] sm:text-[16px] text-body max-w-xl leading-relaxed">
+          {t('hero.subtitle')}
+        </p>
+
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[12px] font-medium text-mute">
+          <span class="flex items-center gap-1.5">
+            <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            {t('hero.noSize')}
+          </span>
+          <span class="text-hairline">•</span>
+          <span class="flex items-center gap-1.5">
+            <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            {t('hero.noServer')}
+          </span>
+          <span class="text-hairline">•</span>
+          <span class="flex items-center gap-1.5">
+            <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            {t('hero.noAccount')}
+          </span>
+        </div>
+      </div>
+
+      <div class="w-full text-left">
+        <PdfEditor />
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 sm:py-16 bg-canvas border-b border-hairline">
+    <div class="mx-auto w-full max-w-[1760px] px-3 sm:px-6 lg:px-8 xl:px-12">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto text-center">
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold tracking-tight text-ink mb-3">{t('nav.about')}</h3>
+          <p class="text-[13px] sm:text-[14px] text-body leading-relaxed">
+            {t('about.subtitle')}
+          </p>
+        </div>
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold tracking-tight text-ink mb-3">{t('nav.terms')}</h3>
+          <p class="text-[13px] sm:text-[14px] text-body leading-relaxed">
+            {t('terms.subtitle')}
+          </p>
+        </div>
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold tracking-tight text-ink mb-3">{t('nav.contact')}</h3>
+          <p class="text-[13px] sm:text-[14px] text-body leading-relaxed">
+            {t('contact.subtitle')}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comprehensive SEO Knowledge Guide & Schema -->
+  <SeoContent t={t} />
+</Layout>

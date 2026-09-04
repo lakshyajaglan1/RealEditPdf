@@ -6,11 +6,96 @@ import SignatureModal from './SignatureModal.astro';
 import StampModal from './StampModal.astro';
 import WatermarkModal from './WatermarkModal.astro';
 import ImageCropModal from './ImageCropModal.astro';
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+interface Props {
+  t?: (key: string) => string;
+}
+const { t: tProp } = Astro.props as Props;
+const lang = getLangFromUrl(Astro.url);
+const t = tProp ?? useTranslations(lang);
+
+// Pre-resolve all strings used inside the inline script
+const editorStrings = {
+  uploadHeading: t('editor.uploadHeading'),
+  uploadBlurb: t('editor.uploadBlurb'),
+  choosePdf: t('editor.choosePdf'),
+  trySample: t('editor.trySample'),
+  noSizeLimit: t('editor.noSizeLimit'),
+  noUploads: t('editor.noUploads'),
+  previousPage: t('editor.previousPage'),
+  nextPage: t('editor.nextPage'),
+  pageLabel: t('editor.pageLabel'),
+  ofLabel: t('editor.ofLabel'),
+  rotate: t('editor.rotate'),
+  cropPage: t('editor.cropPage'),
+  crop: t('editor.crop'),
+  resetPage: t('editor.resetPage'),
+  reset: t('editor.reset'),
+  processingDoc: t('editor.processingDoc'),
+  rendering: t('editor.rendering'),
+  renderingPage: t('editor.renderingPage'),
+  confirmTitle: t('editor.confirmTitle'),
+  confirmMessage: t('editor.confirmMessage'),
+  confirmSubtext: t('editor.confirmSubtext'),
+  cancel: t('editor.cancel'),
+  confirm: t('editor.confirm'),
+  noDocLoaded: t('editor.noDocLoaded'),
+  pageNoChanges: t('editor.pageNoChanges'),
+  changesReset: t('editor.changesReset'),
+  resetTitle: t('editor.resetTitle'),
+  resetMessage: t('editor.resetMessage'),
+  resetSubtext: t('editor.resetSubtext'),
+  resetConfirm: t('editor.resetConfirm'),
+  resetAllTitle: t('editor.resetAllTitle'),
+  resetAllMessage: t('editor.resetAllMessage'),
+  resetAllSubtext: t('editor.resetAllSubtext'),
+  resetAllConfirm: t('editor.resetAllConfirm'),
+  resetAllSuccess: t('editor.resetAllSuccess'),
+  allClean: t('editor.allClean'),
+  newSessionTitle: t('editor.newSessionTitle'),
+  newSessionMessage: t('editor.newSessionMessage'),
+  newSessionSubtext: t('editor.newSessionSubtext'),
+  newSessionConfirm: t('editor.newSessionConfirm'),
+  newSessionStarted: t('editor.newSessionStarted'),
+  loadPdfFirst: t('editor.loadPdfFirst'),
+  actionUndone: t('editor.actionUndone'),
+  actionRedone: t('editor.actionRedone'),
+  loadFailed: t('editor.loadFailed'),
+  reorderFailed: t('editor.reorderFailed'),
+  deleteFailed: t('editor.deleteFailed'),
+  deletePageConfirm: t('editor.deletePageConfirm'),
+  onlyPageDelete: t('editor.onlyPageDelete'),
+  movingPage: t('editor.movingPage'),
+  deletingPage: t('editor.deletingPage'),
+  annotation: t('editor.annotation'),
+  annotations: t('editor.annotations'),
+  rotation: t('editor.rotation'),
+  cropResize: t('editor.cropResize'),
+  rotatedPage: t('editor.rotatedPage'),
+  rotatedPages: t('editor.rotatedPages'),
+  cropNoun: t('editor.cropNoun'),
+  cropsNoun: t('editor.cropsNoun'),
+  page: t('editor.page'),
+  redactText: t('editor.redactText'),
+  typeTextPlaceholder: t('editor.typeTextPlaceholder'),
+  dropPdf: t('editor.dropPdf'),
+  addTextAlert: t('editor.addTextAlert'),
+  addShapeAlert: t('editor.addShapeAlert'),
+  addRedactAlert: t('editor.addRedactAlert'),
+  redactType: t('editor.redactType'),
+  underText: t('editor.underText'),
+  overText: t('editor.overText'),
+  freehandPen: t('editor.freehandPen'),
+  highlighter: t('editor.highlighter'),
+  lockProportional: t('crop.lockProportional'),
+  unlockFree: t('crop.unlockFree'),
+};
 ---
 
 <div id="editor-anchor" class="w-full relative flex flex-col bg-canvas rounded-2xl border border-hairline shadow-floating overflow-hidden">
   <!-- Top Editor Toolbar -->
-  <EditorToolbar />
+  <EditorToolbar t={t} />
 
   <!-- Main Editor Workspace (Sidebar + Canvas Viewport) -->
   <div class="relative flex h-[500px] xs:h-[560px] sm:h-[660px] md:h-[740px] lg:h-[800px] xl:h-[860px] 2xl:h-[900px] min-h-[460px] w-full overflow-hidden bg-canvas-workspace">
@@ -32,9 +117,9 @@ import ImageCropModal from './ImageCropModal.astro';
           </div>
         </div>
 
-        <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ink mb-2">Upload your PDF to begin</h3>
+        <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ink mb-2">{editorStrings.uploadHeading}</h3>
         <p class="text-[13px] sm:text-[14px] text-body mb-6 sm:mb-8 max-w-sm leading-relaxed">
-          Drag & drop your document anywhere, or choose from files. Fast 100% client-side processing with zero server uploads.
+          {editorStrings.uploadBlurb}
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full sm:w-auto">
@@ -42,12 +127,12 @@ import ImageCropModal from './ImageCropModal.astro';
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
-            <span>Choose PDF File</span>
+            <span>{editorStrings.choosePdf}</span>
             <input type="file" id="main-pdf-input" accept="application/pdf,.pdf" class="hidden" />
           </label>
 
           <button id="btn-load-sample" class="w-full sm:w-auto inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-hairline bg-canvas-elevated px-5 text-sm font-medium text-ink hover:bg-hairline-soft transition-all duration-200 shadow-whisper active:scale-95 cursor-pointer">
-            <span>✨ Try Sample Invoice</span>
+            <span>✨ {editorStrings.trySample}</span>
           </button>
         </div>
 
@@ -55,12 +140,12 @@ import ImageCropModal from './ImageCropModal.astro';
         <div class="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px] sm:text-[12px] font-mono text-mute pt-5 sm:pt-6 border-t border-hairline/60 w-full">
           <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            No File Size Limit
+            {editorStrings.noSizeLimit}
           </span>
           <span class="text-hairline">•</span>
           <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            Zero Server Uploads
+            {editorStrings.noUploads}
           </span>
         </div>
       </div>
@@ -79,35 +164,35 @@ import ImageCropModal from './ImageCropModal.astro';
 
       <!-- Floating Page Navigation Pill (Bottom of Canvas) -->
       <div id="floating-page-nav" class="sticky bottom-3 sm:bottom-6 mt-4 sm:mt-6 z-30 hidden items-center gap-1.5 sm:gap-3 rounded-full glass-dock px-3 sm:px-4 py-1.5 sm:py-2 text-[12px] sm:text-[13px] max-w-[calc(100vw-32px)] flex-wrap justify-center shadow-floating">
-        <button id="btn-prev-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title="Previous Page">
+        <button id="btn-prev-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title={editorStrings.previousPage}>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         </button>
         <span class="font-mono text-[11px] sm:text-[12px] font-semibold text-ink px-1">
-          Page <span id="current-page-num" class="text-blue-600 dark:text-cyan-400">1</span> of <span id="total-page-num">1</span>
+          {editorStrings.pageLabel} <span id="current-page-num" class="text-blue-600 dark:text-cyan-400">1</span> {editorStrings.ofLabel} <span id="total-page-num">1</span>
         </span>
-        <button id="btn-next-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title="Next Page">
+        <button id="btn-next-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title={editorStrings.nextPage}>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
         <div class="h-4 w-px bg-hairline mx-0.5"></div>
-        <button id="btn-floating-rotate" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Rotate Current Page (90° CW)">
+        <button id="btn-floating-rotate" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.rotate}>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span class="hidden xs:inline sm:inline">Rotate</span>
+          <span class="hidden xs:inline sm:inline">{editorStrings.rotate}</span>
         </button>
-        <button id="btn-floating-crop" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title="Crop & Resize Current Page">
+        <button id="btn-floating-crop" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.cropPage}>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
           </svg>
-          <span class="hidden sm:inline">Crop Page</span>
-          <span class="inline sm:hidden">Crop</span>
+          <span class="hidden sm:inline">{editorStrings.cropPage}</span>
+          <span class="inline sm:hidden">{editorStrings.crop}</span>
         </button>
-        <button id="btn-floating-reset-page" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer" title="Reset changes on this page">
+        <button id="btn-floating-reset-page" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer" title={editorStrings.resetPage}>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span class="hidden sm:inline">Reset Page</span>
-          <span class="inline sm:hidden">Reset</span>
+          <span class="hidden sm:inline">{editorStrings.resetPage}</span>
+          <span class="inline sm:hidden">{editorStrings.reset}</span>
         </button>
       </div>
 
@@ -115,17 +200,17 @@ import ImageCropModal from './ImageCropModal.astro';
       <div id="editor-loading" class="absolute inset-0 z-40 flex items-center justify-center bg-canvas/80 backdrop-blur-sm hidden">
         <div class="flex flex-col items-center gap-3 p-6 rounded-2xl glass-panel shadow-floating">
           <div class="h-9 w-9 animate-spin rounded-full border-3 border-blue-600 border-t-transparent"></div>
-          <span id="loading-text" class="text-[13px] font-medium text-ink">Processing Document...</span>
+          <span id="loading-text" class="text-[13px] font-medium text-ink">{editorStrings.processingDoc}</span>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Modals -->
-  <SignatureModal />
-  <StampModal />
-  <WatermarkModal />
-  <ImageCropModal />
+  <SignatureModal t={t} />
+  <StampModal t={t} />
+  <WatermarkModal t={t} />
+  <ImageCropModal t={t} />
 
   <!-- Action Confirmation Modal (Reset Page, Reset All, New Session) -->
   <div id="confirm-action-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden">
@@ -137,12 +222,12 @@ import ImageCropModal from './ImageCropModal.astro';
           </svg>
         </div>
         <div class="flex-1 min-w-0">
-          <h3 id="confirm-modal-title" class="text-[16px] font-bold tracking-tight text-ink">Confirm Action</h3>
+          <h3 id="confirm-modal-title" class="text-[16px] font-bold tracking-tight text-ink">{editorStrings.confirmTitle}</h3>
           <p id="confirm-modal-message" class="mt-1.5 text-[13px] text-body leading-relaxed">
-            Are you sure you want to proceed?
+            {editorStrings.confirmMessage}
           </p>
           <p id="confirm-modal-subtext" class="mt-2 text-[11px] text-mute flex items-center gap-1 font-mono">
-            <span>💡</span> <span>You can also undo this action later using Ctrl+Z.</span>
+            <span>💡</span> <span>{editorStrings.confirmSubtext}</span>
           </p>
         </div>
       </div>
@@ -153,14 +238,14 @@ import ImageCropModal from './ImageCropModal.astro';
           type="button"
           class="h-9 px-4 rounded-xl border border-hairline bg-canvas-elevated text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer"
         >
-          Cancel
+          {editorStrings.cancel}
         </button>
         <button
           id="confirm-modal-btn-proceed"
           type="button"
           class="h-9 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-[13px] font-semibold text-white shadow-sm transition-colors cursor-pointer"
         >
-          Confirm
+          {editorStrings.confirm}
         </button>
       </div>
     </div>
@@ -171,7 +256,7 @@ import ImageCropModal from './ImageCropModal.astro';
 </div>
 
 <!-- Core Client-Side Logic Script -->
-<script is:inline>
+<script is:inline define:vars={{ editorStrings }}>
   function initPdfEditor() {
     // State management
     const state = {
@@ -225,7 +310,7 @@ import ImageCropModal from './ImageCropModal.astro';
     const undoBtn = document.getElementById('btn-undo');
     const redoBtn = document.getElementById('btn-redo');
 
-    function showLoading(msg = 'Processing Document...') {
+    function showLoading(msg = editorStrings.processingDoc) {
       loadingText.textContent = msg;
       loadingOverlay.classList.remove('hidden');
     }
@@ -262,7 +347,7 @@ import ImageCropModal from './ImageCropModal.astro';
         await renderCurrentPage();
         await renderThumbnails();
         updateUndoRedoUI();
-        showToast('Action undone', 'info', 1800);
+        showToast(editorStrings.actionUndone, 'info', 1800);
       }
     });
 
@@ -276,7 +361,7 @@ import ImageCropModal from './ImageCropModal.astro';
         await renderCurrentPage();
         await renderThumbnails();
         updateUndoRedoUI();
-        showToast('Action redone', 'info', 1800);
+        showToast(editorStrings.actionRedone, 'info', 1800);
       }
     });
 
@@ -308,7 +393,7 @@ import ImageCropModal from './ImageCropModal.astro';
     const confirmBtnCancel = document.getElementById('confirm-modal-btn-cancel');
     const confirmIconWrapper = document.getElementById('confirm-modal-icon-wrapper');
 
-    function openConfirmModal({ title, message, subtext = '', confirmText = 'Confirm', confirmStyle = 'rose', onConfirm }) {
+    function openConfirmModal({ title, message, subtext = '', confirmText = editorStrings.confirm, confirmStyle = 'rose', onConfirm }) {
       if (!confirmModal) return;
       pendingConfirmAction = onConfirm;
 
@@ -394,7 +479,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Reset Changes for Current or Specified Page
     function resetPageChanges(pageNum = state.currentPage) {
       if (!state.pdfDocProxy) {
-        showToast('Please open or load a PDF document first.', 'info');
+        showToast(editorStrings.noDocLoaded, 'info');
         return;
       }
 
@@ -404,20 +489,20 @@ import ImageCropModal from './ImageCropModal.astro';
       const hasCrop = Boolean(state.pageCrops && state.pageCrops[p]);
 
       if (annotCount === 0 && !hasRotation && !hasCrop) {
-        showToast(`Page ${p} has no changes to reset.`, 'info');
+        showToast(`${editorStrings.pageNoChanges}`, 'info');
         return;
       }
 
       const details = [];
-      if (annotCount > 0) details.push(`${annotCount} annotation${annotCount === 1 ? '' : 's'}`);
-      if (hasRotation) details.push(`rotation (${state.pageRotations[p]}°)`);
-      if (hasCrop) details.push('crop/resize');
+      if (annotCount > 0) details.push(`${annotCount} ${annotCount === 1 ? editorStrings.annotation : editorStrings.annotations}`);
+      if (hasRotation) details.push(`${editorStrings.rotation} (${state.pageRotations[p]}°)`);
+      if (hasCrop) details.push(editorStrings.cropResize);
 
       openConfirmModal({
-        title: `Reset Changes on Page ${p}?`,
-        message: `This will remove all edits on Page ${p} (${details.join(', ')}) and revert it to the original page.`,
-        subtext: 'You can undo this reset anytime using Ctrl+Z.',
-        confirmText: `Reset Page ${p}`,
+        title: `${editorStrings.resetTitle} ${p}?`,
+        message: `${editorStrings.resetMessage} ${p} (${details.join(', ')})`,
+        subtext: editorStrings.resetSubtext,
+        confirmText: `${editorStrings.resetConfirm} ${p}`,
         confirmStyle: 'amber',
         onConfirm: async () => {
           state.annotations[p] = [];
@@ -437,7 +522,7 @@ import ImageCropModal from './ImageCropModal.astro';
             await renderCurrentPage();
           }
           await renderSingleThumbnail(p);
-          showToast(`Page ${p} changes have been reset.`, 'success');
+          showToast(`${p} ${editorStrings.changesReset}`, 'success');
         }
       });
     }
@@ -445,7 +530,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Reset Changes on ALL Pages in a Single Click
     function resetAllPagesChanges() {
       if (!state.pdfDocProxy) {
-        showToast('Please open or load a PDF document first.', 'info');
+        showToast(editorStrings.noDocLoaded, 'info');
         return;
       }
 
@@ -467,20 +552,20 @@ import ImageCropModal from './ImageCropModal.astro';
 
       const totalChanges = totalAnnots + totalRotations + totalCrops;
       if (totalChanges === 0) {
-        showToast('All pages are already in their clean original state.', 'info');
+        showToast(editorStrings.allClean, 'info');
         return;
       }
 
       const summaryParts = [];
-      if (totalAnnots > 0) summaryParts.push(`${totalAnnots} annotation${totalAnnots === 1 ? '' : 's'}`);
-      if (totalRotations > 0) summaryParts.push(`${totalRotations} rotated page${totalRotations === 1 ? '' : 's'}`);
-      if (totalCrops > 0) summaryParts.push(`${totalCrops} crop${totalCrops === 1 ? '' : 's'}`);
+      if (totalAnnots > 0) summaryParts.push(`${totalAnnots} ${totalAnnots === 1 ? editorStrings.annotation : editorStrings.annotations}`);
+      if (totalRotations > 0) summaryParts.push(`${totalRotations} ${totalRotations === 1 ? editorStrings.rotatedPage : editorStrings.rotatedPages}`);
+      if (totalCrops > 0) summaryParts.push(`${totalCrops} ${totalCrops === 1 ? editorStrings.cropNoun : editorStrings.cropsNoun}`);
 
       openConfirmModal({
-        title: 'Reset Changes on ALL Pages?',
-        message: `This will reset all modifications (${summaryParts.join(', ')}) across all ${state.totalPages} pages in a single click.`,
-        subtext: 'You can easily undo this reset with Ctrl+Z or the Undo button.',
-        confirmText: 'Reset All Pages',
+        title: editorStrings.resetAllTitle,
+        message: `${editorStrings.resetAllMessage} (${summaryParts.join(', ')})`,
+        subtext: editorStrings.resetAllSubtext,
+        confirmText: editorStrings.resetAllConfirm,
         confirmStyle: 'rose',
         onConfirm: async () => {
           for (let p = 1; p <= state.totalPages; p++) {
@@ -495,7 +580,7 @@ import ImageCropModal from './ImageCropModal.astro';
           saveHistory();
           await renderThumbnails();
           await renderCurrentPage();
-          showToast('All changes across all pages have been reset.', 'success');
+          showToast(editorStrings.resetAllSuccess, 'success');
         }
       });
     }
@@ -508,10 +593,10 @@ import ImageCropModal from './ImageCropModal.astro';
       }
 
       openConfirmModal({
-        title: 'Start a New Session?',
-        message: 'Are you sure you want to close the current document and start fresh? All unsaved annotations, signatures, and edits will be discarded.',
-        subtext: 'Make sure you have downloaded your PDF if you need to keep your changes.',
-        confirmText: 'Start New Session',
+        title: editorStrings.newSessionTitle,
+        message: editorStrings.newSessionMessage,
+        subtext: editorStrings.newSessionSubtext,
+        confirmText: editorStrings.newSessionConfirm,
         confirmStyle: 'primary',
         onConfirm: () => {
           // Reset internal state
@@ -569,7 +654,7 @@ import ImageCropModal from './ImageCropModal.astro';
           document.getElementById('watermark-modal')?.classList.add('hidden');
           document.getElementById('image-crop-modal')?.classList.add('hidden');
 
-          showToast('New session started. You can now upload a new PDF.', 'info');
+          showToast(editorStrings.newSessionStarted, 'info');
           emptyState.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       });
@@ -584,7 +669,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
     // Load PDF ArrayBuffer or Uint8Array
     async function loadPdfBuffer(inputData) {
-      showLoading('Rendering PDF Pages...');
+      showLoading(editorStrings.rendering);
       try {
         if (inputData instanceof Uint8Array) {
           state.pdfBytes = inputData.slice();
@@ -625,7 +710,7 @@ import ImageCropModal from './ImageCropModal.astro';
         await renderCurrentPage();
       } catch (err) {
         console.error('Error loading PDF:', err);
-        alert('Failed to load PDF file: ' + err.message);
+        alert(editorStrings.loadFailed + err.message);
       } finally {
         hideLoading();
       }
@@ -634,7 +719,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Render Main Active Page
     async function renderCurrentPage() {
       if (!state.pdfDocProxy) return;
-      showLoading('Rendering Page ' + state.currentPage + '...');
+      showLoading(editorStrings.renderingPage + ' ' + state.currentPage + '...');
       try {
         curPageSpan.textContent = state.currentPage;
         prevPageBtn.disabled = state.currentPage <= 1;
@@ -732,7 +817,7 @@ import ImageCropModal from './ImageCropModal.astro';
           el.innerHTML = `
             <div class="relative px-2.5 py-1 rounded-xs bg-transparent border border-dashed border-ink/30 hover:border-link focus-within:border-link focus-within:ring-1 focus-within:ring-link/30 transition-all cursor-text select-text"
                  style="color: ${annot.color || '#171717'}; font-size: ${annot.fontSize || 16}px; font-family: ${annot.fontFamily || 'Geist, sans-serif'}; ${annot.bgWhiteout ? 'background-color: #ffffff;' : ''}">
-              <div class="annot-text-content select-text cursor-text outline-none inline-block min-w-[50px] whitespace-pre-wrap break-words" contenteditable="true" spellcheck="false">${annot.text || 'Type text here'}</div>
+              <div class="annot-text-content select-text cursor-text outline-none inline-block min-w-[50px] whitespace-pre-wrap break-words" contenteditable="true" spellcheck="false">${annot.text || editorStrings.typeTextPlaceholder}</div>
               <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30" title="Delete text">&times;</button>
               <div class="annot-drag-handle absolute -top-2.5 -left-2.5 h-5 w-5 rounded-full bg-ink text-on-primary text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm cursor-grab active:cursor-grabbing transition-opacity z-30 select-none" title="Drag to move">✥</div>
             </div>
@@ -862,7 +947,7 @@ import ImageCropModal from './ImageCropModal.astro';
           const h = annot.height || 30;
           el.innerHTML = `
             <div class="annot-redact-box relative cursor-move bg-black rounded-xs flex items-center justify-center group-hover:outline group-hover:outline-1 group-hover:outline-rose-500 select-none" style="width:${w}px; height:${h}px;">
-              <span class="text-[9px] font-mono text-white/60 uppercase tracking-widest pointer-events-none">REDACTED</span>
+              <span class="text-[9px] font-mono text-white/60 uppercase tracking-widest pointer-events-none">${editorStrings.redactText}</span>
               <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30">&times;</button>
               <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-rose-500 border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
             </div>
@@ -1219,7 +1304,7 @@ import ImageCropModal from './ImageCropModal.astro';
       state.selectedAnnotationId = annot.id;
       propertyBar.classList.remove('hidden');
       const typeDisplay = annot.type === 'redact'
-        ? 'REDACT (BLACKOUT)'
+        ? editorStrings.redactType
         : (annot.type.toUpperCase() + (annot.shapeType ? ` (${annot.shapeType})` : ''));
       document.getElementById('inspector-element-type').textContent = typeDisplay;
 
@@ -1253,7 +1338,7 @@ import ImageCropModal from './ImageCropModal.astro';
           wmLayerGroup.classList.remove('hidden');
           wmLayerGroup.classList.add('flex');
           const layerTxt = document.getElementById('prop-wm-layer-text');
-          if (layerTxt) layerTxt.textContent = (annot.underText !== false) ? 'Under Text' : 'Over Text';
+          if (layerTxt) layerTxt.textContent = (annot.underText !== false) ? editorStrings.underText : editorStrings.overText;
         }
 
         const fontSizeSel = document.getElementById('prop-font-size');
@@ -1520,7 +1605,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Insertion Helpers
     function insertTextAnnotation(customX, customY) {
       if (!state.currentPage || !state.pdfDocProxy) {
-        alert('Please open a PDF file or click "Load Sample Document" first.');
+        alert(editorStrings.addTextAlert);
         return;
       }
       if (!state.annotations[state.currentPage]) {
@@ -1536,7 +1621,7 @@ import ImageCropModal from './ImageCropModal.astro';
         type: 'text',
         x,
         y,
-        text: 'Type text here',
+        text: editorStrings.typeTextPlaceholder,
         fontSize: parseInt(document.getElementById('prop-font-size')?.value || '16', 10),
         color: state.activeDrawColor || '#171717',
         fontFamily: document.getElementById('prop-font-family')?.value || 'Geist, sans-serif',
@@ -1569,7 +1654,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
     function insertShapeAnnotation(shapeType, customX, customY) {
       if (!state.currentPage || !state.pdfDocProxy) {
-        alert('Please open a PDF file or click "Load Sample Document" first.');
+        alert(editorStrings.addShapeAlert);
         return;
       }
       if (!state.annotations[state.currentPage]) {
@@ -1606,7 +1691,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
     function insertRedactAnnotation(customX, customY) {
       if (!state.currentPage || !state.pdfDocProxy) {
-        alert('Please open a PDF file or click "Try Sample Invoice" first.');
+        alert(editorStrings.addRedactAlert);
         return;
       }
       if (!state.annotations[state.currentPage]) {
@@ -1654,7 +1739,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Reorder Pages in PDF
     async function reorderPages(fromIndex, toIndex) {
       if (fromIndex === toIndex || fromIndex < 1 || toIndex < 1 || fromIndex > state.totalPages || toIndex > state.totalPages) return;
-      showLoading(`Moving Page ${fromIndex} to Page ${toIndex}...`);
+      showLoading(`${editorStrings.movingPage} ${fromIndex} - ${toIndex}...`);
       try {
         const { PDFDocument } = window.PDFLib;
         const srcDoc = await PDFDocument.load(state.pdfBytes);
@@ -1698,7 +1783,7 @@ import ImageCropModal from './ImageCropModal.astro';
         await renderCurrentPage();
       } catch (err) {
         console.error('Failed to reorder pages:', err);
-        alert('Failed to reorder pages: ' + err.message);
+        alert(editorStrings.reorderFailed + err.message);
       } finally {
         hideLoading();
       }
@@ -1717,7 +1802,7 @@ import ImageCropModal from './ImageCropModal.astro';
           <div class="flex items-center justify-between pb-1.5 text-[11px] font-mono text-mute">
             <span class="font-medium text-ink flex items-center gap-1">
               <span class="cursor-grab active:cursor-grabbing text-mute/70 hover:text-ink select-none" title="Drag to reorder">⋮⋮</span>
-              Page ${p}
+              ${editorStrings.page} ${p}
             </span>
             <div class="flex items-center gap-1">
               <button class="thumb-up-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-[10px] font-bold shadow-xs disabled:opacity-20 disabled:pointer-events-none transition-all cursor-pointer" title="Move Page Up" ${p === 1 ? 'disabled' : ''}>▲</button>
@@ -1794,10 +1879,10 @@ import ImageCropModal from './ImageCropModal.astro';
         thumbCard.querySelector('.thumb-del-btn').addEventListener('click', async (e) => {
           e.stopPropagation();
           if (state.totalPages <= 1) {
-            alert('Cannot delete the only page in the document.');
+            alert(editorStrings.onlyPageDelete);
             return;
           }
-          if (confirm(`Are you sure you want to delete Page ${p}?`)) {
+          if (confirm(`${editorStrings.deletePageConfirm} ${p}?`)) {
             await deletePage(p);
           }
         });
@@ -1844,7 +1929,7 @@ import ImageCropModal from './ImageCropModal.astro';
     }
 
     async function deletePage(pageIndex) {
-      showLoading('Deleting Page...');
+      showLoading(editorStrings.deletingPage + '...');
       try {
         const { PDFDocument } = window.PDFLib;
         const srcDoc = await PDFDocument.load(state.pdfBytes);
@@ -1881,7 +1966,7 @@ import ImageCropModal from './ImageCropModal.astro';
         await renderThumbnails();
         await renderCurrentPage();
       } catch (err) {
-        alert('Failed to delete page: ' + err.message);
+        alert(editorStrings.deleteFailed + err.message);
       } finally {
         hideLoading();
       }
@@ -2044,7 +2129,7 @@ import ImageCropModal from './ImageCropModal.astro';
         annotationsLayer.classList.remove('cursor-crosshair');
 
         propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = 'FREEHAND PEN';
+        document.getElementById('inspector-element-type').textContent = editorStrings.freehandPen;
 
         if (drawGroup) { drawGroup.classList.remove('hidden'); drawGroup.classList.add('flex'); }
         if (colorGroup) { colorGroup.classList.remove('hidden'); colorGroup.classList.add('flex'); }
@@ -2072,7 +2157,7 @@ import ImageCropModal from './ImageCropModal.astro';
         annotationsLayer.classList.remove('cursor-crosshair');
 
         propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = 'HIGHLIGHTER';
+        document.getElementById('inspector-element-type').textContent = editorStrings.highlighter;
 
         if (hlGroup) { hlGroup.classList.remove('hidden'); hlGroup.classList.add('flex'); }
         if (hlColorGroup) { hlColorGroup.classList.remove('hidden'); hlColorGroup.classList.add('flex'); }
@@ -2096,7 +2181,7 @@ import ImageCropModal from './ImageCropModal.astro';
         annotationsLayer.classList.add('cursor-crosshair');
 
         propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = 'REDACT (BLACKOUT)';
+        document.getElementById('inspector-element-type').textContent = editorStrings.redactType;
         if (drawGroup) drawGroup.classList.add('hidden');
         if (hlGroup) hlGroup.classList.add('hidden');
         if (hlColorGroup) hlColorGroup.classList.add('hidden');
@@ -2347,7 +2432,7 @@ import ImageCropModal from './ImageCropModal.astro';
         if (target && target.type === 'watermark') {
           target.underText = !target.underText;
           const layerTxt = document.getElementById('prop-wm-layer-text');
-          if (layerTxt) layerTxt.textContent = (target.underText !== false) ? 'Under Text' : 'Over Text';
+          if (layerTxt) layerTxt.textContent = (target.underText !== false) ? editorStrings.underText : editorStrings.overText;
           target.zIndex = target.underText ? '15' : '25';
           renderAnnotationsLayer();
           saveHistory();
@@ -2428,7 +2513,7 @@ import ImageCropModal from './ImageCropModal.astro';
         };
         reader.readAsArrayBuffer(file);
       } else {
-        alert('Please select a valid PDF file.');
+        alert(editorStrings.loadPdfFirst);
       }
     }
 
@@ -2593,7 +2678,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Export PDF with all modifications & overlays
     exportBtn.addEventListener('click', async () => {
       if (!state.pdfBytes) {
-        alert('Please open or create a PDF first.');
+        alert(editorStrings.loadPdfFirst);
         return;
       }
 
@@ -3446,7 +3531,7 @@ import ImageCropModal from './ImageCropModal.astro';
       });
 
       const lockIcon = document.getElementById('crop-ratio-lock-icon');
-      if (lockIcon) lockIcon.textContent = '🔒 Proportional';
+      if (lockIcon) lockIcon.textContent = editorStrings.lockProportional;
 
       // Load image into crop frame
       cropImg.onload = () => {
@@ -3658,7 +3743,7 @@ import ImageCropModal from './ImageCropModal.astro';
     document.getElementById('btn-toggle-crop-ratio-lock')?.addEventListener('click', () => {
       cropIsRatioLocked = !cropIsRatioLocked;
       const icon = document.getElementById('crop-ratio-lock-icon');
-      if (icon) icon.textContent = cropIsRatioLocked ? '🔒 Proportional' : '🔓 Free Ratio';
+      if (icon) icon.textContent = cropIsRatioLocked ? editorStrings.lockProportional : editorStrings.unlockFree;
     });
 
     // Dimension Inputs in modal
@@ -3801,7 +3886,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // ==========================================
     async function openCropForCurrentPdfPage() {
       if (!state.pdfDocProxy || !state.totalPages) {
-        alert('Please open or upload a PDF document first.');
+        alert(editorStrings.loadPdfFirst);
         return;
       }
       const pageDataUrl = renderCanvas.toDataURL('image/png');
@@ -4103,7 +4188,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Apply Watermark to Current Page Only
     applyWmCurBtn?.addEventListener('click', () => {
       if (!state.totalPages) {
-        alert('Please open a PDF document first.');
+        alert(editorStrings.loadPdfFirst);
         return;
       }
       const cur = state.currentPage || 1;
@@ -4119,7 +4204,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Apply Watermark to All Pages
     applyWmBtn?.addEventListener('click', () => {
       if (!state.totalPages) {
-        alert('Please open a PDF document first.');
+        alert(editorStrings.loadPdfFirst);
         return;
       }
       for (let p = 1; p <= state.totalPages; p++) {
@@ -4134,7 +4219,7 @@ import ImageCropModal from './ImageCropModal.astro';
     // Apply Page Numbers to All Pages
     applyPgBtn?.addEventListener('click', () => {
       if (!state.totalPages) {
-        alert('Please open a PDF document first.');
+        alert(editorStrings.loadPdfFirst);
         return;
       }
       const format = document.getElementById('pg-format-select')?.value || 'Page {n} of {total}';

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+# Localized landing pages for each language
 Sitemap: https://realeditpdf.com/sitemap.xml
