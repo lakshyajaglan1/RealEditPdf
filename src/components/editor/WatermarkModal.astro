@@ -40,32 +40,129 @@
         />
       </div>
 
+      <!-- Layering / Position (Under vs Over Original PDF Text) -->
+      <div>
+        <label class="block text-[12px] font-medium text-body mb-1.5 flex items-center justify-between">
+          <span>Layer Position</span>
+          <span class="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 font-semibold uppercase">Recommended</span>
+        </label>
+        <div class="grid grid-cols-2 gap-2 rounded-xl border border-hairline bg-hairline-soft/60 p-1 text-[12px]">
+          <label class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg cursor-pointer transition-all border border-transparent font-medium has-[:checked]:bg-canvas-elevated has-[:checked]:text-ink has-[:checked]:border-hairline has-[:checked]:shadow-xs text-body hover:text-ink">
+            <input type="radio" name="wm-layer-pos" id="wm-layer-under" value="under" checked class="hidden" />
+            <svg class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span>Under PDF Text</span>
+          </label>
+          <label class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg cursor-pointer transition-all border border-transparent font-medium has-[:checked]:bg-canvas-elevated has-[:checked]:text-ink has-[:checked]:border-hairline has-[:checked]:shadow-xs text-body hover:text-ink">
+            <input type="radio" name="wm-layer-pos" id="wm-layer-over" value="over" class="hidden" />
+            <svg class="h-3.5 w-3.5 text-body" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+            </svg>
+            <span>Over PDF Text</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Rotation Angle (Any angle from -180° to 180° + Presets) -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-[12px] font-medium text-body">Rotation Angle</label>
+          <div class="flex items-center gap-1">
+            <input
+              type="number"
+              id="wm-angle-input"
+              value="-45"
+              min="-180"
+              max="180"
+              step="1"
+              class="w-14 rounded-lg border border-hairline bg-canvas px-1.5 py-0.5 text-center text-[12px] font-mono text-ink outline-none focus:border-blue-500"
+            />
+            <span class="text-[11px] font-mono text-mute">°</span>
+          </div>
+        </div>
+
+        <!-- Angle Slider -->
+        <input
+          type="range"
+          id="wm-angle-slider"
+          min="-180"
+          max="180"
+          step="1"
+          value="-45"
+          class="w-full accent-blue-600 cursor-pointer"
+          title="Drag to rotate watermark to any angle (-180° to 180°)"
+        />
+
+        <!-- Angle Preset Chips -->
+        <div class="mt-2 flex items-center justify-between gap-1.5">
+          <button type="button" class="wm-angle-preset flex-1 py-1 rounded-lg border border-hairline bg-canvas hover:bg-hairline-soft text-[11px] font-mono text-body hover:text-ink transition-colors cursor-pointer" data-angle="-45">-45°</button>
+          <button type="button" class="wm-angle-preset flex-1 py-1 rounded-lg border border-hairline bg-canvas hover:bg-hairline-soft text-[11px] font-mono text-body hover:text-ink transition-colors cursor-pointer" data-angle="0">0°</button>
+          <button type="button" class="wm-angle-preset flex-1 py-1 rounded-lg border border-hairline bg-canvas hover:bg-hairline-soft text-[11px] font-mono text-body hover:text-ink transition-colors cursor-pointer" data-angle="45">+45°</button>
+          <button type="button" class="wm-angle-preset flex-1 py-1 rounded-lg border border-hairline bg-canvas hover:bg-hairline-soft text-[11px] font-mono text-body hover:text-ink transition-colors cursor-pointer" data-angle="90">+90°</button>
+        </div>
+      </div>
+
+      <!-- Opacity & Font Size -->
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="block text-[12px] font-medium text-body mb-1.5">Opacity: <span id="wm-opacity-label" class="font-mono text-mute">20%</span></label>
           <input type="range" id="wm-opacity-slider" min="0.05" max="0.8" step="0.05" value="0.2" class="w-full accent-blue-600 cursor-pointer" />
         </div>
         <div>
-          <label class="block text-[12px] font-medium text-body mb-1.5">Rotation Angle</label>
-          <select id="wm-angle-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[12px] text-ink outline-none focus:border-blue-500">
-            <option value="-45" selected>-45° (Diagonal)</option>
-            <option value="0">0° (Horizontal)</option>
-            <option value="45">45° (Diagonal Up)</option>
+          <label class="block text-[12px] font-medium text-body mb-1.5">Font Size</label>
+          <select id="wm-size-select" class="w-full rounded-xl border border-hairline bg-canvas px-3 py-2 text-[12px] text-ink outline-none focus:border-blue-500">
+            <option value="32">32px (Small)</option>
+            <option value="48" selected>48px (Medium)</option>
+            <option value="64">64px (Large)</option>
+            <option value="80">80px (Extra Large)</option>
           </select>
         </div>
       </div>
 
+      <!-- Color Selection -->
       <div>
-        <label class="block text-[12px] font-medium text-body mb-1.5">Color</label>
-        <div class="flex items-center gap-2.5">
-          <input type="color" id="wm-color-picker" value="#ff0000" class="h-8 w-9 cursor-pointer rounded-xl border border-hairline p-0" />
-          <span class="text-[12px] text-mute font-mono">Applies to all pages across the PDF</span>
+        <label class="block text-[12px] font-medium text-body mb-1.5">Watermark Color</label>
+        <div class="flex items-center gap-2">
+          <input type="color" id="wm-color-picker" value="#ef4444" class="h-8 w-9 cursor-pointer rounded-xl border border-hairline p-0" />
+          <div class="flex items-center gap-1.5">
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#ef4444;" data-color="#ef4444" title="Red"></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#64748b;" data-color="#64748b" title="Slate Gray"></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#2563eb;" data-color="#2563eb" title="Blue"></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#d97706;" data-color="#d97706" title="Amber"></button>
+            <button type="button" class="wm-color-swatch h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110 cursor-pointer" style="background:#059669;" data-color="#059669" title="Emerald"></button>
+          </div>
         </div>
       </div>
 
-      <button id="btn-apply-watermark" class="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
-        Apply Watermark to All Pages
-      </button>
+      <!-- Live Preview Card -->
+      <div class="relative overflow-hidden rounded-xl border border-hairline bg-canvas p-4 text-center select-none">
+        <div class="absolute inset-0 flex flex-col justify-around opacity-15 pointer-events-none p-2">
+          <div class="h-2 w-3/4 rounded bg-ink mx-auto"></div>
+          <div class="h-2 w-5/6 rounded bg-ink mx-auto"></div>
+          <div class="h-2 w-2/3 rounded bg-ink mx-auto"></div>
+          <div class="h-2 w-4/5 rounded bg-ink mx-auto"></div>
+        </div>
+        <div class="relative z-10 py-4 flex items-center justify-center min-h-[80px]">
+          <span
+            id="wm-preview-text"
+            class="inline-block font-extrabold tracking-widest uppercase transition-transform select-none"
+            style="color: #ef4444; opacity: 0.2; transform: rotate(-45deg); font-size: 24px; font-family: system-ui, sans-serif;"
+          >
+            CONFIDENTIAL
+          </span>
+        </div>
+        <span class="text-[10px] font-mono text-mute">Live Preview (Rotates with angle & slider)</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button id="btn-apply-watermark-cur" class="rounded-xl border border-hairline bg-canvas-elevated hover:bg-hairline-soft py-2.5 text-[12px] font-semibold text-ink shadow-xs active:scale-95 transition-all cursor-pointer">
+          Current Page Only
+        </button>
+        <button id="btn-apply-watermark" class="rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 py-2.5 text-[12px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
+          Apply to All Pages
+        </button>
+      </div>
     </div>
 
     <!-- Pane 2: Page Numbers -->

@@ -449,6 +449,52 @@ import ImageCropModal from './ImageCropModal.astro';
               <div class="annot-resize-handle-nw absolute -top-2 -left-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-nw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to resize"></div>
             </div>
           `;
+        } else if (annot.type === 'watermark') {
+          const rot = ((annot.rotation || 0) % 360 + 360) % 360;
+          const isSelected = (state.selectedAnnotationId === annot.id);
+          const isUnder = annot.underText !== false;
+          const fontSize = annot.fontSize || 48;
+          const color = annot.color || '#ef4444';
+          const opacity = annot.opacity !== undefined ? annot.opacity : 0.2;
+
+          el.style.zIndex = isUnder ? '15' : '25';
+          el.innerHTML = `
+            <div class="annot-rot-wrapper relative cursor-move select-none ${isSelected ? 'ring-2 ring-blue-500 shadow-md' : 'group-hover:outline group-hover:outline-1 group-hover:outline-link'}"
+                 style="transform: rotate(${rot}deg); transform-origin: center center; ${isUnder ? 'mix-blend-mode: multiply;' : ''}">
+              <div class="annot-watermark-text px-4 py-2 font-extrabold tracking-widest uppercase pointer-events-auto select-none whitespace-nowrap"
+                   style="color: ${color}; opacity: ${opacity}; font-size: ${fontSize}px; font-family: system-ui, sans-serif; text-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                ${annot.text || 'CONFIDENTIAL'}
+              </div>
+
+              <!-- Action Buttons: Rotate & Delete -->
+              <div class="annot-action-bar absolute -top-5 right-0 flex items-center gap-1 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-30 pointer-events-auto">
+                <button type="button" class="annot-rotate-btn flex items-center gap-1 h-5 px-2 rounded-full bg-canvas-elevated hover:bg-hairline-soft text-ink border border-hairline text-[10px] font-medium shadow-xs transition-all cursor-pointer" title="Rotate +15° (or drag top handle for any angle)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Rotate</span>
+                </button>
+                <button type="button" class="annot-del-btn h-5 w-5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs flex items-center justify-center shadow-xs transition-all cursor-pointer" title="Delete watermark">&times;</button>
+              </div>
+
+              <!-- Top Center Dedicated Rotation Handle & Stem -->
+              <div class="annot-rotate-stem absolute -top-6 left-1/2 -translate-x-1/2 w-0.5 h-5 bg-blue-500 pointer-events-none ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity"></div>
+              <div class="annot-rotate-handle absolute -top-11 left-1/2 -translate-x-1/2 h-7 w-7 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg border-2 border-white cursor-grab active:cursor-grabbing flex items-center justify-center transition-all hover:scale-115 active:scale-95 z-40 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}" title="Drag with mouse or scroll wheel to rotate to any angle">
+                <svg class="h-4 w-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+              <div class="annot-rotate-badge absolute -top-17 left-1/2 -translate-x-1/2 hidden px-2.5 py-0.5 rounded-full bg-zinc-900 text-white text-[11px] font-mono font-bold shadow-lg border border-white/20 whitespace-nowrap pointer-events-none z-50">
+                ${rot}°
+              </div>
+
+              <!-- 4 Corner Resize Handles (SE, SW, NE, NW) -->
+              <div class="annot-resize-handle absolute -bottom-2 -right-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-se-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to scale watermark"></div>
+              <div class="annot-resize-handle-sw absolute -bottom-2 -left-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-sw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to scale watermark"></div>
+              <div class="annot-resize-handle-ne absolute -top-2 -right-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-ne-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to scale watermark"></div>
+              <div class="annot-resize-handle-nw absolute -top-2 -left-2 h-4 w-4 rounded-full bg-white border-2 border-blue-600 shadow-md cursor-nw-resize ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity z-40 hover:scale-125" title="Drag with mouse to scale watermark"></div>
+            </div>
+          `;
         } else if (annot.type === 'redact') {
           const w = annot.width || 140;
           const h = annot.height || 30;
@@ -575,7 +621,8 @@ import ImageCropModal from './ImageCropModal.astro';
         rotateBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           selectAnnotation(annot);
-          updateAnnotRotation(annot, (annot.rotation || 0) + 90, true);
+          const step = (annot.type === 'watermark') ? 15 : 90;
+          updateAnnotRotation(annot, (annot.rotation || 0) + step, true);
         });
       }
 
@@ -602,7 +649,7 @@ import ImageCropModal from './ImageCropModal.astro';
           let delta = currentAngle - lastAngle;
           // Smooth boundary wrap-around
           if (delta > 180) delta -= 360;
-          if (delta < -180) delta += 360;
+          if (delta < -180) delta -= 360;
 
           currentRotation += delta;
           lastAngle = currentAngle;
@@ -642,7 +689,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
       // Mouse Wheel Rotation: Scroll wheel directly over element rotates it!
       el.addEventListener('wheel', (e) => {
-        if (annot.type === 'signature' || annot.type === 'stamp' || annot.type === 'image') {
+        if (annot.type === 'signature' || annot.type === 'stamp' || annot.type === 'image' || annot.type === 'watermark') {
           e.preventDefault();
           e.stopPropagation();
           selectAnnotation(annot);
@@ -662,7 +709,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
       // Prevent default right-click menu when using right-click to rotate
       el.addEventListener('contextmenu', (e) => {
-        if (annot.type === 'signature' || annot.type === 'stamp' || annot.type === 'image') {
+        if (annot.type === 'signature' || annot.type === 'stamp' || annot.type === 'image' || annot.type === 'watermark') {
           e.preventDefault();
         }
       });
@@ -679,9 +726,11 @@ import ImageCropModal from './ImageCropModal.astro';
           const rStartY = e.clientY;
           const startWidth = annot.width || (annot.type === 'shape' ? 120 : (annot.type === 'redact' ? 140 : 160));
           const startHeight = annot.height || (annot.type === 'shape' ? 60 : (annot.type === 'redact' ? 30 : 70));
+          const startFontSize = annot.fontSize || 48;
           const startX = annot.x;
           const startY = annot.y;
           const isProportional = (annot.type === 'signature' || annot.type === 'image' || annot.type === 'stamp');
+          const isWatermark = (annot.type === 'watermark');
           const aspectRatio = startWidth / (startHeight || 1);
 
           // Center coordinates for angle-agnostic proportional scaling
@@ -696,6 +745,18 @@ import ImageCropModal from './ImageCropModal.astro';
           document.body.style.userSelect = 'none';
 
           function onResizeMouseMove(moveEv) {
+            if (isWatermark) {
+              const currentDist = Math.hypot(moveEv.clientX - screenCenterX, moveEv.clientY - screenCenterY);
+              const scale = Math.max(0.3, Math.min(5.0, currentDist / startDist));
+              const newFontSize = Math.max(16, Math.min(180, Math.round(startFontSize * scale)));
+              annot.fontSize = newFontSize;
+              const textEl = el.querySelector('.annot-watermark-text');
+              if (textEl) textEl.style.fontSize = newFontSize + 'px';
+              const propFontSize = document.getElementById('prop-font-size');
+              if (propFontSize && state.selectedAnnotationId === annot.id) propFontSize.value = newFontSize;
+              return;
+            }
+
             if (isProportional) {
               const currentDist = Math.hypot(moveEv.clientX - screenCenterX, moveEv.clientY - screenCenterY);
               const scale = Math.max(0.15, Math.min(6.0, currentDist / startDist));
@@ -805,13 +866,63 @@ import ImageCropModal from './ImageCropModal.astro';
       const opacityGroup = document.getElementById('prop-opacity-group');
       const imageGroup = document.getElementById('prop-image-group');
       const colorGroup = document.getElementById('prop-color-group');
+      const rotateGroup = document.getElementById('prop-rotate-group');
+      const wmLayerGroup = document.getElementById('prop-watermark-layer-group');
 
-      if (annot.type === 'text') {
+      if (annot.type === 'watermark') {
+        if (fontGroup) fontGroup.classList.remove('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.remove('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (colorGroup) colorGroup.classList.remove('hidden');
+        if (rotateGroup) { rotateGroup.classList.remove('hidden'); rotateGroup.classList.add('flex'); }
+        if (wmLayerGroup) {
+          wmLayerGroup.classList.remove('hidden');
+          wmLayerGroup.classList.add('flex');
+          const layerTxt = document.getElementById('prop-wm-layer-text');
+          if (layerTxt) layerTxt.textContent = (annot.underText !== false) ? 'Under Text' : 'Over Text';
+        }
+
+        const fontSizeSel = document.getElementById('prop-font-size');
+        if (fontSizeSel && annot.fontSize) fontSizeSel.value = annot.fontSize;
+
+        const propAngle = document.getElementById('prop-rotate-angle');
+        if (propAngle) propAngle.value = Math.round(annot.rotation || 0);
+        const propSlider = document.getElementById('prop-rotate-slider');
+        if (propSlider) propSlider.value = Math.round(annot.rotation || 0);
+
+        const opInput = document.getElementById('prop-opacity');
+        if (opInput) opInput.value = annot.opacity !== undefined ? annot.opacity : 0.2;
+        const opVal = document.getElementById('prop-opacity-val');
+        if (opVal) opVal.textContent = Math.round((annot.opacity !== undefined ? annot.opacity : 0.2) * 100) + '%';
+
+        // Highlight selected annotation element and make handles visible
+        document.querySelectorAll('.annot-rot-wrapper').forEach(w => {
+          w.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
+          w.classList.add('group-hover:outline', 'group-hover:outline-1', 'group-hover:outline-link');
+        });
+        document.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => {
+          h.classList.remove('!opacity-100');
+        });
+        const activeEl = document.getElementById('annot-' + annot.id);
+        if (activeEl) {
+          const wrap = activeEl.querySelector('.annot-rot-wrapper');
+          if (wrap) {
+            wrap.classList.add('ring-2', 'ring-blue-500', 'shadow-md');
+            wrap.classList.remove('group-hover:outline', 'group-hover:outline-1', 'group-hover:outline-link');
+          }
+          activeEl.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => {
+            h.classList.add('!opacity-100');
+          });
+        }
+      } else if (annot.type === 'text') {
         if (fontGroup) fontGroup.classList.remove('hidden');
         if (strokeGroup) strokeGroup.classList.add('hidden');
         if (opacityGroup) opacityGroup.classList.add('hidden');
         if (imageGroup) imageGroup.classList.add('hidden');
         if (colorGroup) colorGroup.classList.remove('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
         const fontFamSel = document.getElementById('prop-font-family');
         if (fontFamSel && annot.fontFamily) fontFamSel.value = annot.fontFamily;
         const fontSizeSel = document.getElementById('prop-font-size');
@@ -822,6 +933,8 @@ import ImageCropModal from './ImageCropModal.astro';
         if (opacityGroup) opacityGroup.classList.remove('hidden');
         if (imageGroup) imageGroup.classList.add('hidden');
         if (colorGroup) colorGroup.classList.remove('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
         const strokeInput = document.getElementById('prop-stroke-width');
         if (strokeInput) strokeInput.value = annot.strokeWidth || 2;
         const strokeVal = document.getElementById('prop-stroke-val');
@@ -836,6 +949,8 @@ import ImageCropModal from './ImageCropModal.astro';
         if (opacityGroup) opacityGroup.classList.remove('hidden');
         if (imageGroup) imageGroup.classList.remove('hidden');
         if (colorGroup) colorGroup.classList.add('hidden');
+        if (rotateGroup) { rotateGroup.classList.remove('hidden'); rotateGroup.classList.add('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
 
         const propImgW = document.getElementById('prop-img-w');
         const propImgH = document.getElementById('prop-img-h');
@@ -877,6 +992,8 @@ import ImageCropModal from './ImageCropModal.astro';
         if (opacityGroup) opacityGroup.classList.add('hidden');
         if (imageGroup) imageGroup.classList.add('hidden');
         if (colorGroup) colorGroup.classList.remove('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
       }
 
       const colorInput = document.getElementById('prop-color-picker');
@@ -1503,7 +1620,7 @@ import ImageCropModal from './ImageCropModal.astro';
       if (state.selectedAnnotationId && state.currentPage) {
         const list = state.annotations[state.currentPage] || [];
         const target = list.find(a => a.id === state.selectedAnnotationId);
-        if (target && target.type === 'text') {
+        if (target && (target.type === 'text' || target.type === 'watermark')) {
           target.fontSize = parseInt(e.target.value, 10);
           renderAnnotationsLayer();
           saveHistory();
@@ -1541,13 +1658,30 @@ import ImageCropModal from './ImageCropModal.astro';
       if (state.selectedAnnotationId && state.currentPage) {
         const list = state.annotations[state.currentPage] || [];
         const target = list.find(a => a.id === state.selectedAnnotationId);
-        if (target && (target.type === 'shape' || target.type === 'draw')) {
+        if (target) {
           target.opacity = val;
           renderAnnotationsLayer();
         }
       }
     });
     propOpacity?.addEventListener('change', () => saveHistory());
+
+    // Watermark Layer Toggle (Under vs Over Text)
+    const btnWmToggleLayer = document.getElementById('btn-prop-wm-toggle-layer');
+    btnWmToggleLayer?.addEventListener('click', () => {
+      if (state.selectedAnnotationId && state.currentPage) {
+        const list = state.annotations[state.currentPage] || [];
+        const target = list.find(a => a.id === state.selectedAnnotationId);
+        if (target && target.type === 'watermark') {
+          target.underText = !target.underText;
+          const layerTxt = document.getElementById('prop-wm-layer-text');
+          if (layerTxt) layerTxt.textContent = (target.underText !== false) ? 'Under Text' : 'Over Text';
+          target.zIndex = target.underText ? '15' : '25';
+          renderAnnotationsLayer();
+          saveHistory();
+        }
+      }
+    });
 
     // Property Bar Color Palette & Custom Picker Handlers
     document.querySelectorAll('.color-preset').forEach(btn => {
@@ -1873,9 +2007,97 @@ import ImageCropModal from './ImageCropModal.astro';
             });
           }
 
-          // 2. Render Text, Redact, Shapes, Images, Signatures, Stamps
+          // 1b. Embed Watermarks positioned UNDER original PDF text
+          const underWatermarks = pageAnnots.filter(a => a.type === 'watermark' && a.underText !== false);
+          if (underWatermarks.length > 0) {
+            page.node.normalize();
+            const prevStreamCount = page.node.Contents().size();
+            page.getContentStream(false);
+
+            for (const wm of underWatermarks) {
+              const hex = wm.color || '#ef4444';
+              const r = parseInt(hex.slice(1,3), 16) / 255 || 0.9;
+              const g = parseInt(hex.slice(3,5), 16) / 255 || 0.2;
+              const b = parseInt(hex.slice(5,7), 16) / 255 || 0.2;
+              const op = wm.opacity !== undefined ? wm.opacity : 0.2;
+              const fontSize = (wm.fontSize || 48) * scaleY;
+              const rotDeg = ((wm.rotation || 0) % 360 + 360) % 360;
+              const textStr = wm.text || 'CONFIDENTIAL';
+
+              const textW = font.widthOfTextAtSize(textStr, fontSize);
+              const textH = font.heightAtSize(fontSize);
+
+              const wmDisplayW = wm.width || (textW / scaleX);
+              const wmDisplayH = wm.height || (textH / scaleY);
+              const pdfCenterX = (wm.x + wmDisplayW / 2) * scaleX;
+              const pdfCenterY = pHeight - ((wm.y + wmDisplayH / 2) * scaleY);
+
+              const rad = -rotDeg * Math.PI / 180;
+              const cos = Math.cos(rad);
+              const sin = Math.sin(rad);
+
+              const drawX = pdfCenterX - (textW / 2) * cos + (textH / 2) * sin;
+              const drawY = pdfCenterY - (textW / 2) * sin - (textH / 2) * cos;
+
+              page.drawText(textStr, {
+                x: drawX,
+                y: drawY,
+                size: fontSize,
+                font,
+                color: rgb(r, g, b),
+                opacity: op,
+                rotate: degrees(-rotDeg),
+              });
+            }
+
+            // Move newly created content stream to index 0 (beneath original PDF page contents)
+            const contents = page.node.Contents();
+            const addedCount = contents.size() - prevStreamCount;
+            for (let k = 0; k < addedCount; k++) {
+              const streamRef = contents.asArray().pop();
+              contents.asArray().unshift(streamRef);
+            }
+          }
+
+          // 2. Render Text, Redact, Shapes, Images, Signatures, Stamps, Over-text Watermarks
           for (const annot of pageAnnots) {
-            if (annot.type === 'text') {
+            if (annot.type === 'watermark') {
+              if (annot.underText === false) {
+                const hex = annot.color || '#ef4444';
+                const r = parseInt(hex.slice(1,3), 16) / 255 || 0.9;
+                const g = parseInt(hex.slice(3,5), 16) / 255 || 0.2;
+                const b = parseInt(hex.slice(5,7), 16) / 255 || 0.2;
+                const op = annot.opacity !== undefined ? annot.opacity : 0.2;
+                const fontSize = (annot.fontSize || 48) * scaleY;
+                const rotDeg = ((annot.rotation || 0) % 360 + 360) % 360;
+                const textStr = annot.text || 'CONFIDENTIAL';
+
+                const textW = font.widthOfTextAtSize(textStr, fontSize);
+                const textH = font.heightAtSize(fontSize);
+
+                const wmDisplayW = annot.width || (textW / scaleX);
+                const wmDisplayH = annot.height || (textH / scaleY);
+                const pdfCenterX = (annot.x + wmDisplayW / 2) * scaleX;
+                const pdfCenterY = pHeight - ((annot.y + wmDisplayH / 2) * scaleY);
+
+                const rad = -rotDeg * Math.PI / 180;
+                const cos = Math.cos(rad);
+                const sin = Math.sin(rad);
+
+                const drawX = pdfCenterX - (textW / 2) * cos + (textH / 2) * sin;
+                const drawY = pdfCenterY - (textW / 2) * sin - (textH / 2) * cos;
+
+                page.drawText(textStr, {
+                  x: drawX,
+                  y: drawY,
+                  size: fontSize,
+                  font,
+                  color: rgb(r, g, b),
+                  opacity: op,
+                  rotate: degrees(-rotDeg),
+                });
+              }
+            } else if (annot.type === 'text') {
               const pdfX = annot.x * scaleX;
               const pdfY = pHeight - ((annot.y + annot.fontSize) * scaleY);
               const hex = annot.color || '#171717';
@@ -3091,8 +3313,14 @@ import ImageCropModal from './ImageCropModal.astro';
     const panePg = document.getElementById('watermark-pane-pg');
     const applyWmBtn = document.getElementById('btn-apply-watermark');
     const applyPgBtn = document.getElementById('btn-apply-pagenumbers');
+    const applyWmCurBtn = document.getElementById('btn-apply-watermark-cur');
     const wmOpacitySlider = document.getElementById('wm-opacity-slider');
     const wmOpacityLabel = document.getElementById('wm-opacity-label');
+    const wmAngleSlider = document.getElementById('wm-angle-slider');
+    const wmAngleInput = document.getElementById('wm-angle-input');
+    const wmTextInput = document.getElementById('wm-text-input');
+    const wmSizeSelect = document.getElementById('wm-size-select');
+    const wmColorPicker = document.getElementById('wm-color-picker');
 
     function switchWatermarkTab(tab) {
       if (tab === 'wm') {
@@ -3111,9 +3339,27 @@ import ImageCropModal from './ImageCropModal.astro';
     tabWm?.addEventListener('click', () => switchWatermarkTab('wm'));
     tabPg?.addEventListener('click', () => switchWatermarkTab('pg'));
 
+    function updateWatermarkModalPreview() {
+      const wmPreviewText = document.getElementById('wm-preview-text');
+      if (!wmPreviewText) return;
+      const text = (document.getElementById('wm-text-input')?.value || 'CONFIDENTIAL').trim() || 'CONFIDENTIAL';
+      const opacity = parseFloat(document.getElementById('wm-opacity-slider')?.value) || 0.2;
+      const color = document.getElementById('wm-color-picker')?.value || '#ef4444';
+      const angleInput = document.getElementById('wm-angle-input');
+      const angle = parseFloat(angleInput?.value ?? -45) || 0;
+      const fontSize = parseInt(document.getElementById('wm-size-select')?.value, 10) || 48;
+
+      wmPreviewText.textContent = text;
+      wmPreviewText.style.color = color;
+      wmPreviewText.style.opacity = opacity;
+      wmPreviewText.style.transform = `rotate(${angle}deg)`;
+      wmPreviewText.style.fontSize = Math.max(16, Math.min(36, Math.round(fontSize * 0.5))) + 'px';
+    }
+
     openWmBtn?.addEventListener('click', () => {
       wmModal?.classList.remove('hidden');
       switchWatermarkTab('wm');
+      updateWatermarkModalPreview();
     });
     closeWmBtn?.addEventListener('click', () => wmModal?.classList.add('hidden'));
 
@@ -3121,6 +3367,89 @@ import ImageCropModal from './ImageCropModal.astro';
       if (wmOpacityLabel) {
         wmOpacityLabel.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
       }
+      updateWatermarkModalPreview();
+    });
+
+    wmAngleSlider?.addEventListener('input', (e) => {
+      if (wmAngleInput) wmAngleInput.value = e.target.value;
+      updateWatermarkModalPreview();
+    });
+
+    wmAngleInput?.addEventListener('input', (e) => {
+      if (wmAngleSlider) wmAngleSlider.value = e.target.value;
+      updateWatermarkModalPreview();
+    });
+
+    document.querySelectorAll('.wm-angle-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ang = btn.dataset.angle || '0';
+        if (wmAngleSlider) wmAngleSlider.value = ang;
+        if (wmAngleInput) wmAngleInput.value = ang;
+        updateWatermarkModalPreview();
+      });
+    });
+
+    wmTextInput?.addEventListener('input', () => updateWatermarkModalPreview());
+    wmSizeSelect?.addEventListener('change', () => updateWatermarkModalPreview());
+    wmColorPicker?.addEventListener('input', () => updateWatermarkModalPreview());
+
+    document.querySelectorAll('.wm-color-swatch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = btn.dataset.color;
+        if (c && wmColorPicker) {
+          wmColorPicker.value = c;
+          updateWatermarkModalPreview();
+        }
+      });
+    });
+
+    function createWatermarkAnnot(pageNum) {
+      const text = (document.getElementById('wm-text-input')?.value || 'CONFIDENTIAL').trim() || 'CONFIDENTIAL';
+      const opacity = parseFloat(document.getElementById('wm-opacity-slider')?.value) || 0.2;
+      const color = document.getElementById('wm-color-picker')?.value || '#ef4444';
+      const angleVal = parseFloat(document.getElementById('wm-angle-input')?.value ?? -45);
+      const angle = isNaN(angleVal) ? -45 : angleVal;
+      const fontSize = parseInt(document.getElementById('wm-size-select')?.value, 10) || 48;
+      const underText = document.getElementById('wm-layer-under')?.checked ?? true;
+
+      const displayW = renderCanvas.width / 1.5 || 600;
+      const displayH = renderCanvas.height / 1.5 || 800;
+      const approxW = Math.max(260, text.length * (fontSize * 0.65));
+      const approxH = Math.max(60, fontSize * 1.4);
+      const initX = Math.round(Math.max(20, (displayW - approxW) / 2));
+      const initY = Math.round(Math.max(20, (displayH - approxH) / 2));
+
+      return {
+        id: 'wm-' + pageNum + '-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+        type: 'watermark',
+        text: text,
+        x: initX,
+        y: initY,
+        width: approxW,
+        height: approxH,
+        fontSize: fontSize,
+        color: color,
+        opacity: opacity,
+        rotation: angle,
+        underText: underText,
+        zIndex: underText ? '15' : '25',
+      };
+    }
+
+    // Apply Watermark to Current Page Only
+    applyWmCurBtn?.addEventListener('click', () => {
+      if (!state.totalPages) {
+        alert('Please open a PDF document first.');
+        return;
+      }
+      const cur = state.currentPage || 1;
+      if (!state.annotations[cur]) state.annotations[cur] = [];
+      const annot = createWatermarkAnnot(cur);
+      state.annotations[cur].push(annot);
+      selectAnnotation(annot);
+      saveHistory();
+      renderAnnotationsLayer();
+      wmModal?.classList.add('hidden');
     });
 
     // Apply Watermark to All Pages
@@ -3129,23 +3458,9 @@ import ImageCropModal from './ImageCropModal.astro';
         alert('Please open a PDF document first.');
         return;
       }
-      const text = document.getElementById('wm-text-input')?.value || 'CONFIDENTIAL';
-      const opacity = parseFloat(document.getElementById('wm-opacity-slider')?.value) || 0.2;
-      const color = document.getElementById('wm-color-picker')?.value || '#ff0000';
-
       for (let p = 1; p <= state.totalPages; p++) {
         if (!state.annotations[p]) state.annotations[p] = [];
-        state.annotations[p].push({
-          id: 'wm-' + p + '-' + Date.now(),
-          type: 'text',
-          text: text,
-          x: 100,
-          y: 260,
-          fontSize: 48,
-          color: color,
-          opacity: opacity,
-          zIndex: '15',
-        });
+        state.annotations[p].push(createWatermarkAnnot(p));
       }
       saveHistory();
       renderAnnotationsLayer();

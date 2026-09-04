@@ -66,12 +66,36 @@ We have completely modernized the user interface of **RealPdfEdit** to provide a
 
 ---
 
+### 7. Watermark Under Original PDF Text & Freeform Rotation Engine
+- **Under Original PDF Text Layering**:
+  - **Modal Layer Choice**: Provides explicit "Under PDF Text" (selected by default with *RECOMMENDED* badge) and "Over PDF Text" options.
+  - **Interactive Canvas Multiply Blending**: Watermarks configured under text render with `mix-blend-mode: multiply` and z-index below user annotations (`z-15`), guaranteeing that dark document text and graphics crisply show on top of the watermark.
+  - **Native Content Stream Prepending in PDF Export**: Using `pdf-lib`, watermarks placed under text are compiled into a dedicated content stream and prepended to index `0` of `page.node.Contents()`. When the PDF is exported and viewed in any PDF reader, the watermark is physically drawn beneath the original document text.
+- **Dedicated Rotation System on Watermark Elements**:
+  - **On-Element Quick Rotate Button**: The floating action pill on the watermark displays an instant **Rotate** button (`.annot-rotate-btn`) that increments rotation by `+15°`.
+  - **Dedicated Top Rotation Handle & Stem**: Connected at the top center (`.annot-rotate-handle`), allowing continuous 360° mouse-drag rotation with live degree badge display.
+  - **Mouse Wheel Rotation**: Scrolling the mouse wheel directly over the watermark smoothly rotates it to any angle.
+  - **Corner Font Scaling Handles**: All 4 corners have resize handles that dynamically scale the watermark's font size.
+- **Enhanced Watermark Modal Controls**:
+  - Continuous angle slider (`-180°` to `+180°`).
+  - Direct degree numeric input (`°`).
+  - Quick preset buttons (`-45°`, `0°`, `+45°`, `+90°`).
+  - Real-time animated live preview card.
+  - "Current Page Only" vs "Apply to All Pages" buttons.
+- **Inspector Property Toolbar Integration**:
+  - Displays the active watermark's rotation slider, micro-step CW/CCW buttons, degree numeric input, `0° Reset`, and **"Under Text"** / **"Over Text"** layer toggle button.
+
+---
+
 ## Verification Results
 
 1. **Build Validation**:
-   - Ran `npm run build`: All 7 static pages built cleanly in 620ms without any errors.
+   - Ran `npm run build`: All static pages built cleanly in 614ms without any TypeScript or Vite bundling errors.
 2. **Browser Subagent Testing**:
-   - Tested corner handle dragging: enlarged stamp from `160px × 60px` to `430px × 161px`.
-   - Tested top rotate handle dragging: smoothly rotated stamp from `0°` to `48°`.
-   - Tested simultaneous resize while rotated: dragged corner handle while the stamp remained rotated at `48°`, resizing smoothly from `430px × 161px` to `232px × 87px` without any alignment jitter or conflict.
-   - Recording saved: [`test_resize_and_rotate`](file:///home/lakshya/.gemini/antigravity-ide/brain/ecf29810-5590-49ea-a3d0-9d60274922dd/test_resize_and_rotate_1788399947059.webp).
+   - Loaded sample PDF invoice.
+   - Tested Watermark modal: verified "Under PDF Text" default, continuous rotation slider, and live preview.
+   - Selected `+45°` preset and applied watermark across document.
+   - Verified on-page rendering: watermark appeared tilted at `+45°` underneath document text.
+   - Verified on-element controls: clicked **Rotate** button on the watermark, angle incremented to `60°`.
+   - Verified property inspector: layer button displayed `Under Text`, and rotation controls accurately displayed `60°`.
+   - Recording saved: [watermark_rotation_test.webp](file:///home/lakshya/.gemini/antigravity-ide/brain/fd89cbaf-34b6-4796-8db0-8f4801a4a8a3/watermark_rotation_test_1788507168076.webp).

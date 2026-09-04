@@ -316,62 +316,77 @@
         <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="1">100%</button>
         <button type="button" class="btn-quick-scale h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-body hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-scale="1.5">150%</button>
       </div>
+    </div>
 
-      <!-- Rotation Controls (Any Angle from 0° to 360°) -->
-      <div class="flex items-center gap-1.5 border-l border-hairline/80 pl-2">
-        <span class="text-[11px] font-mono text-mute">Rotate:</span>
-        <button
-          id="btn-prop-rotate-ccw"
-          type="button"
-          class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
-          title="Rotate -15° (Counter-Clockwise)"
-        >
-          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-          </svg>
-        </button>
-        <!-- Continuous Angle Slider for Any Angle -->
+    <!-- Watermark Layer Toggle (Under vs Over Text) -->
+    <div id="prop-watermark-layer-group" class="hidden items-center gap-1 border-l border-hairline/80 pl-2">
+      <button
+        id="btn-prop-wm-toggle-layer"
+        type="button"
+        class="flex h-7 items-center gap-1.5 rounded-lg border border-hairline bg-canvas-elevated hover:bg-hairline-soft px-2 text-[11px] font-medium text-ink transition-colors cursor-pointer shadow-xs"
+        title="Toggle Watermark Layer: Under PDF Text vs Over PDF Text"
+      >
+        <svg class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <span id="prop-wm-layer-text">Under Text</span>
+      </button>
+    </div>
+
+    <!-- Dedicated Rotation Controls Group (Any Angle from 0° to 360°) -->
+    <div id="prop-rotate-group" class="hidden items-center gap-1.5 border-l border-hairline/80 pl-2">
+      <span class="text-[11px] font-mono text-mute">Rotate:</span>
+      <button
+        id="btn-prop-rotate-ccw"
+        type="button"
+        class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
+        title="Rotate -15° (Counter-Clockwise)"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+        </svg>
+      </button>
+      <!-- Continuous Angle Slider for Any Angle -->
+      <input
+        type="range"
+        id="prop-rotate-slider"
+        min="0"
+        max="360"
+        value="0"
+        class="h-1.5 w-18 accent-blue-600 cursor-pointer"
+        title="Drag slider to rotate to any angle (0° to 360°)"
+      />
+      <button
+        id="btn-prop-rotate-cw"
+        type="button"
+        class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
+        title="Rotate +15° (Clockwise)"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
+        </svg>
+      </button>
+      <div class="relative flex items-center">
         <input
-          type="range"
-          id="prop-rotate-slider"
+          type="number"
+          id="prop-rotate-angle"
           min="0"
           max="360"
+          step="1"
           value="0"
-          class="h-1.5 w-18 accent-blue-600 cursor-pointer"
-          title="Drag slider to rotate to any angle (0° to 360°)"
+          class="h-7 w-12 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+          title="Type exact rotation angle in degrees"
         />
-        <button
-          id="btn-prop-rotate-cw"
-          type="button"
-          class="flex h-7 w-7 items-center justify-center rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer"
-          title="Rotate +15° (Clockwise)"
-        >
-          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
-          </svg>
-        </button>
-        <div class="relative flex items-center">
-          <input
-            type="number"
-            id="prop-rotate-angle"
-            min="0"
-            max="360"
-            step="1"
-            value="0"
-            class="h-7 w-12 rounded-md border border-hairline bg-canvas-elevated px-1 text-[11px] font-mono text-ink text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
-            title="Type exact rotation angle in degrees"
-          />
-          <span class="absolute right-1 text-[10px] font-mono text-mute pointer-events-none">°</span>
-        </div>
-        <button
-          id="btn-prop-rotate-reset"
-          type="button"
-          class="h-7 px-1.5 rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-[10px] font-mono text-mute hover:text-ink transition-colors cursor-pointer"
-          title="Reset rotation to 0°"
-        >
-          0°
-        </button>
+        <span class="absolute right-1 text-[10px] font-mono text-mute pointer-events-none">°</span>
       </div>
+      <button
+        id="btn-prop-rotate-reset"
+        type="button"
+        class="h-7 px-1.5 rounded-md border border-hairline bg-canvas-elevated hover:bg-hairline-soft text-[10px] font-mono text-mute hover:text-ink transition-colors cursor-pointer"
+        title="Reset rotation to 0°"
+      >
+        0°
+      </button>
     </div>
 
     <!-- Color Palette -->
