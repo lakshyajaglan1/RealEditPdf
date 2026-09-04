@@ -32,31 +32,193 @@
           <span class="hidden md:inline">Text</span>
         </button>
 
-        <!-- Freehand Pen with Active Color Indicator -->
-        <button
-          id="tool-draw"
-          class="tool-btn flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
-          title="Draw Pen (D)"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
-          <span class="hidden md:inline">Draw</span>
-          <span id="draw-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#171717] ring-1 ring-hairline inline-block ml-0.5"></span>
-        </button>
+        <!-- Freehand Pen with Dropdown / Size & Options -->
+        <div class="relative flex items-center">
+          <button
+            id="tool-draw"
+            class="tool-btn flex h-8 items-center gap-1.5 rounded-l-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
+            title="Draw Pen (D)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            <span class="hidden md:inline">Draw</span>
+            <span id="draw-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#171717] ring-1 ring-hairline inline-block ml-0.5"></span>
+          </button>
+          <button
+            id="btn-draw-options"
+            type="button"
+            class="flex h-8 w-5 items-center justify-center rounded-r-lg border-l border-hairline/60 text-mute hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer"
+            title="Pen Size & Stroke Options"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-70" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
 
-        <!-- Highlighter with Active Color Indicator -->
-        <button
-          id="tool-highlight"
-          class="tool-btn flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
-          title="Highlighter (H)"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" clip-rule="evenodd" />
-          </svg>
-          <span class="hidden md:inline">Highlight</span>
-          <span id="highlight-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#fef08a] ring-1 ring-hairline inline-block ml-0.5"></span>
-        </button>
+          <!-- Draw Quick Options Dropdown -->
+          <div id="draw-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-64 rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
+            <div class="mb-2 flex items-center justify-between">
+              <span class="text-[12px] font-semibold text-ink">Draw Pen Settings</span>
+              <span id="dropdown-draw-size-val" class="font-mono text-[11px] font-bold text-blue-600 dark:text-cyan-400">2px</span>
+            </div>
+            
+            <!-- Pen Size Slider -->
+            <div class="space-y-1.5 mb-3">
+              <div class="flex items-center justify-between text-[11px] text-mute">
+                <span>Pen Size (Thickness):</span>
+                <div id="dropdown-draw-preview-dot" class="h-2 w-2 rounded-full bg-ink inline-block transition-all"></div>
+              </div>
+              <input
+                type="range"
+                id="dropdown-draw-size"
+                min="1"
+                max="40"
+                value="2"
+                class="h-1.5 w-full accent-blue-600 cursor-pointer"
+              />
+              <div class="flex items-center justify-between gap-1 pt-1">
+                <button type="button" class="btn-draw-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="1">1px</button>
+                <button type="button" class="btn-draw-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="2">2px</button>
+                <button type="button" class="btn-draw-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="5">5px</button>
+                <button type="button" class="btn-draw-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="10">10px</button>
+                <button type="button" class="btn-draw-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="20">20px</button>
+              </div>
+            </div>
+
+            <!-- Pen Opacity Slider -->
+            <div class="space-y-1.5 mb-3 border-t border-hairline/70 pt-2.5">
+              <div class="flex items-center justify-between text-[11px] text-mute">
+                <span>Opacity:</span>
+                <span id="dropdown-draw-opacity-val" class="font-mono text-[11px] text-ink font-semibold">100%</span>
+              </div>
+              <input
+                type="range"
+                id="dropdown-draw-opacity"
+                min="0.1"
+                max="1.0"
+                step="0.05"
+                value="1.0"
+                class="h-1.5 w-full accent-blue-600 cursor-pointer"
+              />
+            </div>
+
+            <!-- Color Palette -->
+            <div class="border-t border-hairline/70 pt-2.5">
+              <span class="text-[11px] text-mute block mb-1.5">Pen Color:</span>
+              <div class="flex items-center gap-1.5">
+                <input type="color" id="dropdown-draw-color-picker" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
+                <div class="flex items-center gap-1">
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#171717] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#171717"></button>
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#ef4444] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#ef4444"></button>
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#2563eb] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#2563eb"></button>
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#10b981] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#10b981"></button>
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#f59e0b] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f59e0b"></button>
+                  <button type="button" class="draw-color-opt h-5 w-5 rounded-full bg-[#ffffff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#ffffff" title="Whiteout Pen"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlighter with Dropdown / Intensity & Area Size Options -->
+        <div class="relative flex items-center">
+          <button
+            id="tool-highlight"
+            class="tool-btn flex h-8 items-center gap-1.5 rounded-l-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
+            title="Highlighter (H)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" clip-rule="evenodd" />
+            </svg>
+            <span class="hidden md:inline">Highlight</span>
+            <span id="highlight-color-indicator" class="h-2.5 w-2.5 rounded-full bg-[#fef08a] ring-1 ring-hairline inline-block ml-0.5"></span>
+          </button>
+          <button
+            id="btn-highlight-options"
+            type="button"
+            class="flex h-8 w-5 items-center justify-center rounded-r-lg border-l border-hairline/60 text-mute hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer"
+            title="Highlight Size, Intensity & Options"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-70" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <!-- Highlight Options Dropdown -->
+          <div id="highlight-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-72 rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
+            <div class="mb-2 flex items-center justify-between">
+              <span class="text-[12px] font-semibold text-ink">Highlighter Settings</span>
+              <span id="dropdown-hl-badge" class="rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">Soft Marker</span>
+            </div>
+
+            <!-- Intensity Slider -->
+            <div class="space-y-1.5 mb-3">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-mute font-medium">Intensity (Opacity):</span>
+                <span id="dropdown-hl-intensity-val" class="font-mono font-bold text-[11px] text-ink">35%</span>
+              </div>
+              <input
+                type="range"
+                id="dropdown-hl-intensity"
+                min="0.10"
+                max="1.0"
+                step="0.05"
+                value="0.35"
+                class="h-1.5 w-full accent-amber-500 cursor-pointer"
+              />
+              <div class="flex items-center justify-between gap-1 pt-1">
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.2">Light 20%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.35">Std 35%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.6">Med 60%</button>
+                <button type="button" class="btn-hl-intensity-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-val="0.9">Solid 90%</button>
+              </div>
+            </div>
+
+            <!-- Size of Highlight Area Slider -->
+            <div class="space-y-1.5 mb-3 border-t border-hairline/70 pt-2.5">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-mute font-medium">Highlight Area Size:</span>
+                <span id="dropdown-hl-size-val" class="font-mono font-bold text-[11px] text-ink">24px</span>
+              </div>
+              <input
+                type="range"
+                id="dropdown-hl-size"
+                min="8"
+                max="72"
+                step="2"
+                value="24"
+                class="h-1.5 w-full accent-amber-500 cursor-pointer"
+              />
+              <!-- Live Highlight Preview Bar -->
+              <div class="h-6 w-full rounded bg-hairline-soft/60 flex items-center justify-center overflow-hidden border border-hairline/50 my-1">
+                <div id="dropdown-hl-preview-bar" class="w-11/12 rounded-sm bg-[#fef08a] transition-all" style="height: 14px; opacity: 0.35;"></div>
+              </div>
+              <div class="flex items-center justify-between gap-1 pt-0.5">
+                <button type="button" class="btn-hl-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="12">12px</button>
+                <button type="button" class="btn-hl-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="24">24px</button>
+                <button type="button" class="btn-hl-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="40">40px</button>
+                <button type="button" class="btn-hl-size-preset text-[10px] px-1.5 py-0.5 rounded border border-hairline text-mute hover:text-ink hover:bg-hairline-soft cursor-pointer" data-size="60">60px</button>
+              </div>
+            </div>
+
+            <!-- Color Palette -->
+            <div class="border-t border-hairline/70 pt-2.5">
+              <span class="text-[11px] text-mute block mb-1.5">Highlight Color:</span>
+              <div class="flex items-center gap-1.5">
+                <input type="color" id="dropdown-hl-color-picker" value="#fef08a" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
+                <div class="flex items-center gap-1">
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#fef08a] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fef08a" title="Lemon Yellow"></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#86efac] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#86efac" title="Lime Green"></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#7dd3fc] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#7dd3fc" title="Sky Cyan"></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#f472b6] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f472b6" title="Rose Pink"></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#fed7aa] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fed7aa" title="Amber Orange"></button>
+                  <button type="button" class="hl-color-opt h-5 w-5 rounded-full bg-[#e9d5ff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#e9d5ff" title="Soft Lavender"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Shapes Dropdown/Trigger -->
         <div class="relative">
@@ -389,7 +551,84 @@
       </button>
     </div>
 
-    <!-- Color Palette -->
+    <!-- Dedicated Highlight Controls (Area Size & Intensity) -->
+    <div id="prop-highlight-group" class="hidden flex flex-wrap items-center gap-2.5">
+      <!-- Size of Highlight Area Slider -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-mute text-[11px] font-medium">Highlight Size:</span>
+        <input type="range" id="prop-highlight-size" min="8" max="72" step="2" value="24" class="h-1.5 w-20 accent-amber-500 cursor-pointer" title="Size of Highlight Area" />
+        <span id="prop-highlight-size-val" class="font-mono text-[11px] font-bold text-ink min-w-[30px]">24px</span>
+        <!-- Live Visual Preview -->
+        <span id="prop-highlight-preview" class="h-3.5 w-6 rounded-xs bg-[#fef08a] opacity-35 border border-hairline inline-block" title="Current highlight swatch"></span>
+      </div>
+
+      <!-- Quick Size Badges -->
+      <div class="hidden sm:flex items-center gap-1 border-l border-hairline/80 pl-2">
+        <button type="button" class="btn-prop-hl-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="12">12px</button>
+        <button type="button" class="btn-prop-hl-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="24">24px</button>
+        <button type="button" class="btn-prop-hl-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="40">40px</button>
+        <button type="button" class="btn-prop-hl-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="60">60px</button>
+      </div>
+
+      <!-- Highlight Intensity (Opacity) Slider -->
+      <div class="flex items-center gap-1.5 border-l border-hairline/80 pl-2">
+        <span class="text-mute text-[11px] font-medium">Intensity:</span>
+        <input type="range" id="prop-highlight-opacity" min="0.10" max="1.0" step="0.05" value="0.35" class="h-1.5 w-20 accent-amber-500 cursor-pointer" title="Highlight Intensity / Transparency" />
+        <span id="prop-highlight-opacity-val" class="font-mono text-[11px] font-bold text-ink min-w-[32px]">35%</span>
+      </div>
+
+      <!-- Quick Intensity Badges -->
+      <div class="hidden sm:flex items-center gap-1 border-l border-hairline/80 pl-2">
+        <button type="button" class="btn-prop-hl-op h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-val="0.2">20%</button>
+        <button type="button" class="btn-prop-hl-op h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-val="0.35">35%</button>
+        <button type="button" class="btn-prop-hl-op h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-val="0.6">60%</button>
+        <button type="button" class="btn-prop-hl-op h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-val="0.9">90%</button>
+      </div>
+    </div>
+
+    <!-- Highlight Color Palette (Vibrant highlighters) -->
+    <div id="prop-highlight-color-group" class="hidden flex items-center gap-1.5">
+      <span class="text-mute text-[11px] font-medium">Color:</span>
+      <input type="color" id="prop-highlight-color-picker" value="#fef08a" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
+      <div class="flex items-center gap-1 ml-0.5">
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#fef08a] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fef08a" title="Lemon Yellow"></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#86efac] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#86efac" title="Lime Green"></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#7dd3fc] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#7dd3fc" title="Sky Cyan"></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#f472b6] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#f472b6" title="Rose Pink"></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#fed7aa] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#fed7aa" title="Amber Orange"></button>
+        <button class="hl-color-preset h-4.5 w-4.5 rounded-full bg-[#e9d5ff] border border-hairline hover:scale-110 transition-transform cursor-pointer" data-color="#e9d5ff" title="Soft Lavender"></button>
+      </div>
+    </div>
+
+    <!-- Dedicated Draw Pen Controls (Size & Opacity) -->
+    <div id="prop-draw-group" class="hidden flex flex-wrap items-center gap-2.5">
+      <!-- Pen Size Slider -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-mute text-[11px] font-medium">Pen Size:</span>
+        <input type="range" id="prop-draw-size" min="1" max="40" value="2" class="h-1.5 w-20 accent-blue-600 cursor-pointer" title="Pen Stroke Size / Thickness" />
+        <span id="prop-draw-size-val" class="font-mono text-[11px] font-bold text-ink min-w-[28px]">2px</span>
+        <!-- Live Visual Preview Dot -->
+        <span id="prop-draw-preview" class="h-2 w-2 rounded-full bg-ink inline-block" title="Current pen stroke"></span>
+      </div>
+
+      <!-- Quick Size Badges -->
+      <div class="hidden sm:flex items-center gap-1 border-l border-hairline/80 pl-2">
+        <button type="button" class="btn-prop-draw-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="1">1px</button>
+        <button type="button" class="btn-prop-draw-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="2">2px</button>
+        <button type="button" class="btn-prop-draw-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="5">5px</button>
+        <button type="button" class="btn-prop-draw-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="10">10px</button>
+        <button type="button" class="btn-prop-draw-size h-6 rounded border border-hairline px-1.5 text-[10px] font-mono text-mute hover:text-ink hover:bg-hairline-soft transition-colors cursor-pointer" data-size="20">20px</button>
+      </div>
+
+      <!-- Pen Opacity Slider -->
+      <div class="flex items-center gap-1.5 border-l border-hairline/80 pl-2">
+        <span class="text-mute text-[11px] font-medium">Opacity:</span>
+        <input type="range" id="prop-draw-opacity" min="0.1" max="1.0" step="0.05" value="1.0" class="h-1.5 w-18 accent-blue-600 cursor-pointer" title="Pen Opacity" />
+        <span id="prop-draw-opacity-val" class="font-mono text-[11px] font-bold text-ink min-w-[32px]">100%</span>
+      </div>
+    </div>
+
+    <!-- Color Palette (General: Pen, Shapes, Text) -->
     <div id="prop-color-group" class="flex items-center gap-1.5">
       <span class="text-mute text-[11px] font-medium">Color:</span>
       <input type="color" id="prop-color-picker" value="#171717" class="h-6 w-7 cursor-pointer rounded-md border border-hairline bg-transparent p-0" />
@@ -403,14 +642,14 @@
       </div>
     </div>
 
-    <!-- Stroke / Thickness -->
+    <!-- Stroke / Thickness (For Shapes) -->
     <div id="prop-stroke-group" class="flex items-center gap-1.5">
       <span class="text-mute text-[11px] font-medium">Thickness:</span>
       <input type="range" id="prop-stroke-width" min="1" max="24" value="2" class="h-1.5 w-18 accent-blue-600 cursor-pointer" />
       <span id="prop-stroke-val" class="font-mono text-[11px] text-mute">2px</span>
     </div>
 
-    <!-- Opacity -->
+    <!-- Opacity (For Shapes / Images / Watermarks) -->
     <div id="prop-opacity-group" class="flex items-center gap-1.5">
       <span class="text-mute text-[11px] font-medium">Opacity:</span>
       <input type="range" id="prop-opacity" min="0.1" max="1" step="0.05" value="1" class="h-1.5 w-18 accent-blue-600 cursor-pointer" />

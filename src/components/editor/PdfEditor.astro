@@ -144,6 +144,8 @@ import ImageCropModal from './ImageCropModal.astro';
       activeDrawWidth: 2,
       activeDrawOpacity: 1.0,
       activeHighlightColor: '#fef08a',
+      activeHighlightWidth: 24,
+      activeHighlightOpacity: 0.35,
     };
 
     // DOM Elements
@@ -868,6 +870,17 @@ import ImageCropModal from './ImageCropModal.astro';
       const colorGroup = document.getElementById('prop-color-group');
       const rotateGroup = document.getElementById('prop-rotate-group');
       const wmLayerGroup = document.getElementById('prop-watermark-layer-group');
+      const hlGroup = document.getElementById('prop-highlight-group');
+      const hlColorGroup = document.getElementById('prop-highlight-color-group');
+      const drawGroup = document.getElementById('prop-draw-group');
+      const layerGroup = document.getElementById('prop-layer-group');
+      const delParent = document.getElementById('btn-delete-element')?.parentElement;
+
+      if (hlGroup) hlGroup.classList.add('hidden');
+      if (hlColorGroup) hlColorGroup.classList.add('hidden');
+      if (drawGroup) drawGroup.classList.add('hidden');
+      if (layerGroup) { layerGroup.classList.remove('hidden'); layerGroup.classList.add('flex'); }
+      if (delParent) delParent.classList.remove('hidden');
 
       if (annot.type === 'watermark') {
         if (fontGroup) fontGroup.classList.remove('hidden');
@@ -1058,32 +1071,35 @@ import ImageCropModal from './ImageCropModal.astro';
       });
     }
 
-    // Drawing Interaction on drawCanvas
-    drawCanvas.addEventListener('mousedown', (e) => {
+    // Drawing Interaction on drawCanvas (Mouse & Touch Events)
+    function getCanvasPoint(clientX, clientY) {
+      const rect = drawCanvas.getBoundingClientRect();
+      const scaleFactor = (drawCanvas.width / 1.5) / rect.width;
+      return {
+        x: (clientX - rect.left) * scaleFactor,
+        y: (clientY - rect.top) * scaleFactor,
+      };
+    }
+
+    function startDrawing(clientX, clientY) {
       if (state.activeTool !== 'draw' && state.activeTool !== 'highlight') return;
       state.isDrawing = true;
-      const rect = drawCanvas.getBoundingClientRect();
-      const scaleFactor = (drawCanvas.width / 1.5) / rect.width;
-      const x = (e.clientX - rect.left) * scaleFactor;
-      const y = (e.clientY - rect.top) * scaleFactor;
-      state.drawPoints = [{ x, y }];
-    });
+      const pt = getCanvasPoint(clientX, clientY);
+      state.drawPoints = [pt];
+    }
 
-    drawCanvas.addEventListener('mousemove', (e) => {
+    function continueDrawing(clientX, clientY) {
       if (!state.isDrawing) return;
-      const rect = drawCanvas.getBoundingClientRect();
-      const scaleFactor = (drawCanvas.width / 1.5) / rect.width;
-      const x = (e.clientX - rect.left) * scaleFactor;
-      const y = (e.clientY - rect.top) * scaleFactor;
-      state.drawPoints.push({ x, y });
+      const pt = getCanvasPoint(clientX, clientY);
+      state.drawPoints.push(pt);
 
       const ctx = drawCanvas.getContext('2d');
       ctx.save();
       ctx.beginPath();
       const isHighlighter = (state.activeTool === 'highlight');
       ctx.strokeStyle = isHighlighter ? state.activeHighlightColor : state.activeDrawColor;
-      ctx.lineWidth = (isHighlighter ? 20 : state.activeDrawWidth) * 1.5;
-      ctx.globalAlpha = isHighlighter ? 0.35 : state.activeDrawOpacity;
+      ctx.lineWidth = (isHighlighter ? (state.activeHighlightWidth || 24) : state.activeDrawWidth) * 1.5;
+      ctx.globalAlpha = isHighlighter ? (state.activeHighlightOpacity !== undefined ? state.activeHighlightOpacity : 0.35) : state.activeDrawOpacity;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
@@ -1094,7 +1110,7 @@ import ImageCropModal from './ImageCropModal.astro';
         ctx.stroke();
       }
       ctx.restore();
-    });
+    }
 
     function commitDrawing() {
       if (state.isDrawing && state.drawPoints.length > 1) {
@@ -1105,8 +1121,8 @@ import ImageCropModal from './ImageCropModal.astro';
           type: 'draw',
           points: [...state.drawPoints],
           color: isHighlighter ? state.activeHighlightColor : state.activeDrawColor,
-          lineWidth: isHighlighter ? 20 : state.activeDrawWidth,
-          opacity: isHighlighter ? 0.35 : state.activeDrawOpacity,
+          lineWidth: isHighlighter ? (state.activeHighlightWidth || 24) : state.activeDrawWidth,
+          opacity: isHighlighter ? (state.activeHighlightOpacity !== undefined ? state.activeHighlightOpacity : 0.35) : state.activeDrawOpacity,
         };
         state.annotations[state.currentPage].push(newDraw);
         saveHistory();
@@ -1115,8 +1131,31 @@ import ImageCropModal from './ImageCropModal.astro';
       state.isDrawing = false;
     }
 
+    drawCanvas.addEventListener('mousedown', (e) => startDrawing(e.clientX, e.clientY));
+    drawCanvas.addEventListener('mousemove', (e) => continueDrawing(e.clientX, e.clientY));
     drawCanvas.addEventListener('mouseup', commitDrawing);
     drawCanvas.addEventListener('mouseleave', commitDrawing);
+
+    // Touch support for touchscreen laptops, iPads, & mobile devices
+    drawCanvas.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length === 1) {
+        e.preventDefault();
+        startDrawing(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    drawCanvas.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length === 1 && state.isDrawing) {
+        e.preventDefault();
+        continueDrawing(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    drawCanvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      commitDrawing();
+    });
+    drawCanvas.addEventListener('touchcancel', commitDrawing);
 
     // Insertion Helpers
     function insertTextAnnotation(customX, customY) {
@@ -1495,6 +1534,117 @@ import ImageCropModal from './ImageCropModal.astro';
     btnRotatePage?.addEventListener('click', rotateCurrentPage);
     btnFloatingRotate?.addEventListener('click', rotateCurrentPage);
 
+    // Highlight & Draw Synchronization Helpers
+    function updateHighlightSettings(width, opacity, color) {
+      if (width !== undefined) state.activeHighlightWidth = parseInt(width, 10);
+      if (opacity !== undefined) state.activeHighlightOpacity = parseFloat(opacity);
+      if (color !== undefined) state.activeHighlightColor = color;
+
+      const w = state.activeHighlightWidth;
+      const op = state.activeHighlightOpacity;
+      const c = state.activeHighlightColor;
+      const opPct = Math.round(op * 100) + '%';
+
+      // Property bar elements
+      const propHlSize = document.getElementById('prop-highlight-size');
+      const propHlSizeVal = document.getElementById('prop-highlight-size-val');
+      const propHlOp = document.getElementById('prop-highlight-opacity');
+      const propHlOpVal = document.getElementById('prop-highlight-opacity-val');
+      const propHlPrev = document.getElementById('prop-highlight-preview');
+      const propHlColorPicker = document.getElementById('prop-highlight-color-picker');
+
+      if (propHlSize) propHlSize.value = w;
+      if (propHlSizeVal) propHlSizeVal.textContent = w + 'px';
+      if (propHlOp) propHlOp.value = op;
+      if (propHlOpVal) propHlOpVal.textContent = opPct;
+      if (propHlPrev) {
+        propHlPrev.style.backgroundColor = c;
+        propHlPrev.style.opacity = op;
+        propHlPrev.style.height = Math.min(20, Math.max(4, Math.round(w * 0.35))) + 'px';
+      }
+      if (propHlColorPicker) propHlColorPicker.value = c;
+
+      // Dropdown elements
+      const dropHlSize = document.getElementById('dropdown-hl-size');
+      const dropHlSizeVal = document.getElementById('dropdown-hl-size-val');
+      const dropHlOp = document.getElementById('dropdown-hl-intensity');
+      const dropHlOpVal = document.getElementById('dropdown-hl-intensity-val');
+      const dropHlPrev = document.getElementById('dropdown-hl-preview-bar');
+      const dropHlColorPicker = document.getElementById('dropdown-hl-color-picker');
+
+      if (dropHlSize) dropHlSize.value = w;
+      if (dropHlSizeVal) dropHlSizeVal.textContent = w + 'px';
+      if (dropHlOp) dropHlOp.value = op;
+      if (dropHlOpVal) dropHlOpVal.textContent = opPct;
+      if (dropHlPrev) {
+        dropHlPrev.style.backgroundColor = c;
+        dropHlPrev.style.opacity = op;
+        dropHlPrev.style.height = Math.min(22, Math.max(4, Math.round(w * 0.35))) + 'px';
+      }
+      if (dropHlColorPicker) dropHlColorPicker.value = c;
+
+      // Indicator on toolbar button
+      const ind = document.getElementById('highlight-color-indicator');
+      if (ind) ind.style.backgroundColor = c;
+    }
+
+    function updateDrawSettings(width, opacity, color) {
+      if (width !== undefined) state.activeDrawWidth = parseInt(width, 10);
+      if (opacity !== undefined) state.activeDrawOpacity = parseFloat(opacity);
+      if (color !== undefined) state.activeDrawColor = color;
+
+      const w = state.activeDrawWidth;
+      const op = state.activeDrawOpacity;
+      const c = state.activeDrawColor;
+      const opPct = Math.round(op * 100) + '%';
+
+      // Property bar elements
+      const propDrawSize = document.getElementById('prop-draw-size');
+      const propDrawSizeVal = document.getElementById('prop-draw-size-val');
+      const propDrawOp = document.getElementById('prop-draw-opacity');
+      const propDrawOpVal = document.getElementById('prop-draw-opacity-val');
+      const propDrawPrev = document.getElementById('prop-draw-preview');
+      const propColorPicker = document.getElementById('prop-color-picker');
+
+      if (propDrawSize) propDrawSize.value = w;
+      if (propDrawSizeVal) propDrawSizeVal.textContent = w + 'px';
+      if (propDrawOp) propDrawOp.value = op;
+      if (propDrawOpVal) propDrawOpVal.textContent = opPct;
+      if (propDrawPrev) {
+        propDrawPrev.style.backgroundColor = c;
+        propDrawPrev.style.opacity = op;
+        const dotSize = Math.min(20, Math.max(3, w));
+        propDrawPrev.style.height = dotSize + 'px';
+        propDrawPrev.style.width = dotSize + 'px';
+      }
+      if (propColorPicker) propColorPicker.value = c;
+
+      // Dropdown elements
+      const dropDrawSize = document.getElementById('dropdown-draw-size');
+      const dropDrawSizeVal = document.getElementById('dropdown-draw-size-val');
+      const dropDrawOp = document.getElementById('dropdown-draw-opacity');
+      const dropDrawOpVal = document.getElementById('dropdown-draw-opacity-val');
+      const dropDrawDot = document.getElementById('dropdown-draw-preview-dot');
+      const dropDrawColorPicker = document.getElementById('dropdown-draw-color-picker');
+
+      if (dropDrawSize) dropDrawSize.value = w;
+      if (dropDrawSizeVal) dropDrawSizeVal.textContent = w + 'px';
+      if (dropDrawOp) dropDrawOp.value = op;
+      if (dropDrawOpVal) dropDrawOpVal.textContent = opPct;
+      if (dropDrawDot) {
+        dropDrawDot.style.backgroundColor = c;
+        dropDrawDot.style.opacity = op;
+        const dotSize = Math.min(20, Math.max(3, w));
+        dropDrawDot.style.height = dotSize + 'px';
+        dropDrawDot.style.width = dotSize + 'px';
+      }
+      if (dropDrawColorPicker) dropDrawColorPicker.value = c;
+
+      // Indicator on toolbar button
+      const ind = document.getElementById('draw-color-indicator');
+      if (ind) ind.style.backgroundColor = c;
+    }
+
     // Tool switching
     function setTool(toolName) {
       state.activeTool = toolName;
@@ -1502,16 +1652,75 @@ import ImageCropModal from './ImageCropModal.astro';
       const activeBtn = (toolName === 'shape') ? document.getElementById('tool-shape-btn') : document.getElementById('tool-' + toolName);
       if (activeBtn) activeBtn.classList.add('active');
 
-      if (toolName === 'draw' || toolName === 'highlight') {
+      const fontGroup = document.getElementById('prop-font-group');
+      const strokeGroup = document.getElementById('prop-stroke-group');
+      const opacityGroup = document.getElementById('prop-opacity-group');
+      const imageGroup = document.getElementById('prop-image-group');
+      const colorGroup = document.getElementById('prop-color-group');
+      const rotateGroup = document.getElementById('prop-rotate-group');
+      const wmLayerGroup = document.getElementById('prop-watermark-layer-group');
+      const hlGroup = document.getElementById('prop-highlight-group');
+      const hlColorGroup = document.getElementById('prop-highlight-color-group');
+      const drawGroup = document.getElementById('prop-draw-group');
+      const layerGroup = document.getElementById('prop-layer-group');
+      const delParent = document.getElementById('btn-delete-element')?.parentElement;
+
+      if (toolName === 'draw') {
+        state.selectedAnnotationId = null;
+        document.querySelectorAll('.annot-rot-wrapper').forEach(w => w.classList.remove('ring-2', 'ring-blue-500', 'shadow-md'));
+        document.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => h.classList.remove('!opacity-100'));
+
         drawCanvas.style.pointerEvents = 'auto';
         drawCanvas.classList.remove('pointer-events-none');
         drawCanvas.classList.add('cursor-crosshair');
         annotationsLayer.style.pointerEvents = 'none';
         annotationsLayer.classList.remove('cursor-crosshair');
 
-        // Open property bar with color palette for immediate access
         propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = toolName.toUpperCase();
+        document.getElementById('inspector-element-type').textContent = 'FREEHAND PEN';
+
+        if (drawGroup) { drawGroup.classList.remove('hidden'); drawGroup.classList.add('flex'); }
+        if (colorGroup) { colorGroup.classList.remove('hidden'); colorGroup.classList.add('flex'); }
+        if (hlGroup) hlGroup.classList.add('hidden');
+        if (hlColorGroup) hlColorGroup.classList.add('hidden');
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
+        if (layerGroup) { layerGroup.classList.add('hidden'); layerGroup.classList.remove('flex'); }
+        if (delParent) delParent.classList.add('hidden');
+
+        updateDrawSettings(state.activeDrawWidth, state.activeDrawOpacity, state.activeDrawColor);
+      } else if (toolName === 'highlight') {
+        state.selectedAnnotationId = null;
+        document.querySelectorAll('.annot-rot-wrapper').forEach(w => w.classList.remove('ring-2', 'ring-blue-500', 'shadow-md'));
+        document.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => h.classList.remove('!opacity-100'));
+
+        drawCanvas.style.pointerEvents = 'auto';
+        drawCanvas.classList.remove('pointer-events-none');
+        drawCanvas.classList.add('cursor-crosshair');
+        annotationsLayer.style.pointerEvents = 'none';
+        annotationsLayer.classList.remove('cursor-crosshair');
+
+        propertyBar.classList.remove('hidden');
+        document.getElementById('inspector-element-type').textContent = 'HIGHLIGHTER';
+
+        if (hlGroup) { hlGroup.classList.remove('hidden'); hlGroup.classList.add('flex'); }
+        if (hlColorGroup) { hlColorGroup.classList.remove('hidden'); hlColorGroup.classList.add('flex'); }
+        if (drawGroup) drawGroup.classList.add('hidden');
+        if (colorGroup) colorGroup.classList.add('hidden');
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
+        if (layerGroup) { layerGroup.classList.add('hidden'); layerGroup.classList.remove('flex'); }
+        if (delParent) delParent.classList.add('hidden');
+
+        updateHighlightSettings(state.activeHighlightWidth, state.activeHighlightOpacity, state.activeHighlightColor);
       } else if (toolName === 'redact') {
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
@@ -1521,12 +1730,19 @@ import ImageCropModal from './ImageCropModal.astro';
 
         propertyBar.classList.remove('hidden');
         document.getElementById('inspector-element-type').textContent = 'REDACT (BLACKOUT)';
+        if (drawGroup) drawGroup.classList.add('hidden');
+        if (hlGroup) hlGroup.classList.add('hidden');
+        if (hlColorGroup) hlColorGroup.classList.add('hidden');
       } else {
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
         annotationsLayer.style.pointerEvents = 'auto';
         annotationsLayer.classList.remove('cursor-crosshair');
+
+        if (!state.selectedAnnotationId) {
+          propertyBar.classList.add('hidden');
+        }
       }
     }
 
@@ -1542,12 +1758,35 @@ import ImageCropModal from './ImageCropModal.astro';
       insertRedactAnnotation();
     });
 
+    // Draw & Highlight Options Dropdowns
+    const drawOptBtn = document.getElementById('btn-draw-options');
+    const drawOptDropdown = document.getElementById('draw-options-dropdown');
+    drawOptBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      drawOptDropdown?.classList.toggle('hidden');
+      document.getElementById('highlight-options-dropdown')?.classList.add('hidden');
+      document.getElementById('shapes-dropdown')?.classList.add('hidden');
+      setTool('draw');
+    });
+
+    const hlOptBtn = document.getElementById('btn-highlight-options');
+    const hlOptDropdown = document.getElementById('highlight-options-dropdown');
+    hlOptBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hlOptDropdown?.classList.toggle('hidden');
+      document.getElementById('draw-options-dropdown')?.classList.add('hidden');
+      document.getElementById('shapes-dropdown')?.classList.add('hidden');
+      setTool('highlight');
+    });
+
     // Shape dropdown & Immediate Shape Insertion
     const shapeBtn = document.getElementById('tool-shape-btn');
     const shapeDropdown = document.getElementById('shapes-dropdown');
     shapeBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       shapeDropdown?.classList.toggle('hidden');
+      drawOptDropdown?.classList.add('hidden');
+      hlOptDropdown?.classList.add('hidden');
     });
 
     document.querySelectorAll('.shape-opt').forEach(opt => {
@@ -1562,7 +1801,13 @@ import ImageCropModal from './ImageCropModal.astro';
 
     document.addEventListener('click', () => {
       shapeDropdown?.classList.add('hidden');
+      drawOptDropdown?.classList.add('hidden');
+      hlOptDropdown?.classList.add('hidden');
     });
+
+    // Prevent closing dropdown when clicking inside dropdowns
+    drawOptDropdown?.addEventListener('click', (e) => e.stopPropagation());
+    hlOptDropdown?.addEventListener('click', (e) => e.stopPropagation());
 
     // Zoom Handling (Buttons & Touchpad Gestures)
     zoomInBtn?.addEventListener('click', () => {
@@ -1628,14 +1873,77 @@ import ImageCropModal from './ImageCropModal.astro';
       }
     });
 
+    // --- Highlight Size & Intensity Listeners ---
+    document.getElementById('prop-highlight-size')?.addEventListener('input', (e) => {
+      updateHighlightSettings(e.target.value, undefined, undefined);
+    });
+    document.getElementById('dropdown-hl-size')?.addEventListener('input', (e) => {
+      updateHighlightSettings(e.target.value, undefined, undefined);
+    });
+    document.querySelectorAll('.btn-prop-hl-size, .btn-hl-size-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.size) updateHighlightSettings(btn.dataset.size, undefined, undefined);
+      });
+    });
+
+    document.getElementById('prop-highlight-opacity')?.addEventListener('input', (e) => {
+      updateHighlightSettings(undefined, e.target.value, undefined);
+    });
+    document.getElementById('dropdown-hl-intensity')?.addEventListener('input', (e) => {
+      updateHighlightSettings(undefined, e.target.value, undefined);
+    });
+    document.querySelectorAll('.btn-prop-hl-op, .btn-hl-intensity-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.val) updateHighlightSettings(undefined, btn.dataset.val, undefined);
+      });
+    });
+
+    document.getElementById('prop-highlight-color-picker')?.addEventListener('input', (e) => {
+      updateHighlightSettings(undefined, undefined, e.target.value);
+    });
+    document.getElementById('dropdown-hl-color-picker')?.addEventListener('input', (e) => {
+      updateHighlightSettings(undefined, undefined, e.target.value);
+    });
+    document.querySelectorAll('.hl-color-preset, .hl-color-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.color) updateHighlightSettings(undefined, undefined, btn.dataset.color);
+      });
+    });
+
+    // --- Draw Pen Size & Opacity Listeners ---
+    document.getElementById('prop-draw-size')?.addEventListener('input', (e) => {
+      updateDrawSettings(e.target.value, undefined, undefined);
+    });
+    document.getElementById('dropdown-draw-size')?.addEventListener('input', (e) => {
+      updateDrawSettings(e.target.value, undefined, undefined);
+    });
+    document.querySelectorAll('.btn-prop-draw-size, .btn-draw-size-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.size) updateDrawSettings(btn.dataset.size, undefined, undefined);
+      });
+    });
+
+    document.getElementById('prop-draw-opacity')?.addEventListener('input', (e) => {
+      updateDrawSettings(undefined, e.target.value, undefined);
+    });
+    document.getElementById('dropdown-draw-opacity')?.addEventListener('input', (e) => {
+      updateDrawSettings(undefined, e.target.value, undefined);
+    });
+    document.getElementById('dropdown-draw-color-picker')?.addEventListener('input', (e) => {
+      updateDrawSettings(undefined, undefined, e.target.value);
+    });
+    document.querySelectorAll('.draw-color-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.color) updateDrawSettings(undefined, undefined, btn.dataset.color);
+      });
+    });
+
+    // Shapes Thickness & Opacity
     const propStrokeWidth = document.getElementById('prop-stroke-width');
     const propStrokeVal = document.getElementById('prop-stroke-val');
     propStrokeWidth?.addEventListener('input', (e) => {
       const val = parseInt(e.target.value, 10);
       if (propStrokeVal) propStrokeVal.textContent = val + 'px';
-      if (state.activeTool === 'draw') {
-        state.activeDrawWidth = val;
-      }
       if (state.selectedAnnotationId && state.currentPage) {
         const list = state.annotations[state.currentPage] || [];
         const target = list.find(a => a.id === state.selectedAnnotationId);
@@ -1652,9 +1960,6 @@ import ImageCropModal from './ImageCropModal.astro';
     propOpacity?.addEventListener('input', (e) => {
       const val = parseFloat(e.target.value);
       if (propOpacityVal) propOpacityVal.textContent = Math.round(val * 100) + '%';
-      if (state.activeTool === 'draw') {
-        state.activeDrawOpacity = val;
-      }
       if (state.selectedAnnotationId && state.currentPage) {
         const list = state.annotations[state.currentPage] || [];
         const target = list.find(a => a.id === state.selectedAnnotationId);
@@ -1688,13 +1993,9 @@ import ImageCropModal from './ImageCropModal.astro';
       btn.addEventListener('click', () => {
         const color = btn.dataset.color;
         if (state.activeTool === 'highlight') {
-          state.activeHighlightColor = color;
-          const ind = document.getElementById('highlight-color-indicator');
-          if (ind) ind.style.backgroundColor = color;
+          updateHighlightSettings(undefined, undefined, color);
         } else {
-          state.activeDrawColor = color;
-          const ind = document.getElementById('draw-color-indicator');
-          if (ind) ind.style.backgroundColor = color;
+          updateDrawSettings(undefined, undefined, color);
         }
 
         if (state.selectedAnnotationId && state.currentPage) {
@@ -1713,13 +2014,9 @@ import ImageCropModal from './ImageCropModal.astro';
     propColorPicker?.addEventListener('input', (e) => {
       const color = e.target.value;
       if (state.activeTool === 'highlight') {
-        state.activeHighlightColor = color;
-        const ind = document.getElementById('highlight-color-indicator');
-        if (ind) ind.style.backgroundColor = color;
+        updateHighlightSettings(undefined, undefined, color);
       } else {
-        state.activeDrawColor = color;
-        const ind = document.getElementById('draw-color-indicator');
-        if (ind) ind.style.backgroundColor = color;
+        updateDrawSettings(undefined, undefined, color);
       }
 
       if (state.selectedAnnotationId && state.currentPage) {
