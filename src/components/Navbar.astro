@@ -68,6 +68,24 @@ const { activeTool = 'editor' } = Astro.props;
         Compress
       </a>
       <a
+        href="/about"
+        class={`rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
+      >
+        About
+      </a>
+      <a
+        href="/terms"
+        class={`rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
+      >
+        Terms
+      </a>
+      <a
+        href="/contact"
+        class={`rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
+      >
+        Contact
+      </a>
+      <a
         href="/privacy"
         class={`rounded-full px-3.5 py-1.5 transition-all duration-200 hover:text-ink ${activeTool === 'privacy' ? 'bg-ink text-on-primary font-semibold shadow-sm' : 'hover:bg-hairline-soft/80'}`}
       >
@@ -188,6 +206,27 @@ const { activeTool = 'editor' } = Astro.props;
       >
         <span>Privacy Guarantee</span>
         <span class="text-xs opacity-60">GDPR & Offline</span>
+      </a>
+      <a
+        href="/about"
+        class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
+      >
+        <span>About</span>
+        <span class="text-xs opacity-60">Our story</span>
+      </a>
+      <a
+        href="/terms"
+        class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
+      >
+        <span>Terms</span>
+        <span class="text-xs opacity-60">Conditions</span>
+      </a>
+      <a
+        href="/contact"
+        class={`mobile-nav-link flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-all ${activeTool === 'editor' ? 'bg-ink text-on-primary font-semibold' : 'text-body hover:bg-hairline-soft hover:text-ink'}`}
+      >
+        <span>Contact</span>
+        <span class="text-xs opacity-60">Reach out</span>
       </a>
     </div>
   </div>
