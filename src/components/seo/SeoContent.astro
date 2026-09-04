@@ -1,10 +1,10 @@
 ---
+import FaqSection from './FaqSection.astro';
 // SEO Content Guide Component
 // Targets: Main Keyword: "Edit Pdf", and supporting keywords:
 // edit pdf online, edit pdf online free, edit pdf free, how to edit pdf,
 // how to edit pdf free, edit pdf files, free edit pdf, how to edit pdf on iphone,
 // how to edit pdf on mac free, edit pdf on iphone.
-// Word count: ~1,020 words (perfectly centered within the 800 - 1,200 words requirement)
 ---
 
 <section id="pdf-guide" class="py-16 sm:py-24 bg-canvas border-b border-hairline">
@@ -224,67 +224,8 @@
         </p>
       </div>
 
-      <!-- FAQ Accordion Section -->
-      <div class="glass-card rounded-2xl p-6 sm:p-8 lg:p-10 border border-hairline bg-canvas-elevated/70 shadow-sm space-y-6">
-        <div>
-          <span class="font-mono text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Search Answers</span>
-          <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1">
-            Frequently Asked Questions About How to Edit PDF Online Free
-          </h3>
-        </div>
-
-        <div class="space-y-3">
-          <details class="group rounded-xl border border-hairline bg-canvas/70 p-4 transition-all duration-200 open:bg-canvas-elevated open:shadow-whisper">
-            <summary class="flex cursor-pointer items-center justify-between font-semibold text-ink text-sm sm:text-base select-none">
-              <span>Is it really 100% free to edit PDF files on this website?</span>
-              <span class="ml-4 font-mono text-mute group-open:rotate-180 transition-transform duration-200">↓</span>
-            </summary>
-            <p class="mt-3 text-sm text-body leading-relaxed">
-              Yes. RealEditPDF is completely free with zero hidden paywalls, daily task restrictions, or premium tiers. You can edit unlimited PDF files of any size without creating an account or providing payment details.
-            </p>
-          </details>
-
-          <details class="group rounded-xl border border-hairline bg-canvas/70 p-4 transition-all duration-200 open:bg-canvas-elevated open:shadow-whisper">
-            <summary class="flex cursor-pointer items-center justify-between font-semibold text-ink text-sm sm:text-base select-none">
-              <span>How do I edit existing text in a PDF file?</span>
-              <span class="ml-4 font-mono text-mute group-open:rotate-180 transition-transform duration-200">↓</span>
-            </summary>
-            <p class="mt-3 text-sm text-body leading-relaxed">
-              Click the Text tool in the editor toolbar, then click on the text you wish to replace. You can use the Whiteout option to mask existing text with a clean background color matching your page, then type your updated text directly in place.
-            </p>
-          </details>
-
-          <details class="group rounded-xl border border-hairline bg-canvas/70 p-4 transition-all duration-200 open:bg-canvas-elevated open:shadow-whisper">
-            <summary class="flex cursor-pointer items-center justify-between font-semibold text-ink text-sm sm:text-base select-none">
-              <span>Can I edit PDF on iPhone without installing third-party apps?</span>
-              <span class="ml-4 font-mono text-mute group-open:rotate-180 transition-transform duration-200">↓</span>
-            </summary>
-            <p class="mt-3 text-sm text-body leading-relaxed">
-              Yes. Open Safari on your iPhone, visit RealEditPDF.com, and select your document from the Files app. You can annotate, add text, and sign documents directly with your finger or stylus.
-            </p>
-          </details>
-
-          <details class="group rounded-xl border border-hairline bg-canvas/70 p-4 transition-all duration-200 open:bg-canvas-elevated open:shadow-whisper">
-            <summary class="flex cursor-pointer items-center justify-between font-semibold text-ink text-sm sm:text-base select-none">
-              <span>How to edit PDF on Mac free without buying software?</span>
-              <span class="ml-4 font-mono text-mute group-open:rotate-180 transition-transform duration-200">↓</span>
-            </summary>
-            <p class="mt-3 text-sm text-body leading-relaxed">
-              Simply open Safari or Chrome on your Mac, navigate to RealEditPDF.com, and drag your file into the window. You can edit text, redact data, and organize pages without Adobe Acrobat.
-            </p>
-          </details>
-
-          <details class="group rounded-xl border border-hairline bg-canvas/70 p-4 transition-all duration-200 open:bg-canvas-elevated open:shadow-whisper">
-            <summary class="flex cursor-pointer items-center justify-between font-semibold text-ink text-sm sm:text-base select-none">
-              <span>Are my uploaded PDF documents safe and private?</span>
-              <span class="ml-4 font-mono text-mute group-open:rotate-180 transition-transform duration-200">↓</span>
-            </summary>
-            <p class="mt-3 text-sm text-body leading-relaxed">
-              Yes, 100%. RealEditPDF processes all PDF files locally on your device via client-side WebAssembly. Your files are never uploaded to any server or cloud database.
-            </p>
-          </details>
-        </div>
-      </div>
+      <!-- Comprehensive Interactive FAQ Section -->
+      <FaqSection />
 
       <!-- Quick Back to Editor Anchor Action -->
       <div class="text-center pt-4">
@@ -353,52 +294,6 @@
           "@type": "HowToStep",
           "name": "Organize and Download",
           "text": "Reorder, rotate, or duplicate pages using the Page Organizer, then click Download PDF to save your file."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://realeditpdf.com/#faq",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Is it really 100% free to edit PDF files on this website?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. RealEditPDF is completely free with zero hidden paywalls, daily task restrictions, or premium tiers. You can edit unlimited PDF files of any size without creating an account or providing payment details."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I edit existing text in a PDF file?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Click the Text tool in the editor toolbar, then click on the text you wish to replace. You can use the Whiteout option to mask existing text with a clean background color matching your page, then type your updated text directly in place."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I edit PDF on iPhone without installing third-party apps?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Open Safari on your iPhone, visit RealEditPDF.com, and select your document from the Files app. You can annotate, add text, and sign documents directly with your finger or stylus."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How to edit PDF on Mac free without buying software?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Simply open Safari or Chrome on your Mac, navigate to RealEditPDF.com, and drag your file into the window. You can edit text, redact data, and organize pages without Adobe Acrobat."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Are my uploaded PDF documents safe and private?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, 100%. RealEditPDF processes all PDF files locally on your device via client-side WebAssembly. Your files are never uploaded to any server or cloud database."
-          }
         }
       ]
     }
