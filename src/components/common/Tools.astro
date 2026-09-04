@@ -7,7 +7,7 @@ const { activeTool = 'editor' } = Astro.props;
 ---
 
 <!-- Tools Section: shared pill-tab navigation strip rendered on every page -->
-<div class="sticky top-16 z-40 w-full border-b border-hairline bg-canvas-elevated/80 backdrop-blur-md">
+<div id="tools-strip" class="hidden sticky top-16 z-40 w-full border-b border-hairline bg-canvas-elevated/80 backdrop-blur-md">
   <div class="mx-auto flex h-12 w-full max-w-[1760px] items-center justify-center px-3 sm:px-6 lg:px-8 xl:px-12">
     <nav class="flex items-center gap-1 rounded-full border border-hairline bg-canvas-elevated/60 backdrop-blur p-1 text-[13px] font-medium text-body shadow-whisper overflow-x-auto no-scrollbar">
       <a
