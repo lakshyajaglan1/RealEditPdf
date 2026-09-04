@@ -1,2 +1,5 @@
 https://realeditpdf.pages.dev/*
   X-Robots-Tag: noindex
+
+/*.xml
+  Content-Type: application/xml; charset=utf-8
