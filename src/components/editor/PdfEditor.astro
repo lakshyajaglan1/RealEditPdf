@@ -122,7 +122,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
 <!-- Core Client-Side Logic Script -->
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
+  function initPdfEditor() {
     // State management
     const state = {
       pdfBytes: null,
@@ -147,6 +147,7 @@ import ImageCropModal from './ImageCropModal.astro';
     };
 
     // DOM Elements
+    const canvasViewport = document.getElementById('canvas-viewport');
     const emptyState = document.getElementById('editor-empty-state');
     const pageContainer = document.getElementById('pdf-page-container');
     const renderCanvas = document.getElementById('pdf-render-canvas');
@@ -1464,7 +1465,6 @@ import ImageCropModal from './ImageCropModal.astro';
     });
 
     // Touchpad Pinch-to-Zoom & Ctrl+Wheel Gestures
-    const canvasViewport = document.getElementById('canvas-viewport');
     let zoomGestureTimer = null;
 
     canvasViewport?.addEventListener('wheel', (e) => {
@@ -1641,7 +1641,16 @@ import ImageCropModal from './ImageCropModal.astro';
     });
 
     // Dropzone Drag & Drop Support
-    const canvasViewport = document.getElementById('canvas-viewport');
+    if (emptyState) {
+      emptyState.addEventListener('click', (e) => {
+        // If clicked inside sample button or label/input, let native behavior handle it
+        if (e.target.closest('#btn-load-sample') || e.target.closest('label') || e.target.closest('input')) {
+          return;
+        }
+        fileInput?.click();
+      });
+    }
+
     if (canvasViewport && emptyState) {
       ['dragenter', 'dragover'].forEach((name) => {
         canvasViewport.addEventListener(name, (e) => {
@@ -2166,6 +2175,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
     // Upload Signature Dropzone & Background Transparency Processing
     signDropzone?.addEventListener('click', () => signUploadInput?.click());
+    signUploadInput?.addEventListener('click', (e) => e.stopPropagation());
     signDropzone?.addEventListener('dragover', (e) => {
       e.preventDefault();
       signDropzone.classList.add('border-link', 'bg-hairline-soft');
@@ -3332,5 +3342,11 @@ import ImageCropModal from './ImageCropModal.astro';
         deleteAnnotation(state.selectedAnnotationId);
       }
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPdfEditor);
+  } else {
+    initPdfEditor();
+  }
 </script>
