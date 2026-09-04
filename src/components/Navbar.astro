@@ -145,5 +145,39 @@ const { activeTool = 'editor' } = Astro.props;
         updateIcons();
       });
     }
+
+    // Functional Upload PDF Navbar CTA Button
+    const navCtaBtn = document.getElementById('nav-cta-button');
+    if (navCtaBtn) {
+      navCtaBtn.addEventListener('click', (e) => {
+        // Priority 1: Main PDF editor input on current page (home or sign page)
+        const mainInput = document.getElementById('main-pdf-input');
+        if (mainInput) {
+          e.preventDefault();
+          mainInput.click();
+          const anchor = document.getElementById('editor-anchor');
+          if (anchor) {
+            anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          return;
+        }
+
+        // Priority 2: Active tool input on dedicated sub-pages
+        const toolInput = document.getElementById('merge-file-input') ||
+                          document.getElementById('split-file-input') ||
+                          document.getElementById('comp-file-input') ||
+                          document.getElementById('conv-file-input');
+        if (toolInput) {
+          e.preventDefault();
+          toolInput.click();
+          return;
+        }
+
+        // Priority 3: Informational pages without file inputs (e.g. /privacy)
+        // Store trigger flag and route to home editor
+        sessionStorage.setItem('trigger_pdf_upload', '1');
+        window.location.href = '/#editor-anchor';
+      });
+    }
   });
 </script>
