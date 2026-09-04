@@ -1698,7 +1698,7 @@ import ImageCropModal from './ImageCropModal.astro';
         const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
         // Header
-        page1.drawText('Real Edit Pdf — Sample Agreement', {
+        page1.drawText('RealEditPDF — Sample Agreement', {
           x: 50,
           y: 720,
           size: 20,
@@ -2006,7 +2006,7 @@ import ImageCropModal from './ImageCropModal.astro';
 
         const a = document.createElement('a');
         a.href = downloadUrl;
-        a.download = 'RealEditPdf-Document.pdf';
+        a.download = 'RealEditPDF-Document.pdf';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
