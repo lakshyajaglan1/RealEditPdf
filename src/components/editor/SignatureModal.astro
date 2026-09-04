@@ -2,8 +2,8 @@
 // SignatureModal.astro - E-Signature Creator (Draw, Type, Upload)
 ---
 
-<div id="signature-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden">
-  <div class="w-full max-w-lg rounded-2xl border border-hairline bg-canvas-elevated p-6 sm:p-7 shadow-floating animate-fade-in">
+<div id="signature-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 hidden">
+  <div class="w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-7 shadow-floating animate-fade-in">
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-hairline/80 pb-3.5">
       <div class="flex items-center gap-2.5">
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Common Ink Color Selector -->
-    <div class="mt-4 flex items-center justify-between border-b border-hairline/80 pb-3 text-[12px]">
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-b border-hairline/80 pb-3 text-[12px]">
       <div class="flex items-center gap-2.5">
         <span class="text-mute font-mono text-[11px] uppercase tracking-wider font-semibold">Ink Color:</span>
         <div class="flex items-center gap-2" id="sign-ink-colors">
@@ -73,7 +73,7 @@
 
       <div class="space-y-2 pt-1">
         <span class="text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">Select Calligraphy Style:</span>
-        <div class="grid grid-cols-2 gap-2.5" id="sign-font-options">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="sign-font-options">
           <label class="sign-font-opt flex items-center justify-center p-3.5 rounded-xl border-2 border-blue-500 bg-canvas-elevated cursor-pointer shadow-sm">
             <input type="radio" name="sign-style" value="'Dancing Script', cursive" checked class="hidden" />
             <span class="sign-preview text-2xl font-semibold text-ink" style="font-family: 'Dancing Script', cursive;">John Doe</span>

@@ -3,8 +3,8 @@
 const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
 
-<div id="stamp-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden">
-  <div class="w-full max-w-lg rounded-2xl border border-hairline bg-canvas-elevated p-6 sm:p-7 shadow-floating animate-fade-in">
+<div id="stamp-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 hidden">
+  <div class="w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-7 shadow-floating animate-fade-in">
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-hairline/80 pb-3.5">
       <div class="flex items-center gap-2.5">

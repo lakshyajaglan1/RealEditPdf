@@ -2,7 +2,10 @@
 // ThumbnailSidebar.astro - Page Organization & Thumbnail Rail
 ---
 
-<aside id="thumbnail-sidebar" class="w-64 border-r border-hairline bg-canvas-elevated/75 backdrop-blur-xl p-3.5 flex flex-col justify-between overflow-y-auto select-none transition-all duration-200">
+<!-- Mobile Backdrop Overlay -->
+<div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs hidden md:hidden transition-opacity"></div>
+
+<aside id="thumbnail-sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 border-r border-hairline bg-canvas-elevated/95 md:bg-canvas-elevated/75 backdrop-blur-xl p-3.5 flex flex-col justify-between overflow-y-auto select-none transition-all duration-200 shadow-2xl md:shadow-none hidden md:flex">
   <div class="space-y-3">
     <div class="flex items-center justify-between pb-2.5 border-b border-hairline/80">
       <div class="flex items-center gap-2">

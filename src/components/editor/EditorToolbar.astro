@@ -2,10 +2,10 @@
 // EditorToolbar.astro - Vercel Geist Style Toolbar
 ---
 
-<div class="relative z-30 w-full border-b border-hairline bg-canvas-elevated/90 backdrop-blur-xl px-3 sm:px-4 py-2 text-ink shadow-whisper select-none">
-  <div class="flex flex-wrap items-center justify-between gap-2.5">
-    <!-- Left Group: Unified Segmented Tools Dock -->
-    <div class="flex flex-wrap items-center gap-1.5">
+<div class="relative z-30 w-full border-b border-hairline bg-canvas-elevated/90 backdrop-blur-xl px-2.5 sm:px-4 py-2 text-ink shadow-whisper select-none">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+    <!-- Left Group: Unified Segmented Tools Dock (Horizontally scrollable touch ribbon on mobile) -->
+    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-0.5 max-w-full">
       <!-- Main Tools Segment -->
       <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-0.5">
         <!-- Select / Pointer Mode -->
@@ -57,7 +57,7 @@
           </button>
 
           <!-- Draw Quick Options Dropdown -->
-          <div id="draw-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-64 rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
+          <div id="draw-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-64 max-w-[calc(100vw-32px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
             <div class="mb-2 flex items-center justify-between">
               <span class="text-[12px] font-semibold text-ink">Draw Pen Settings</span>
               <span id="dropdown-draw-size-val" class="font-mono text-[11px] font-bold text-blue-600 dark:text-cyan-400">2px</span>
@@ -146,7 +146,7 @@
           </button>
 
           <!-- Highlight Options Dropdown -->
-          <div id="highlight-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-72 rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
+          <div id="highlight-options-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-72 max-w-[calc(100vw-32px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-3 shadow-floating text-left">
             <div class="mb-2 flex items-center justify-between">
               <span class="text-[12px] font-semibold text-ink">Highlighter Settings</span>
               <span id="dropdown-hl-badge" class="rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">Soft Marker</span>
@@ -238,7 +238,7 @@
           </button>
 
           <!-- Shapes Menu -->
-          <div id="shapes-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-48 rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-1.5 shadow-floating">
+          <div id="shapes-dropdown" class="absolute left-0 top-full z-[100] mt-1.5 hidden w-48 max-w-[calc(100vw-32px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-xl p-1.5 shadow-floating">
             <button type="button" data-shape="rect" class="shape-opt flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] hover:bg-hairline-soft transition-colors cursor-pointer">
               <span class="h-3.5 w-3.5 border-2 border-ink rounded-none inline-block"></span> <span>Rectangle</span>
             </button>
@@ -339,16 +339,16 @@
       </div>
     </div>
 
-    <!-- Right Group: Undo/Redo, Zoom, View, Download -->
-    <div class="flex items-center gap-2">
+    <!-- Right Group: Undo/Redo, Zoom, View, Download (Touch-scrollable on mobile) -->
+    <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar touch-scroll py-0.5 max-w-full justify-between md:justify-end shrink-0">
       <!-- Undo / Redo Segment -->
-      <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-0.5">
-        <button id="btn-undo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors" title="Undo (Ctrl+Z)" disabled>
+      <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-0.5 shrink-0">
+        <button id="btn-undo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors cursor-pointer" title="Undo (Ctrl+Z)" disabled>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
           </svg>
         </button>
-        <button id="btn-redo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors" title="Redo (Ctrl+Y)" disabled>
+        <button id="btn-redo" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink disabled:opacity-30 transition-colors cursor-pointer" title="Redo (Ctrl+Y)" disabled>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
           </svg>
@@ -356,14 +356,14 @@
       </div>
 
       <!-- Zoom Controls Segment -->
-      <div class="hidden sm:flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-1">
-        <button id="btn-zoom-out" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors" title="Zoom Out">
+      <div class="hidden sm:flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-1 shrink-0">
+        <button id="btn-zoom-out" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer" title="Zoom Out">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
           </svg>
         </button>
-        <span id="zoom-percentage" class="min-w-[40px] text-center font-mono text-[11px] font-semibold text-ink">100%</span>
-        <button id="btn-zoom-in" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors" title="Zoom In">
+        <span id="zoom-percentage" class="min-w-[36px] text-center font-mono text-[11px] font-semibold text-ink">100%</span>
+        <button id="btn-zoom-in" class="flex h-7 w-7 items-center justify-center rounded-lg text-body hover:bg-canvas-elevated hover:text-ink transition-colors cursor-pointer" title="Zoom In">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -373,96 +373,97 @@
       <!-- Rotate Page Button -->
       <button
         id="btn-rotate-page"
-        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer"
+        class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
         title="Rotate Current Page (90° CW)"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
-        <span class="hidden md:inline">Rotate</span>
+        <span class="hidden lg:inline">Rotate</span>
       </button>
 
       <!-- Crop Page Button (Crop/Resize Uploaded PDF Page) -->
       <button
         id="btn-crop-page"
-        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer"
+        class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
         title="Crop / Resize Uploaded PDF Page"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
         </svg>
-        <span class="hidden md:inline">Crop Page</span>
+        <span class="hidden lg:inline">Crop Page</span>
       </button>
 
       <!-- Start New Session Button -->
       <button
         id="btn-new-session"
-        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2.5 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer"
+        class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
         title="Start a new session (Open fresh PDF document)"
         type="button"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
-        <span class="hidden md:inline">New Session</span>
+        <span class="hidden lg:inline">New Session</span>
       </button>
 
       <!-- Reset Segment (Single Page Reset & All Pages 1-Click Reset) -->
-      <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-0.5">
+      <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-0.5 shrink-0">
         <!-- Reset Current Page -->
         <button
           id="btn-reset-page"
-          class="flex h-7 items-center gap-1.5 rounded-lg px-2 text-[12px] font-medium text-body hover:bg-canvas-elevated hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer"
+          class="flex h-7 items-center gap-1 sm:gap-1.5 rounded-lg px-1.5 sm:px-2 text-[11px] sm:text-[12px] font-medium text-body hover:bg-canvas-elevated hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer"
           title="Reset changes on current page"
           type="button"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span class="hidden lg:inline">Reset Page</span>
+          <span class="hidden xl:inline">Reset Page</span>
         </button>
 
         <!-- Reset All Pages (1 Click) -->
         <button
           id="btn-reset-all"
-          class="flex h-7 items-center gap-1.5 rounded-lg px-2 text-[12px] font-medium text-rose-600/90 dark:text-rose-400 hover:bg-canvas-elevated hover:text-rose-600 transition-colors cursor-pointer"
+          class="flex h-7 items-center gap-1 sm:gap-1.5 rounded-lg px-1.5 sm:px-2 text-[11px] sm:text-[12px] font-medium text-rose-600/90 dark:text-rose-400 hover:bg-canvas-elevated hover:text-rose-600 transition-colors cursor-pointer"
           title="Reset changes across all pages in a single click"
           type="button"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
-          <span class="hidden lg:inline">Reset All</span>
+          <span class="hidden xl:inline">Reset All</span>
         </button>
       </div>
 
       <!-- Page Sidebar Toggle -->
       <button
         id="btn-toggle-sidebar"
-        class="flex h-9 items-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all"
+        class="flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated px-2.5 sm:px-3 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer shrink-0"
         title="Toggle Page Thumbnails"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
         </svg>
-        <span class="hidden md:inline">Pages</span>
+        <span class="hidden sm:inline">Pages</span>
       </button>
 
       <!-- Primary Action: Save & Download Button -->
       <button
         id="btn-export-pdf"
-        class="flex h-9 items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-4 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan transition-all duration-200 active:scale-95 cursor-pointer"
+        class="flex h-8 sm:h-9 items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-3 sm:px-4 text-[12px] sm:text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
-        <span>Save & Download</span>
+        <span class="hidden sm:inline">Save & Download</span>
+        <span class="inline sm:hidden">Save</span>
       </button>
     </div>
   </div>
 
   <!-- Dynamic Property Inspector Sub-Bar (Appears when active element selected) -->
-  <div id="property-bar" class="mt-2.5 flex flex-wrap items-center gap-3 border-t border-hairline/80 pt-2.5 text-[12px] hidden animate-fade-in">
+  <div id="property-bar" class="mt-2.5 flex flex-wrap items-center gap-2 sm:gap-3 border-t border-hairline/80 pt-2.5 text-[12px] hidden animate-fade-in overflow-x-auto no-scrollbar max-w-full">
     <div class="flex items-center gap-1 text-mute font-mono text-[11px]">
       <span class="h-2 w-2 rounded-full bg-blue-500"></span>
       <span id="inspector-element-type">ELEMENT</span>:

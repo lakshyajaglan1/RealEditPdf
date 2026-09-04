@@ -20,26 +20,26 @@ import Layout from '../layouts/Layout.astro';
         <span class="uppercase tracking-wider font-semibold text-emerald-600 dark:text-emerald-400">Client-Side Optimizer</span>
       </div>
 
-      <h1 class="text-4xl font-extrabold tracking-display text-ink sm:text-5xl">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-display text-ink break-words">
         Compress PDF Documents
       </h1>
-      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto leading-relaxed">
+      <p class="mt-3 text-[14px] sm:text-[16px] text-body max-w-xl mx-auto leading-relaxed">
         Optimize and shrink PDF files to easily share over email or upload to government and university portals. 100% private, files stay on your machine.
       </p>
 
-      <div class="mt-10 rounded-3xl border border-hairline bg-canvas-elevated/90 backdrop-blur-xl p-6 sm:p-10 shadow-floating text-left">
-        <div id="comp-dropzone" class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-canvas/80 p-12 text-center hover:border-emerald-500/50 hover:shadow-glow-cyan transition-all duration-300 cursor-pointer group">
-          <div class="h-16 w-16 rounded-2xl bg-canvas-elevated border border-hairline flex items-center justify-center mb-4 shadow-whisper group-hover:scale-105 transition-transform">
+      <div class="mt-8 sm:mt-10 rounded-3xl border border-hairline bg-canvas-elevated/90 backdrop-blur-xl p-4 sm:p-8 md:p-10 shadow-floating text-left">
+        <div id="comp-dropzone" class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-canvas/80 p-6 sm:p-12 text-center hover:border-emerald-500/50 hover:shadow-glow-cyan transition-all duration-300 cursor-pointer group">
+          <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-canvas-elevated border border-hairline flex items-center justify-center mb-3 sm:mb-4 shadow-whisper group-hover:scale-105 transition-transform">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
-          <h3 class="text-xl font-bold text-ink">Choose a PDF file to compress</h3>
-          <p class="text-[13px] text-mute mt-1.5">No file size limits • Immediate in-browser reduction</p>
+          <h3 class="text-lg sm:text-xl font-bold text-ink">Choose a PDF file to compress</h3>
+          <p class="text-[12px] sm:text-[13px] text-mute mt-1.5">No file size limits • Immediate in-browser reduction</p>
           <input type="file" id="comp-file-input" accept="application/pdf" class="hidden" />
         </div>
 
-        <div id="comp-controls" class="mt-8 space-y-5 hidden">
+        <div id="comp-controls" class="mt-6 sm:mt-8 space-y-5 hidden">
           <div class="flex items-center justify-between p-3.5 rounded-xl bg-canvas border border-hairline text-[13px]">
             <div>
               <span id="comp-filename" class="font-semibold text-ink">document.pdf</span>
@@ -50,18 +50,18 @@ import Layout from '../layouts/Layout.astro';
 
           <div>
             <label class="block text-[13px] font-semibold text-ink mb-2">Compression Level</label>
-            <div class="grid grid-cols-3 gap-3 text-center text-[12px] font-medium" id="comp-levels-container">
-              <label class="comp-level-card p-3.5 rounded-xl border border-hairline bg-canvas hover:border-blue-500/50 cursor-pointer transition-all shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-center text-[12px] font-medium" id="comp-levels-container">
+              <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-blue-500/50 cursor-pointer transition-all shadow-sm">
                 <input type="radio" name="comp-level" value="low" class="hidden" />
                 <div class="font-bold text-ink text-sm">Low</div>
                 <div class="text-[11px] text-mute font-mono mt-0.5">Maximum Quality</div>
               </label>
-              <label class="comp-level-card p-3.5 rounded-xl border-2 border-blue-500 bg-canvas cursor-pointer transition-all shadow-sm">
+              <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border-2 border-blue-500 bg-canvas cursor-pointer transition-all shadow-sm">
                 <input type="radio" name="comp-level" value="medium" checked class="hidden" />
                 <div class="font-bold text-ink text-sm">Balanced</div>
                 <div class="text-[11px] text-blue-600 dark:text-cyan-400 font-mono mt-0.5 font-semibold">Recommended</div>
               </label>
-              <label class="comp-level-card p-3.5 rounded-xl border border-hairline bg-canvas hover:border-blue-500/50 cursor-pointer transition-all shadow-sm">
+              <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-blue-500/50 cursor-pointer transition-all shadow-sm">
                 <input type="radio" name="comp-level" value="high" class="hidden" />
                 <div class="font-bold text-ink text-sm">High</div>
                 <div class="text-[11px] text-mute font-mono mt-0.5">Smallest Size</div>

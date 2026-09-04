@@ -20,29 +20,29 @@ import Layout from '../layouts/Layout.astro';
         <span class="uppercase tracking-wider font-semibold text-blue-600 dark:text-cyan-400">Client-Side Fast Merger</span>
       </div>
 
-      <h1 class="text-4xl font-extrabold tracking-display text-ink sm:text-5xl">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-display text-ink break-words">
         Merge PDF Files
       </h1>
-      <p class="mt-4 text-[16px] text-body max-w-xl mx-auto leading-relaxed">
+      <p class="mt-3 text-[14px] sm:text-[16px] text-body max-w-xl mx-auto leading-relaxed">
         Combine multiple PDF documents into one continuous PDF in seconds. Reorder files via drag and drop. 100% private, files never leave your device.
       </p>
 
       <!-- Merge Studio Container -->
-      <div class="mt-10 rounded-3xl border border-hairline bg-canvas-elevated/90 backdrop-blur-xl p-6 sm:p-10 shadow-floating text-left">
+      <div class="mt-8 sm:mt-10 rounded-3xl border border-hairline bg-canvas-elevated/90 backdrop-blur-xl p-4 sm:p-8 md:p-10 shadow-floating text-left">
         <!-- Dropzone -->
-        <div id="merge-dropzone" class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-canvas/80 p-12 text-center hover:border-cyan-500/50 hover:shadow-glow-cyan transition-all duration-300 cursor-pointer group">
-          <div class="h-16 w-16 rounded-2xl bg-canvas-elevated border border-hairline flex items-center justify-center mb-4 shadow-whisper group-hover:scale-105 transition-transform">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div id="merge-dropzone" class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-canvas/80 p-6 sm:p-12 text-center hover:border-cyan-500/50 hover:shadow-glow-cyan transition-all duration-300 cursor-pointer group">
+          <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-canvas-elevated border border-hairline flex items-center justify-center mb-3 sm:mb-4 shadow-whisper group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 sm:h-8 sm:w-8 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
           </div>
-          <h3 class="text-xl font-bold text-ink">Choose PDF files or drag them here</h3>
-          <p class="text-[13px] text-mute mt-1.5">Select multiple documents at once (no size limit)</p>
+          <h3 class="text-lg sm:text-xl font-bold text-ink">Choose PDF files or drag them here</h3>
+          <p class="text-[12px] sm:text-[13px] text-mute mt-1.5">Select multiple documents at once (no size limit)</p>
           <input type="file" id="merge-file-input" accept="application/pdf" multiple class="hidden" />
         </div>
 
         <!-- File List (Reorderable) -->
-        <div id="merge-files-container" class="mt-8 space-y-3 hidden">
+        <div id="merge-files-container" class="mt-6 sm:mt-8 space-y-3 hidden">
           <div class="flex items-center justify-between pb-2.5 border-b border-hairline text-[12px] font-mono text-mute font-semibold">
             <span>QUEUED DOCUMENTS (<span id="merge-count" class="text-blue-600 dark:text-cyan-400">0</span>)</span>
             <button id="btn-clear-merge" class="text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">Clear All</button>
@@ -51,11 +51,11 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <!-- Merge Actions -->
-        <div id="merge-actions" class="mt-8 flex items-center justify-between border-t border-hairline/80 pt-5 hidden">
-          <button id="btn-add-more-merge" class="rounded-xl border border-hairline bg-canvas-elevated px-4 py-2 text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer">
+        <div id="merge-actions" class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-hairline/80 pt-5 hidden">
+          <button id="btn-add-more-merge" class="w-full sm:w-auto text-center rounded-xl border border-hairline bg-canvas-elevated px-4 py-2.5 text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink shadow-whisper transition-all cursor-pointer">
             + Add More PDFs
           </button>
-          <button id="btn-execute-merge" class="rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
+          <button id="btn-execute-merge" class="w-full sm:w-auto text-center rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:shadow-glow-cyan active:scale-95 transition-all cursor-pointer">
             Merge & Download PDF
           </button>
         </div>
