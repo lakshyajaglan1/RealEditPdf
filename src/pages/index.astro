@@ -1,11 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PdfEditor from '../components/editor/PdfEditor.astro';
+import SeoContent from '../components/seo/SeoContent.astro';
 ---
 
 <Layout
-  title="RealEditPDF — 100% Free & Unlimited Client-Side PDF Editor"
-  description="Edit PDF text, draw annotations, sign documents, redact confidential data, reorder pages, and merge PDFs directly in your browser. 100% private with zero cloud uploads."
+  title="Edit PDF Online Free — 100% Private, Unlimited PDF Editor | RealEditPDF"
+  description="Edit PDF online free with zero limits. Learn how to edit PDF files, add text, e-sign, redact, and organize pages directly in your browser on iPhone, Mac, and Windows. 100% private."
+  canonicalUrl="https://realeditpdf.com/"
   activeTool="editor"
 >
   <!-- Hero Section with Ambient Glow & Modern Studio Mount -->
@@ -28,10 +30,10 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
         </div>
         
         <h1 class="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-display text-ink break-words">
-          Edit, Sign & Redact PDFs <span class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">Privately</span>
+          Edit PDF Online Free <span class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">Privately</span>
         </h1>
         <p class="mt-3 text-[14px] sm:text-[16px] text-body max-w-xl leading-relaxed">
-          Zero cloud uploads. Edit text, place signatures, annotate, redact confidential data, and organize pages directly on your device.
+          Zero cloud uploads. Edit PDF text, draw e-signatures, annotate, redact confidential data, and organize pages directly on your device with zero limits.
         </p>
 
         <!-- Quick Feature Badges -->
@@ -277,6 +279,9 @@ import PdfEditor from '../components/editor/PdfEditor.astro';
       </div>
     </div>
   </section>
+
+  <!-- Comprehensive SEO Knowledge Guide & Schema -->
+  <SeoContent />
 
   <!-- Modern CTA Section -->
   <section class="py-14 sm:py-24 bg-canvas text-center relative overflow-hidden">

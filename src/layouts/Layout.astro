@@ -6,12 +6,20 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: string;
   activeTool?: string;
 }
 
 const {
-  title = 'RealEditPDF — 100% Free & Unlimited Client-Side PDF Editor',
-  description = 'Edit PDF text, sign documents, annotate, redact, reorder pages, merge and split PDFs online for free with zero daily limits. 100% private, client-side processing.',
+  title = 'Edit PDF Online Free — Fast, Private & Unlimited PDF Editor | RealEditPDF',
+  description = 'Edit PDF online free with zero limits. Learn how to edit PDF files, add text, e-sign, redact, and organize pages directly in your browser on iPhone, Mac, and Windows. 100% private.',
+  keywords = 'edit pdf, edit pdf online, edit pdf online free, edit pdf free, how to edit pdf, how to edit pdf free, edit pdf files, free edit pdf, how to edit pdf on iphone, how to edit pdf on mac free, edit pdf on iphone, pdf editor, realeditpdf',
+  canonicalUrl = 'https://realeditpdf.com/',
+  ogImage = 'https://realeditpdf.com/og-image.png',
+  ogType = 'website',
   activeTool = 'editor',
 } = Astro.props;
 ---
@@ -52,22 +60,32 @@ const {
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
-    <meta name="keywords" content="pdf editor, edit pdf online free, free pdf editor, sign pdf, redact pdf, merge pdf, split pdf, rotate pdf, client side pdf editor, no limit pdf editor, realeditpdf" />
+    <meta name="keywords" content={keywords} />
     <meta name="author" content="RealEditPDF" />
-    <link rel="canonical" href="https://realeditpdf.com" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://realeditpdf.com/" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="RealEditPDF" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://realeditpdf.com/" />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
 
     <!-- PDF.js & pdf-lib Global Scripts from fast trusted CDNs as guaranteed fallback & local bundling support -->
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
