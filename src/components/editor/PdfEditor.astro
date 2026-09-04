@@ -101,6 +101,12 @@ import ImageCropModal from './ImageCropModal.astro';
           </svg>
           <span>Crop Page</span>
         </button>
+        <button id="btn-floating-reset-page" class="flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer" title="Reset changes on this page">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Reset Page</span>
+        </button>
       </div>
 
       <!-- Loading Spinner Overlay -->
@@ -118,6 +124,48 @@ import ImageCropModal from './ImageCropModal.astro';
   <StampModal />
   <WatermarkModal />
   <ImageCropModal />
+
+  <!-- Action Confirmation Modal (Reset Page, Reset All, New Session) -->
+  <div id="confirm-action-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden">
+    <div class="w-full max-w-md rounded-2xl border border-hairline bg-canvas-elevated p-6 shadow-floating animate-fade-in">
+      <div class="flex items-start gap-3.5">
+        <div id="confirm-modal-icon-wrapper" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+          <svg id="confirm-modal-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 id="confirm-modal-title" class="text-[16px] font-bold tracking-tight text-ink">Confirm Action</h3>
+          <p id="confirm-modal-message" class="mt-1.5 text-[13px] text-body leading-relaxed">
+            Are you sure you want to proceed?
+          </p>
+          <p id="confirm-modal-subtext" class="mt-2 text-[11px] text-mute flex items-center gap-1 font-mono">
+            <span>💡</span> <span>You can also undo this action later using Ctrl+Z.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-2.5 border-t border-hairline/80 pt-4">
+        <button
+          id="confirm-modal-btn-cancel"
+          type="button"
+          class="h-9 px-4 rounded-xl border border-hairline bg-canvas-elevated text-[13px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          id="confirm-modal-btn-proceed"
+          type="button"
+          class="h-9 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-[13px] font-semibold text-white shadow-sm transition-colors cursor-pointer"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification System -->
+  <div id="editor-toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 </div>
 
 <!-- Core Client-Side Logic Script -->
@@ -185,10 +233,11 @@ import ImageCropModal from './ImageCropModal.astro';
     }
 
     function saveHistory() {
-      // Deep clone annotations & rotations
+      // Deep clone annotations & rotations & crops
       const snapshot = {
         annotations: JSON.parse(JSON.stringify(state.annotations)),
         rotations: { ...state.pageRotations },
+        crops: JSON.parse(JSON.stringify(state.pageCrops || {})),
       };
       state.history = state.history.slice(0, state.historyIndex + 1);
       state.history.push(snapshot);
@@ -201,27 +250,335 @@ import ImageCropModal from './ImageCropModal.astro';
       redoBtn.disabled = state.historyIndex >= state.history.length - 1;
     }
 
-    undoBtn.addEventListener('click', () => {
+    undoBtn.addEventListener('click', async () => {
       if (state.historyIndex > 0) {
         state.historyIndex--;
         const snapshot = state.history[state.historyIndex];
         state.annotations = JSON.parse(JSON.stringify(snapshot.annotations));
         state.pageRotations = { ...snapshot.rotations };
-        renderCurrentPage();
+        state.pageCrops = snapshot.crops ? JSON.parse(JSON.stringify(snapshot.crops)) : {};
+        await renderCurrentPage();
+        await renderThumbnails();
         updateUndoRedoUI();
+        showToast('Action undone', 'info', 1800);
       }
     });
 
-    redoBtn.addEventListener('click', () => {
+    redoBtn.addEventListener('click', async () => {
       if (state.historyIndex < state.history.length - 1) {
         state.historyIndex++;
         const snapshot = state.history[state.historyIndex];
         state.annotations = JSON.parse(JSON.stringify(snapshot.annotations));
         state.pageRotations = { ...snapshot.rotations };
-        renderCurrentPage();
+        state.pageCrops = snapshot.crops ? JSON.parse(JSON.stringify(snapshot.crops)) : {};
+        await renderCurrentPage();
+        await renderThumbnails();
         updateUndoRedoUI();
+        showToast('Action redone', 'info', 1800);
       }
     });
+
+    // Keyboard Shortcuts (Ctrl+Z for Undo, Ctrl+Y or Ctrl+Shift+Z for Redo)
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.isContentEditable) {
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          if (!redoBtn.disabled) redoBtn.click();
+        } else {
+          if (!undoBtn.disabled) undoBtn.click();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        if (!redoBtn.disabled) redoBtn.click();
+      }
+    });
+
+    // Action Confirmation Modal System
+    let pendingConfirmAction = null;
+    const confirmModal = document.getElementById('confirm-action-modal');
+    const confirmTitle = document.getElementById('confirm-modal-title');
+    const confirmMessage = document.getElementById('confirm-modal-message');
+    const confirmSubtext = document.getElementById('confirm-modal-subtext');
+    const confirmBtnProceed = document.getElementById('confirm-modal-btn-proceed');
+    const confirmBtnCancel = document.getElementById('confirm-modal-btn-cancel');
+    const confirmIconWrapper = document.getElementById('confirm-modal-icon-wrapper');
+
+    function openConfirmModal({ title, message, subtext = '', confirmText = 'Confirm', confirmStyle = 'rose', onConfirm }) {
+      if (!confirmModal) return;
+      pendingConfirmAction = onConfirm;
+
+      if (confirmTitle) confirmTitle.textContent = title;
+      if (confirmMessage) confirmMessage.textContent = message;
+      if (confirmSubtext) {
+        if (subtext) {
+          confirmSubtext.innerHTML = `<span>💡</span> <span>${subtext}</span>`;
+          confirmSubtext.classList.remove('hidden');
+        } else {
+          confirmSubtext.classList.add('hidden');
+        }
+      }
+
+      if (confirmBtnProceed) {
+        confirmBtnProceed.textContent = confirmText;
+        if (confirmStyle === 'rose') {
+          confirmBtnProceed.className = 'h-9 px-4 rounded-xl text-[13px] font-semibold text-white shadow-sm transition-colors cursor-pointer bg-rose-600 hover:bg-rose-700';
+          if (confirmIconWrapper) confirmIconWrapper.className = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400';
+        } else if (confirmStyle === 'amber') {
+          confirmBtnProceed.className = 'h-9 px-4 rounded-xl text-[13px] font-semibold text-white shadow-sm transition-colors cursor-pointer bg-amber-600 hover:bg-amber-700';
+          if (confirmIconWrapper) confirmIconWrapper.className = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400';
+        } else {
+          confirmBtnProceed.className = 'h-9 px-4 rounded-xl text-[13px] font-semibold text-white shadow-sm transition-colors cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:opacity-95';
+          if (confirmIconWrapper) confirmIconWrapper.className = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-cyan-400';
+        }
+      }
+
+      confirmModal.classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      confirmModal?.classList.add('hidden');
+      pendingConfirmAction = null;
+    }
+
+    confirmBtnCancel?.addEventListener('click', closeConfirmModal);
+    confirmModal?.addEventListener('click', (e) => {
+      if (e.target === confirmModal) closeConfirmModal();
+    });
+
+    confirmBtnProceed?.addEventListener('click', async () => {
+      const action = pendingConfirmAction;
+      closeConfirmModal();
+      if (typeof action === 'function') {
+        await action();
+      }
+    });
+
+    // Toast Notification System
+    const toastContainer = document.getElementById('editor-toast-container');
+    function showToast(message, type = 'info', duration = 3000) {
+      if (!toastContainer) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto flex items-center gap-2.5 rounded-2xl border bg-canvas-elevated/95 backdrop-blur-xl px-4 py-2.5 text-[13px] font-medium shadow-floating transition-all duration-300 translate-y-4 opacity-0';
+
+      let iconHtml = '';
+      if (type === 'success') {
+        toast.classList.add('border-emerald-500/40', 'text-ink');
+        iconHtml = `<svg class="h-4 w-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+      } else if (type === 'warning') {
+        toast.classList.add('border-amber-500/40', 'text-ink');
+        iconHtml = `<svg class="h-4 w-4 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
+      } else {
+        toast.classList.add('border-hairline', 'text-ink');
+        iconHtml = `<svg class="h-4 w-4 text-blue-600 dark:text-cyan-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+
+      toast.innerHTML = `${iconHtml}<span>${message}</span>`;
+      toastContainer.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    // Reset Changes for Current or Specified Page
+    function resetPageChanges(pageNum = state.currentPage) {
+      if (!state.pdfDocProxy) {
+        showToast('Please open or load a PDF document first.', 'info');
+        return;
+      }
+
+      const p = pageNum || state.currentPage;
+      const annotCount = (state.annotations[p] && state.annotations[p].length) || 0;
+      const hasRotation = Boolean(state.pageRotations[p]);
+      const hasCrop = Boolean(state.pageCrops && state.pageCrops[p]);
+
+      if (annotCount === 0 && !hasRotation && !hasCrop) {
+        showToast(`Page ${p} has no changes to reset.`, 'info');
+        return;
+      }
+
+      const details = [];
+      if (annotCount > 0) details.push(`${annotCount} annotation${annotCount === 1 ? '' : 's'}`);
+      if (hasRotation) details.push(`rotation (${state.pageRotations[p]}°)`);
+      if (hasCrop) details.push('crop/resize');
+
+      openConfirmModal({
+        title: `Reset Changes on Page ${p}?`,
+        message: `This will remove all edits on Page ${p} (${details.join(', ')}) and revert it to the original page.`,
+        subtext: 'You can undo this reset anytime using Ctrl+Z.',
+        confirmText: `Reset Page ${p}`,
+        confirmStyle: 'amber',
+        onConfirm: async () => {
+          state.annotations[p] = [];
+          state.pageRotations[p] = 0;
+          if (state.pageCrops && state.pageCrops[p]) {
+            delete state.pageCrops[p];
+          }
+
+          if (state.selectedAnnotationId) {
+            state.selectedAnnotationId = null;
+            document.getElementById('property-bar')?.classList.add('hidden');
+          }
+
+          saveHistory();
+
+          if (state.currentPage === p) {
+            await renderCurrentPage();
+          }
+          await renderSingleThumbnail(p);
+          showToast(`Page ${p} changes have been reset.`, 'success');
+        }
+      });
+    }
+
+    // Reset Changes on ALL Pages in a Single Click
+    function resetAllPagesChanges() {
+      if (!state.pdfDocProxy) {
+        showToast('Please open or load a PDF document first.', 'info');
+        return;
+      }
+
+      let totalAnnots = 0;
+      let totalRotations = 0;
+      let totalCrops = 0;
+
+      for (let p = 1; p <= state.totalPages; p++) {
+        if (state.annotations[p] && state.annotations[p].length > 0) {
+          totalAnnots += state.annotations[p].length;
+        }
+        if (state.pageRotations[p]) {
+          totalRotations++;
+        }
+        if (state.pageCrops && state.pageCrops[p]) {
+          totalCrops++;
+        }
+      }
+
+      const totalChanges = totalAnnots + totalRotations + totalCrops;
+      if (totalChanges === 0) {
+        showToast('All pages are already in their clean original state.', 'info');
+        return;
+      }
+
+      const summaryParts = [];
+      if (totalAnnots > 0) summaryParts.push(`${totalAnnots} annotation${totalAnnots === 1 ? '' : 's'}`);
+      if (totalRotations > 0) summaryParts.push(`${totalRotations} rotated page${totalRotations === 1 ? '' : 's'}`);
+      if (totalCrops > 0) summaryParts.push(`${totalCrops} crop${totalCrops === 1 ? '' : 's'}`);
+
+      openConfirmModal({
+        title: 'Reset Changes on ALL Pages?',
+        message: `This will reset all modifications (${summaryParts.join(', ')}) across all ${state.totalPages} pages in a single click.`,
+        subtext: 'You can easily undo this reset with Ctrl+Z or the Undo button.',
+        confirmText: 'Reset All Pages',
+        confirmStyle: 'rose',
+        onConfirm: async () => {
+          for (let p = 1; p <= state.totalPages; p++) {
+            state.annotations[p] = [];
+            state.pageRotations[p] = 0;
+          }
+          state.pageCrops = {};
+
+          state.selectedAnnotationId = null;
+          document.getElementById('property-bar')?.classList.add('hidden');
+
+          saveHistory();
+          await renderThumbnails();
+          await renderCurrentPage();
+          showToast('All changes across all pages have been reset.', 'success');
+        }
+      });
+    }
+
+    // Start a New Session: unloads current document and restores the workspace dropzone
+    function startNewSession() {
+      if (!state.pdfDocProxy) {
+        fileInput?.click();
+        return;
+      }
+
+      openConfirmModal({
+        title: 'Start a New Session?',
+        message: 'Are you sure you want to close the current document and start fresh? All unsaved annotations, signatures, and edits will be discarded.',
+        subtext: 'Make sure you have downloaded your PDF if you need to keep your changes.',
+        confirmText: 'Start New Session',
+        confirmStyle: 'primary',
+        onConfirm: () => {
+          // Reset internal state
+          state.pdfBytes = null;
+          state.pdfDocProxy = null;
+          state.totalPages = 0;
+          state.currentPage = 1;
+          state.pageRotations = {};
+          state.pageCrops = {};
+          state.annotations = {};
+          state.activeTool = 'select';
+          state.scale = 1.0;
+          state.selectedAnnotationId = null;
+          state.history = [];
+          state.historyIndex = -1;
+          state.isDrawing = false;
+          state.drawPoints = [];
+
+          // Reset canvases
+          renderCanvas.width = 0;
+          renderCanvas.height = 0;
+          renderCanvas.style.width = '0px';
+          renderCanvas.style.height = '0px';
+          drawCanvas.width = 0;
+          drawCanvas.height = 0;
+          drawCanvas.style.width = '0px';
+          drawCanvas.style.height = '0px';
+
+          // Reset DOM layers and counters
+          annotationsLayer.innerHTML = '';
+          thumbnailsList.innerHTML = '';
+          sidebarCount.textContent = '0';
+          curPageSpan.textContent = '1';
+          totPageSpan.textContent = '1';
+          zoomPct.textContent = '100%';
+
+          // Reset visibility
+          pageContainer.classList.add('hidden');
+          pageNav.classList.add('hidden');
+          pageNav.classList.remove('flex');
+          propertyBar.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+
+          // Reset file inputs
+          if (fileInput) fileInput.value = '';
+          if (appendFileInput) appendFileInput.value = '';
+
+          // Reset tools to 'select'
+          setTool('select');
+          updateUndoRedoUI();
+
+          // Close any open auxiliary modals
+          document.getElementById('signature-modal')?.classList.add('hidden');
+          document.getElementById('stamp-modal')?.classList.add('hidden');
+          document.getElementById('watermark-modal')?.classList.add('hidden');
+          document.getElementById('image-crop-modal')?.classList.add('hidden');
+
+          showToast('New session started. You can now upload a new PDF.', 'info');
+          emptyState.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    }
+
+    // Attach Event Listeners for Reset & New Session Controls
+    document.getElementById('btn-reset-page')?.addEventListener('click', () => resetPageChanges());
+    document.getElementById('btn-floating-reset-page')?.addEventListener('click', () => resetPageChanges());
+    document.getElementById('btn-reset-all')?.addEventListener('click', resetAllPagesChanges);
+    document.getElementById('btn-sidebar-reset-all')?.addEventListener('click', resetAllPagesChanges);
+    document.getElementById('btn-new-session')?.addEventListener('click', startNewSession);
 
     // Load PDF ArrayBuffer or Uint8Array
     async function loadPdfBuffer(inputData) {
@@ -246,6 +603,7 @@ import ImageCropModal from './ImageCropModal.astro';
         state.currentPage = 1;
         state.annotations = {};
         state.pageRotations = {};
+        state.pageCrops = {};
 
         for (let i = 1; i <= state.totalPages; i++) {
           state.annotations[i] = [];
@@ -1362,6 +1720,7 @@ import ImageCropModal from './ImageCropModal.astro';
             <div class="flex items-center gap-1">
               <button class="thumb-up-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-[10px] font-bold shadow-xs disabled:opacity-20 disabled:pointer-events-none transition-all cursor-pointer" title="Move Page Up" ${p === 1 ? 'disabled' : ''}>▲</button>
               <button class="thumb-down-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-[10px] font-bold shadow-xs disabled:opacity-20 disabled:pointer-events-none transition-all cursor-pointer" title="Move Page Down" ${p === state.totalPages ? 'disabled' : ''}>▼</button>
+              <button class="thumb-reset-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-amber-50 dark:hover:bg-amber-950/40 text-mute hover:text-amber-600 dark:hover:text-amber-400 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105 cursor-pointer" title="Reset changes on Page ${p}">↺</button>
               <button class="thumb-rotate-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-hairline-soft text-ink flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105 cursor-pointer" title="Rotate Page 90°">↻</button>
               <button class="thumb-del-btn h-6 w-6 rounded bg-canvas border border-hairline hover:bg-rose-50 dark:hover:bg-rose-950/40 text-mute hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center text-xs shadow-xs font-bold transition-all hover:scale-105 cursor-pointer" title="Delete Page">✕</button>
             </div>
@@ -1381,6 +1740,12 @@ import ImageCropModal from './ImageCropModal.astro';
         thumbCard.querySelector('.thumb-down-btn')?.addEventListener('click', async (e) => {
           e.stopPropagation();
           await reorderPages(p, p + 1);
+        });
+
+        // Reset Page Action
+        thumbCard.querySelector('.thumb-reset-btn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetPageChanges(p);
         });
 
         // Drag and Drop reordering

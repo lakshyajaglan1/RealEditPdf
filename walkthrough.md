@@ -87,15 +87,35 @@ We have completely modernized the user interface of **RealPdfEdit** to provide a
 
 ---
 
+### 8. Reset Page, Reset All Pages, and Start New Session Controls
+- **Reset Changes for Each Page**:
+  - **Toolbar Control**: Added **Reset Page** (`#btn-reset-page`) in a unified reset segmented group.
+  - **Floating Canvas Dock**: Added a quick **Reset Page** button (`#btn-floating-reset-page`) right on the sticky bottom navigation dock for instant access while editing.
+  - **Thumbnail Rail Actions**: Added a dedicated `↺` reset button (`.thumb-reset-btn`) on every page thumbnail card in the sidebar.
+  - **Execution & Safety**: Reverts all modifications on the target page (annotations, drawings, crop/resizing, rotation) back to the clean original page state. Prompts with a sleek confirmation modal specifying the exact edits being cleared and provides instant restoration via **Undo (Ctrl+Z)**.
+- **Reset Changes Across All Pages in 1 Click**:
+  - **Toolbar Control**: Added a **Reset All** (`#btn-reset-all`) button for 1-click global reset across the entire document.
+  - **Sidebar Footer Action**: Added a **Reset All Pages** (`#btn-sidebar-reset-all`) button in the thumbnail sidebar.
+  - **Confirmation Modal**: Displays the total count of modifications across all pages (annotations, rotated pages, cropped pages) with an amber/rose safeguard confirmation dialog.
+  - **100% Undoable**: Pushes a complete snapshot to history so users can easily restore everything with `Ctrl+Z` or the Undo button if clicked by mistake.
+- **Start a New Session**:
+  - **Toolbar Control**: Added a prominent **New Session** button (`#btn-new-session`).
+  - **Clean Teardown & Reset**: Safely prompts confirmation if a document is loaded, cleans up internal state (`pdfBytes`, `pdfDocProxy`, `pageRotations`, `pageCrops`, `annotations`, `history`, `scale`), wipes canvases, and restores the initial empty dropzone state (`"Upload your PDF to begin"`).
+- **Notification & Feedback System**:
+  - Added a smooth floating toast notification system (`showToast()`) providing clear feedback for all reset and session lifecycle actions.
+
+---
+
 ## Verification Results
 
 1. **Build Validation**:
-   - Ran `npm run build`: All static pages built cleanly in 614ms without any TypeScript or Vite bundling errors.
+   - Ran `npm run build`: All static pages built cleanly in 572ms with 0 errors.
 2. **Browser Subagent Testing**:
    - Loaded sample PDF invoice.
-   - Tested Watermark modal: verified "Under PDF Text" default, continuous rotation slider, and live preview.
-   - Selected `+45°` preset and applied watermark across document.
-   - Verified on-page rendering: watermark appeared tilted at `+45°` underneath document text.
-   - Verified on-element controls: clicked **Rotate** button on the watermark, angle incremented to `60°`.
-   - Verified property inspector: layer button displayed `Under Text`, and rotation controls accurately displayed `60°`.
-   - Recording saved: [watermark_rotation_test.webp](file:///home/lakshya/.gemini/antigravity-ide/brain/fd89cbaf-34b6-4796-8db0-8f4801a4a8a3/watermark_rotation_test_1788507168076.webp).
+   - Rotated Page 1 by 90° CW and clicked **Reset Page** in the toolbar.
+   - Verified confirmation modal appeared with clear details (`Reset Changes on Page 1?`).
+   - Confirmed: Page 1 reverted back to 0° rotation and toast confirmed reset.
+   - Tested **Undo** (`Ctrl+Z`): Correctly restored the previous rotated state.
+   - Clicked **Reset All**: Verified modal (`Reset Changes on ALL Pages?`) and confirmed 1-click reset of all pages.
+   - Clicked **New Session**: Verified modal (`Start a New Session?`), confirmed, and verified document unloaded cleanly to the initial upload dropzone state.
+   - Recording saved: [reset_session_demo.webp](file:///home/lakshya/.gemini/antigravity-ide/brain/7ed7961d-d2eb-4b95-880e-5db86efcabf9/reset_session_demo_1788509303586.webp).
