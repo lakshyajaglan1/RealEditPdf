@@ -248,21 +248,38 @@ const { activeTool = 'editor' } = Astro.props;
     }
 
     // Tools pill-strip toggle (navbar "Tools" button)
+    // State is persisted in localStorage so the strip stays open across page navigations
+    // until the user explicitly closes it by clicking the "Tools" button again.
     const toolsTrigger = document.getElementById('tools-menu-trigger');
     const toolsStrip = document.getElementById('tools-strip');
     const toolsChevron = document.getElementById('tools-menu-chevron');
+    const TOOLS_STRIP_KEY = 'tools_strip_open';
 
-    function setToolsStripOpen(open) {
+    function setToolsStripOpen(open, persist = true) {
       if (!toolsStrip) return;
       if (open) {
         toolsStrip.classList.remove('hidden');
         toolsTrigger?.setAttribute('aria-expanded', 'true');
+        toolsTrigger?.classList.add('text-ink', 'font-semibold');
+        toolsTrigger?.classList.remove('text-body');
         toolsChevron?.classList.add('rotate-180');
       } else {
         toolsStrip.classList.add('hidden');
         toolsTrigger?.setAttribute('aria-expanded', 'false');
+        toolsTrigger?.classList.remove('text-ink', 'font-semibold');
+        toolsTrigger?.classList.add('text-body');
         toolsChevron?.classList.remove('rotate-180');
       }
+      if (persist) {
+        try { localStorage.setItem(TOOLS_STRIP_KEY, open ? '1' : '0'); } catch (_) {}
+      }
+    }
+
+    // Restore previous open state on every page load
+    if (toolsStrip) {
+      let initiallyOpen = false;
+      try { initiallyOpen = localStorage.getItem(TOOLS_STRIP_KEY) === '1'; } catch (_) {}
+      setToolsStripOpen(initiallyOpen, false);
     }
 
     if (toolsTrigger && toolsStrip) {
@@ -270,6 +287,18 @@ const { activeTool = 'editor' } = Astro.props;
         e.stopPropagation();
         const isOpen = !toolsStrip.classList.contains('hidden');
         setToolsStripOpen(!isOpen);
+      });
+
+      // Close the strip when the user clicks any other navbar "section" link
+      // (About, Privacy, Terms, Contact) — they live inside <header> so the
+      // generic outside-click handler below won't catch them.
+      const sectionLinks = document.querySelectorAll(
+        'header a[href="/about"], header a[href="/privacy"], header a[href="/terms"], header a[href="/contact"]'
+      );
+      sectionLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          setToolsStripOpen(false);
+        });
       });
 
       // Close the strip when clicking anywhere outside the navbar or the strip itself
