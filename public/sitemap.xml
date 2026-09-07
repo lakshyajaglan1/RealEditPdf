@@ -151,138 +151,1006 @@
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/es/</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/es/comprimir-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/es/combinar-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/es/dividir-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/es/firmar-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/es/pdf-a-imagenes</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/es/acerca-de</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/es/contacto</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/es/privacidad</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/es/terminos</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/es/comprimir-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/combinar-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/dividir-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/firmar-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/pdf-a-imagenes</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/acerca-de</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/contacto</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/privacidad</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/es/terminos</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 
   <!-- ============================================================
        Japanese
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/ja/</loc>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/ja/compress-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ja/merge-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ja/split-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ja/sign-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ja/pdf-to-images</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/ja/about</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/ja/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/ja/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/ja/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/ja/compress-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/merge-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/split-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/sign-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/pdf-to-images</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ja/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 
   <!-- ============================================================
        French
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/fr/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/fr/compresser-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/fr/fusionner-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/fr/diviser-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/fr/signer-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/fr/pdf-en-images</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/fr/a-propos</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/fr/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/fr/confidentialite</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/fr/conditions</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/fr/compresser-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/fusionner-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/diviser-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/signer-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/pdf-en-images</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/a-propos</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/confidentialite</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/fr/conditions</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 
   <!-- ============================================================
        German
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/de/</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/de/pdf-komprimieren</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/de/pdf-zusammenfuegen</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/de/pdf-teilen</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/de/pdf-signieren</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/de/pdf-zu-bildern</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/de/ueber-uns</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/de/kontakt</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/de/datenschutz</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/de/agb</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/de/pdf-komprimieren</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/pdf-zusammenfuegen</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/pdf-teilen</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/pdf-signieren</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/pdf-zu-bildern</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/ueber-uns</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/kontakt</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/datenschutz</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/de/agb</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 
   <!-- ============================================================
        Portuguese
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/pt/</loc>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/pt/compactar-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/pt/combinar-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/pt/dividir-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/pt/assinar-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/pt/pdf-para-imagens</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/pt/sobre</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/pt/contato</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/pt/privacidade</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/pt/termos</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/pt/compactar-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/combinar-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/dividir-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/assinar-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/pdf-para-imagens</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/sobre</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/contato</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/privacidade</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/pt/termos</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 
   <!-- ============================================================
        Korean
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/ko/</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/ko/compress-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ko/merge-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ko/split-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ko/sign-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/ko/pdf-to-images</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/ko/about</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/ko/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/ko/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/ko/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/ko/compress-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/merge-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/split-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/sign-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/pdf-to-images</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/ko/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 
   <!-- ============================================================
        Italian
        ============================================================ -->
   <url>
     <loc>https://realeditpdf.com/it/</loc>
-    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url><loc>https://realeditpdf.com/it/comprimi-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/it/unisci-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/it/dividi-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/it/firma-pdf</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://realeditpdf.com/it/pdf-in-immagini</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://realeditpdf.com/it/chi-siamo</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/it/contatti</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://realeditpdf.com/it/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://realeditpdf.com/it/termini</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url>
+    <loc>https://realeditpdf.com/it/comprimi-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/comprimir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/compresser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-komprimieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/compactar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/compress-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/comprimi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/compress-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/unisci-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/fusionner-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zusammenfuegen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/combinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/merge-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/unisci-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/merge-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/dividi-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/diviser-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-teilen" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/dividir-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/split-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/dividi-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/split-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/firma-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/firmar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/signer-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-signieren" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/assinar-pdf" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/firma-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/sign-pdf" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/pdf-in-immagini</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/pdf-a-imagenes" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/pdf-en-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/pdf-zu-bildern" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/pdf-para-imagens" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/pdf-to-images" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/pdf-in-immagini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/pdf-to-images" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/chi-siamo</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/a-propos" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/ueber-uns" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/sobre" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/about" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/chi-siamo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/about" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/contatti</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/contacto" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/kontakt" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/contato" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/contact" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/contatti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/contact" />
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/privacidad" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/confidentialite" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/datenschutz" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/privacidade" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://realeditpdf.com/it/termini</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://realeditpdf.com/terms" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://realeditpdf.com/es/terminos" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://realeditpdf.com/ja/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://realeditpdf.com/fr/conditions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://realeditpdf.com/de/agb" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://realeditpdf.com/pt/termos" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://realeditpdf.com/ko/terms" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://realeditpdf.com/it/termini" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://realeditpdf.com/terms" />
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 </urlset>
