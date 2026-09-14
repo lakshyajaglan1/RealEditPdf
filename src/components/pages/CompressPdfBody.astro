@@ -10,6 +10,15 @@ const errorFallback = t('compress.errorFallback');
 const readyText = t('compress.ready');
 const defaultFilenameText = t('split.defaultFilename');
 const downloadPrefixText = t('compress.downloadPrefix');
+const successTitleText = t('compress.successTitle');
+const successSubtitleText = t('compress.successSubtitle');
+const compressedSizeText = t('compress.compressedSize');
+const savingsText = t('compress.savings');
+const downloadAgainText = t('compress.downloadAgain');
+const compressAnotherText = t('compress.compressAnother');
+const processingPageText = t('compress.processingPage');
+const finalizingText = t('compress.finalizing');
+const alreadyOptimizedText = t('compress.alreadyOptimized');
 ---
 
 <div class="py-14 md:py-24 hero-mesh-gradient border-b border-hairline relative overflow-hidden">
@@ -33,6 +42,7 @@ const downloadPrefixText = t('compress.downloadPrefix');
     </p>
 
     <div class="mt-8 sm:mt-10 rounded-3xl border border-hairline bg-canvas-elevated/90 backdrop-blur-xl p-4 sm:p-8 md:p-10 shadow-floating text-left">
+      <!-- 1. Dropzone -->
       <div id="comp-dropzone" class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-hairline bg-canvas/80 p-6 sm:p-12 text-center hover:border-emerald-500/50 hover:shadow-glow-cyan transition-all duration-300 cursor-pointer group">
         <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-canvas-elevated border border-hairline flex items-center justify-center mb-3 sm:mb-4 shadow-whisper group-hover:scale-105 transition-transform">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,29 +54,30 @@ const downloadPrefixText = t('compress.downloadPrefix');
         <input type="file" id="comp-file-input" accept="application/pdf" class="hidden" />
       </div>
 
+      <!-- 2. Controls & Configuration -->
       <div id="comp-controls" class="mt-6 sm:mt-8 space-y-5 hidden">
         <div class="flex items-center justify-between p-3.5 rounded-xl bg-canvas border border-hairline text-[13px]">
-          <div>
-            <span id="comp-filename" class="font-semibold text-ink">{defaultFilenameText}</span>
-            <div class="text-xs font-mono text-mute mt-0.5">{t('compress.original')}: <span id="comp-orig-size" class="text-blue-600 dark:text-cyan-400">0 MB</span></div>
+          <div class="min-w-0 pr-3">
+            <span id="comp-filename" class="font-semibold text-ink truncate block">{defaultFilenameText}</span>
+            <div class="text-xs font-mono text-mute mt-0.5">{t('compress.original')}: <span id="comp-orig-size" class="text-emerald-600 dark:text-emerald-400 font-semibold">0 MB</span></div>
           </div>
-          <span class="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400">{readyText}</span>
+          <span class="shrink-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400">{readyText}</span>
         </div>
 
         <div>
           <label class="block text-[13px] font-semibold text-ink mb-2">{t('compress.level')}</label>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-center text-[12px] font-medium" id="comp-levels-container">
-            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-blue-500/50 cursor-pointer transition-all shadow-sm">
+            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
               <input type="radio" name="comp-level" value="low" class="hidden" />
               <div class="font-bold text-ink text-sm">{t('compress.low')}</div>
               <div class="text-[11px] text-mute font-mono mt-0.5">{t('compress.lowHint')}</div>
             </label>
-            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border-2 border-blue-500 bg-canvas cursor-pointer transition-all shadow-sm">
+            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border-2 border-emerald-500 bg-canvas cursor-pointer transition-all shadow-sm">
               <input type="radio" name="comp-level" value="medium" checked class="hidden" />
               <div class="font-bold text-ink text-sm">{t('compress.medium')}</div>
-              <div class="text-[11px] text-blue-600 dark:text-cyan-400 font-mono mt-0.5 font-semibold">{t('compress.mediumHint')}</div>
+              <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono mt-0.5 font-semibold">{t('compress.mediumHint')}</div>
             </label>
-            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-blue-500/50 cursor-pointer transition-all shadow-sm">
+            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
               <input type="radio" name="comp-level" value="high" class="hidden" />
               <div class="font-bold text-ink text-sm">{t('compress.high')}</div>
               <div class="text-[11px] text-mute font-mono mt-0.5">{t('compress.highHint')}</div>
@@ -74,36 +85,126 @@ const downloadPrefixText = t('compress.downloadPrefix');
           </div>
         </div>
 
+        <!-- Dynamic Progress Bar Box -->
+        <div id="comp-progress-box" class="hidden space-y-2 p-4 rounded-xl bg-canvas border border-hairline">
+          <div class="flex justify-between text-xs font-mono text-ink">
+            <span id="comp-progress-label">{processingText}</span>
+            <span id="comp-progress-pct" class="font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+          </div>
+          <div class="w-full bg-canvas-elevated rounded-full h-2 overflow-hidden border border-hairline">
+            <div id="comp-progress-bar" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 h-full w-0 transition-all duration-150"></div>
+          </div>
+        </div>
+
         <button id="btn-execute-comp" class="w-full rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 py-3 text-[14px] font-semibold text-white shadow-sm hover:shadow-glow-cyan transition-all active:scale-[0.99] cursor-pointer">
           {executeText}
         </button>
+      </div>
+
+      <!-- 3. Results Section (displayed after compression) -->
+      <div id="comp-results" class="mt-6 sm:mt-8 space-y-6 hidden">
+        <div class="flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+          <div class="h-10 w-10 shrink-0 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-ink text-base">{successTitleText}</h3>
+            <p class="text-xs text-body mt-0.5">{successSubtitleText}</p>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-3 gap-2.5 sm:gap-4 text-center">
+          <div class="p-3.5 sm:p-4 rounded-xl bg-canvas border border-hairline">
+            <div class="text-[11px] font-mono text-mute">{t('compress.original')}</div>
+            <div id="res-orig-size" class="text-sm sm:text-base font-bold text-ink mt-1">0 MB</div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-canvas border border-hairline">
+            <div class="text-[11px] font-mono text-mute">{compressedSizeText}</div>
+            <div id="res-comp-size" class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 mt-1">0 MB</div>
+          </div>
+          <div class="p-3.5 sm:p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+            <div class="text-[11px] font-mono text-emerald-700 dark:text-emerald-300 font-semibold">{savingsText}</div>
+            <div id="res-savings" class="text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">-0%</div>
+          </div>
+        </div>
+
+        <!-- Result Actions -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button id="btn-comp-download-again" class="flex-1 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 py-3 px-6 text-[14px] font-semibold text-white shadow-sm hover:shadow-glow-cyan transition-all active:scale-[0.99] cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>{downloadAgainText}</span>
+          </button>
+          <button id="btn-comp-reset" class="flex items-center justify-center gap-2 rounded-full border border-hairline bg-canvas-elevated py-3 px-6 text-[14px] font-semibold text-ink hover:bg-hairline-soft transition-all active:scale-[0.99] cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>{compressAnotherText}</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<script is:inline define:vars={{ processingText, executeText, errorFallback, downloadPrefixText }}>
+<script is:inline define:vars={{ processingText, executeText, errorFallback, downloadPrefixText, processingPageText, finalizingText, alreadyOptimizedText }}>
   document.addEventListener('DOMContentLoaded', () => {
     let currentFile = null;
     let selectedLevel = 'medium';
+    let lastDownloadUrl = null;
+    let lastDownloadName = '';
 
     const dropzone = document.getElementById('comp-dropzone');
     const fileInput = document.getElementById('comp-file-input');
     const controls = document.getElementById('comp-controls');
+    const results = document.getElementById('comp-results');
     const filenameSpan = document.getElementById('comp-filename');
     const origSizeSpan = document.getElementById('comp-orig-size');
     const executeBtn = document.getElementById('btn-execute-comp');
     const levelCards = document.querySelectorAll('.comp-level-card');
 
+    const progressBox = document.getElementById('comp-progress-box');
+    const progressLabel = document.getElementById('comp-progress-label');
+    const progressPct = document.getElementById('comp-progress-pct');
+    const progressBar = document.getElementById('comp-progress-bar');
+
+    const resOrigSize = document.getElementById('res-orig-size');
+    const resCompSize = document.getElementById('res-comp-size');
+    const resSavings = document.getElementById('res-savings');
+    const downloadAgainBtn = document.getElementById('btn-comp-download-again');
+    const resetBtn = document.getElementById('btn-comp-reset');
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
     // Compression level card selection
     levelCards.forEach(card => {
       card.addEventListener('click', () => {
         levelCards.forEach(c => {
-          c.classList.remove('border-2', 'border-link');
+          c.classList.remove('border-2', 'border-emerald-500');
           c.classList.add('border', 'border-hairline');
+          const hint = c.querySelector('div:last-child');
+          if (hint) {
+            hint.classList.remove('text-emerald-600', 'dark:text-emerald-400', 'font-semibold');
+            hint.classList.add('text-mute');
+          }
         });
         card.classList.remove('border', 'border-hairline');
-        card.classList.add('border-2', 'border-link');
+        card.classList.add('border-2', 'border-emerald-500');
+        const hint = card.querySelector('div:last-child');
+        if (hint) {
+          hint.classList.remove('text-mute');
+          hint.classList.add('text-emerald-600', 'dark:text-emerald-400', 'font-semibold');
+        }
         const radio = card.querySelector('input[type="radio"]');
         if (radio) {
           radio.checked = true;
@@ -112,62 +213,214 @@ const downloadPrefixText = t('compress.downloadPrefix');
       });
     });
 
+    function handleFile(file) {
+      if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
+        currentFile = file;
+        filenameSpan.textContent = file.name;
+        origSizeSpan.textContent = formatBytes(file.size);
+        dropzone.classList.add('hidden');
+        results.classList.add('hidden');
+        controls.classList.remove('hidden');
+        progressBox.classList.add('hidden');
+        executeBtn.disabled = false;
+        executeBtn.textContent = executeText;
+      }
+    }
+
     dropzone.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (file && file.type === 'application/pdf') {
-        currentFile = file;
-        filenameSpan.textContent = file.name;
-        origSizeSpan.textContent = (file.size / (1024*1024)).toFixed(2) + ' MB';
-        dropzone.classList.add('hidden');
-        controls.classList.remove('hidden');
+      if (file) handleFile(file);
+    });
+
+    // Drag and Drop
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-emerald-500', 'bg-emerald-500/5');
+    });
+    dropzone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-emerald-500', 'bg-emerald-500/5');
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-emerald-500', 'bg-emerald-500/5');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    function resetToUpload() {
+      if (lastDownloadUrl) {
+        URL.revokeObjectURL(lastDownloadUrl);
+        lastDownloadUrl = null;
+      }
+      currentFile = null;
+      fileInput.value = '';
+      controls.classList.add('hidden');
+      results.classList.add('hidden');
+      progressBox.classList.add('hidden');
+      dropzone.classList.remove('hidden');
+    }
+
+    resetBtn.addEventListener('click', resetToUpload);
+
+    downloadAgainBtn.addEventListener('click', () => {
+      if (lastDownloadUrl && lastDownloadName) {
+        const a = document.createElement('a');
+        a.href = lastDownloadUrl;
+        a.download = lastDownloadName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
     });
 
     executeBtn.addEventListener('click', async () => {
       if (!currentFile) return;
+      if (!window.pdfjsLib || !window.PDFLib) {
+        alert('PDF processing libraries are still loading. Please try again in a moment.');
+        return;
+      }
+
       executeBtn.disabled = true;
       executeBtn.textContent = processingText;
+      progressBox.classList.remove('hidden');
+      progressBar.style.width = '0%';
+      progressPct.textContent = '0%';
+      progressLabel.textContent = processingText;
 
       try {
         const buffer = await currentFile.arrayBuffer();
-        const { PDFDocument } = window.PDFLib;
-        const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
 
-        // Optimization based on selected compression level
-        let saveOptions = { useObjectStreams: true };
+        // Level parameters: scale and quality
+        let renderScale = 1.35;
+        let jpegQuality = 0.65;
         if (selectedLevel === 'high') {
-          // Strip metadata & clean unused objects
-          pdfDoc.setTitle('');
-          pdfDoc.setAuthor('');
-          pdfDoc.setSubject('');
-          pdfDoc.setKeywords([]);
-          pdfDoc.setProducer('RealEditPDF Fast Optimizer');
-          pdfDoc.setCreator('RealEditPDF');
-          saveOptions = { useObjectStreams: true, addDefaultPage: false };
-        } else if (selectedLevel === 'medium') {
-          saveOptions = { useObjectStreams: true };
-        } else {
-          saveOptions = { useObjectStreams: true };
+          renderScale = 1.0;
+          jpegQuality = 0.45;
+        } else if (selectedLevel === 'low') {
+          renderScale = 1.75;
+          jpegQuality = 0.80;
         }
 
-        const optimizedBytes = await pdfDoc.save(saveOptions);
-        const blob = new Blob([optimizedBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
+        const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
+        const numPages = pdf.numPages;
+        const { PDFDocument } = window.PDFLib;
+        const newPdfDoc = await PDFDocument.create();
 
+        for (let p = 1; p <= numPages; p++) {
+          const pct = Math.round(((p - 1) / numPages) * 90);
+          progressBar.style.width = `${pct}%`;
+          progressPct.textContent = `${pct}%`;
+          progressLabel.textContent = processingPageText.replace('{current}', p).replace('{total}', numPages);
+
+          const page = await pdf.getPage(p);
+          const baseViewport = page.getViewport({ scale: 1.0 });
+          const pageWidth = baseViewport.width;
+          const pageHeight = baseViewport.height;
+
+          const viewport = page.getViewport({ scale: renderScale });
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(viewport.width);
+          canvas.height = Math.round(viewport.height);
+
+          const ctx = canvas.getContext('2d', { alpha: false });
+          if (ctx) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const jpegBlob = await new Promise((resolve) => {
+            canvas.toBlob(resolve, 'image/jpeg', jpegQuality);
+          });
+
+          // Free canvas memory
+          canvas.width = 0;
+          canvas.height = 0;
+          if (typeof page.cleanup === 'function') {
+            page.cleanup();
+          }
+
+          const jpegBuffer = await jpegBlob.arrayBuffer();
+          const jpegBytes = new Uint8Array(jpegBuffer);
+          const embeddedImage = await newPdfDoc.embedJpg(jpegBytes);
+
+          const newPage = newPdfDoc.addPage([pageWidth, pageHeight]);
+          newPage.drawImage(embeddedImage, {
+            x: 0,
+            y: 0,
+            width: pageWidth,
+            height: pageHeight,
+          });
+        }
+
+        progressBar.style.width = '95%';
+        progressPct.textContent = '95%';
+        progressLabel.textContent = finalizingText;
+
+        newPdfDoc.setProducer('RealEditPDF Optimizer');
+        newPdfDoc.setCreator('RealEditPDF');
+        let optimizedBytes = await newPdfDoc.save({ useObjectStreams: true });
+
+        // Safety fallback: if rasterization made a tiny vector PDF larger, check direct stream compression
+        if (optimizedBytes.length >= currentFile.size) {
+          try {
+            const directPdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+            directPdfDoc.setTitle('');
+            directPdfDoc.setAuthor('');
+            directPdfDoc.setProducer('RealEditPDF Optimizer');
+            const directBytes = await directPdfDoc.save({ useObjectStreams: true });
+            if (directBytes.length < optimizedBytes.length) {
+              optimizedBytes = directBytes;
+            }
+          } catch (e) {
+            console.warn('Direct stream optimization fallback error:', e);
+          }
+        }
+
+        progressBar.style.width = '100%';
+        progressPct.textContent = '100%';
+
+        const origSize = currentFile.size;
+        const compSize = optimizedBytes.length;
+        const reductionPct = Math.max(0, Math.round(((origSize - compSize) / origSize) * 100));
+
+        const blob = new Blob([optimizedBytes], { type: 'application/pdf' });
+        if (lastDownloadUrl) {
+          URL.revokeObjectURL(lastDownloadUrl);
+        }
+        lastDownloadUrl = URL.createObjectURL(blob);
+        lastDownloadName = downloadPrefixText.replace('{level}', selectedLevel) + currentFile.name;
+
+        // Auto download
         const a = document.createElement('a');
-        a.href = url;
-        a.download = downloadPrefixText.replace('{level}', selectedLevel) + currentFile.name;
+        a.href = lastDownloadUrl;
+        a.download = lastDownloadName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+
+        // Update result metrics
+        resOrigSize.textContent = formatBytes(origSize);
+        resCompSize.textContent = formatBytes(compSize);
+        if (reductionPct > 0) {
+          resSavings.textContent = `-${reductionPct}%`;
+        } else {
+          resSavings.textContent = alreadyOptimizedText;
+        }
+
+        // Show result card
+        controls.classList.add('hidden');
+        results.classList.remove('hidden');
 
         if (window.confetti) {
           window.confetti({ particleCount: 90, spread: 60 });
         }
       } catch (err) {
+        console.error('Compression error:', err);
         alert(errorFallback);
       } finally {
         executeBtn.disabled = false;

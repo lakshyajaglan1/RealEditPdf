@@ -259,12 +259,8 @@ export const ui: UIDict = {
     'compress.subtitle': 'Optimize and shrink PDF files to easily share over email or upload to government and university portals. 100% private, files stay on your machine.',
     'compress.badge': 'Client-Side Optimizer',
     'compress.ready': 'Ready',
-    'compress.errorFallback': 'Optimization completed with standard structure.',
+    'compress.errorFallback': 'Optimization failed. Please check the file and try again.',
     'compress.downloadPrefix': 'Compressed-{level}-',
-
-    // Compress
-    'compress.title': 'Compress PDF Documents',
-    'compress.subtitle': 'Optimize and shrink PDF files to easily share over email or upload to government and university portals. 100% private, files stay on your machine.',
     'compress.choose': 'Choose a PDF file to compress',
     'compress.chooseHint': 'No file size limits • Immediate in-browser reduction',
     'compress.original': 'Original Size',
@@ -277,6 +273,15 @@ export const ui: UIDict = {
     'compress.highHint': 'Smallest Size',
     'compress.execute': 'Compress & Download PDF',
     'compress.processing': 'Optimizing PDF in Browser...',
+    'compress.successTitle': 'PDF Compressed Successfully!',
+    'compress.successSubtitle': 'Your optimized PDF is ready and has been downloaded.',
+    'compress.compressedSize': 'Compressed Size',
+    'compress.savings': 'Savings',
+    'compress.downloadAgain': 'Download Again',
+    'compress.compressAnother': 'Compress Another PDF',
+    'compress.processingPage': 'Optimizing page {current} of {total}...',
+    'compress.finalizing': 'Packing & finalizing PDF...',
+    'compress.alreadyOptimized': 'Optimized',
 
     // Images
     'images.title': 'Convert PDF to Images (PNG / JPG)',
