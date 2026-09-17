@@ -48,9 +48,9 @@ export function useTranslatedPath(targetLang?: LangCode) {
     const targetTranslated = routeTranslations[currentLang]?.[canonical] ?? canonical;
 
     if (currentLang === defaultLang && !showDefaultLang) {
-      return `/${targetTranslated}`;
+      return `/${targetTranslated}/`;
     }
-    return `/${currentLang}/${targetTranslated}`;
+    return `/${currentLang}/${targetTranslated}/`;
   };
 }
 

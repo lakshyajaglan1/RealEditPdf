@@ -1,0 +1,3 @@
+# Cloudflare Pages Edge Redirects
+/sign    /sign-pdf/  301
+/sign/   /sign-pdf/  301

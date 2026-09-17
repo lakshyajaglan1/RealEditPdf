@@ -17,6 +17,7 @@ interface Props {
   activeTool?: string;
   /** Override the language detection (defaults to deriving from URL) */
   lang?: LangCode;
+  noindex?: boolean;
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   ogType = 'website',
   activeTool = 'editor',
   lang,
+  noindex = false,
 } = Astro.props;
 
 const currentLang: LangCode = lang ?? getLangFromUrl(Astro.url);
@@ -35,7 +37,11 @@ const langMeta = languages[currentLang];
 const translate = useTranslatedPath();
 
 const siteOrigin = Astro.site?.toString().replace(/\/$/, '') ?? 'https://realeditpdf.com';
-const resolvedCanonicalUrl = canonicalUrl ?? `${siteOrigin}${Astro.url.pathname}`;
+let pathname = Astro.url.pathname;
+if (!pathname.endsWith('/')) {
+  pathname = `${pathname}/`;
+}
+const resolvedCanonicalUrl = canonicalUrl ?? `${siteOrigin}${pathname}`;
 ---
 
 <!doctype html>
@@ -86,15 +92,20 @@ const resolvedCanonicalUrl = canonicalUrl ?? `${siteOrigin}${Astro.url.pathname}
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="author" content="RealEditPDF" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href={resolvedCanonicalUrl} />
-
-    <!-- Hreflang: every supported language + x-default -->
-    <HreflangTags />
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <>
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <link rel="canonical" href={resolvedCanonicalUrl} />
+        <!-- Hreflang: every supported language + x-default -->
+        <HreflangTags />
+      </>
+    )}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={ogType} />
-    <meta property="og:url" content={resolvedCanonicalUrl} />
+    {!noindex && <meta property="og:url" content={resolvedCanonicalUrl} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="RealEditPDF" />
@@ -108,7 +119,7 @@ const resolvedCanonicalUrl = canonicalUrl ?? `${siteOrigin}${Astro.url.pathname}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={resolvedCanonicalUrl} />
+    {!noindex && <meta name="twitter:url" content={resolvedCanonicalUrl} />}
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />

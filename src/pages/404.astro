@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout.astro';
 <Layout
   title="Page Not Found — 404 | RealEditPDF"
   description="The page you are looking for does not exist. Head back to RealEditPDF and continue editing your PDFs with our free, private, client-side tools."
-  canonicalUrl="https://realeditpdf.com/404"
+  noindex={true}
   activeTool="editor"
 >
   <div class="relative py-16 md:py-24 hero-mesh-gradient border-b border-hairline overflow-hidden">
@@ -42,7 +42,7 @@ import Layout from '../layouts/Layout.astro';
           Back to Editor
         </a>
         <a
-          href="/contact"
+          href="/contact/"
           class="inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-6 py-3 text-sm font-semibold text-ink hover:border-cyan/40 hover:shadow-whisper transition-all duration-200"
         >
           Report a broken link
@@ -75,7 +75,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </a>
 
-        <a href="/merge-pdf" class="glass-card rounded-2xl p-5 group block">
+        <a href="/merge-pdf/" class="glass-card rounded-2xl p-5 group block">
           <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -89,7 +89,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </a>
 
-        <a href="/split-pdf" class="glass-card rounded-2xl p-5 group block">
+        <a href="/split-pdf/" class="glass-card rounded-2xl p-5 group block">
           <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -103,7 +103,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </a>
 
-        <a href="/compress-pdf" class="glass-card rounded-2xl p-5 group block">
+        <a href="/compress-pdf/" class="glass-card rounded-2xl p-5 group block">
           <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -117,7 +117,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </a>
 
-        <a href="/sign-pdf" class="glass-card rounded-2xl p-5 group block">
+        <a href="/sign-pdf/" class="glass-card rounded-2xl p-5 group block">
           <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pink-500/10 text-pink-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -131,7 +131,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </a>
 
-        <a href="/pdf-to-images" class="glass-card rounded-2xl p-5 group block">
+        <a href="/pdf-to-images/" class="glass-card rounded-2xl p-5 group block">
           <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
