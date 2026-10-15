@@ -125,6 +125,24 @@ const resolvedCanonicalUrl = canonicalUrl ?? `${siteOrigin}${pathname}`;
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={title} />
 
+    <!-- Web App Manifest & PWA Offline Configuration -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#09090b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="RealEditPDF" />
+
+    <!-- Offline Service Worker Registration -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .catch((err) => console.warn('PWA service worker registration failed:', err));
+        });
+      }
+    </script>
+
     <!-- PDF.js & pdf-lib Global Scripts from fast trusted CDNs as guaranteed fallback & local bundling support -->
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script is:inline src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>

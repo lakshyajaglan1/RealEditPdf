@@ -28,8 +28,8 @@ const cropStrings = {
   heightLabel: t('crop.heightLabel'),
   scaleLabel: t('crop.scaleLabel'),
   transform: t('crop.transform'),
-  rotateLeft: t('crop.rotateLeft'),
-  rotateRight: t('crop.rotateRight'),
+  rotateLeft: t('crop.rotateLeft') || t('crop.rotateLeftTitle') || t('crop.rotateCCWTitle'),
+  rotateRight: t('crop.rotateRight') || t('crop.rotateRightTitle') || t('crop.rotateCWTitle'),
   flipH: t('crop.flipH'),
   flipV: t('crop.flipV'),
   flipHTitle: t('crop.flipHTitle'),
@@ -37,7 +37,7 @@ const cropStrings = {
   resetCrop: t('crop.resetCrop'),
   finalDimensions: t('crop.finalDimensions'),
   cancel: t('crop.cancel'),
-  applySave: t('crop.applySave'),
+  applySave: t('crop.apply') || t('crop.applySave'),
 };
 ---
 
@@ -207,7 +207,7 @@ const cropStrings = {
     <!-- Modal Footer -->
     <div class="flex items-center justify-between border-t border-hairline/80 px-5 py-3 bg-canvas-elevated/95">
       <div class="text-[11px] font-mono text-mute flex items-center gap-2">
-        <span>{cropStrings.finalDimensions}</span>
+        <span>{cropStrings.finalDimensions}:</span>
         <span id="crop-output-dimensions" class="font-bold text-ink">0 × 0 px</span>
       </div>
       <div class="flex items-center gap-2.5">

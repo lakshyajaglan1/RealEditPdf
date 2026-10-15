@@ -19,6 +19,18 @@ const compressAnotherText = t('compress.compressAnother');
 const processingPageText = t('compress.processingPage');
 const finalizingText = t('compress.finalizing');
 const alreadyOptimizedText = t('compress.alreadyOptimized');
+
+const modeTitleText = t('compress.mode') || 'Compression Mode';
+const modeLosslessText = t('compress.modeLossless') || 'Lossless / Vector-Safe Optimization';
+const modeLosslessHintText = t('compress.modeLosslessHint') || 'Preserves 100% vector text, links, and fonts. Strips redundant metadata and optimizes object streams.';
+const modeLosslessBadgeText = t('compress.modeLosslessBadge') || 'Recommended';
+const modeRasterText = t('compress.modeRaster') || 'Extreme Raster Compression (Flattens Text)';
+const modeRasterHintText = t('compress.modeRasterHint') || 'Downsamples pages into compressed images. Best for scanned documents. Flattens selectable text.';
+const modeRasterBadgeText = t('compress.modeRasterBadge') || 'For Scanned PDFs';
+const rasterQualityText = t('compress.rasterQuality') || 'Downsample Resolution & Quality';
+const rasterNoticeText = t('compress.rasterNotice') || 'Notice: Extreme raster mode flattens pages into images. Selectable text and links will not be preserved.';
+const fallbackWarningText = t('compress.fallbackWarning') || 'Raster compression increased file size. Automatically fell back to Lossless Vector Optimization to preserve quality and reduce size!';
+const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This PDF is already highly optimized. Any further compression would increase file size, so no larger file was downloaded.';
 ---
 
 <div class="py-14 md:py-24 hero-mesh-gradient border-b border-hairline relative overflow-hidden">
@@ -55,7 +67,8 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
       </div>
 
       <!-- 2. Controls & Configuration -->
-      <div id="comp-controls" class="mt-6 sm:mt-8 space-y-5 hidden">
+      <div id="comp-controls" class="mt-6 sm:mt-8 space-y-6 hidden">
+        <!-- File Info Bar -->
         <div class="flex items-center justify-between p-3.5 rounded-xl bg-canvas border border-hairline text-[13px]">
           <div class="min-w-0 pr-3">
             <span id="comp-filename" class="font-semibold text-ink truncate block">{defaultFilenameText}</span>
@@ -64,25 +77,97 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
           <span class="shrink-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400">{readyText}</span>
         </div>
 
+        <!-- Mode Selector: Two Distinct Modes -->
         <div>
-          <label class="block text-[13px] font-semibold text-ink mb-2">{t('compress.level')}</label>
+          <label class="block text-[13px] font-semibold text-ink mb-2.5">{modeTitleText}</label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="comp-modes-container">
+            <!-- Mode 1: Lossless / Vector-Safe (Default) -->
+            <label id="mode-card-lossless" class="comp-mode-card relative flex flex-col justify-between p-4 rounded-2xl border-2 border-emerald-500 bg-canvas cursor-pointer transition-all shadow-sm">
+              <input type="radio" name="comp-mode" value="lossless" checked class="hidden" />
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <span class="font-bold text-ink text-sm sm:text-base leading-snug">{modeLosslessText}</span>
+                  </div>
+                  <span class="shrink-0 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-mono font-semibold text-emerald-700 dark:text-emerald-300">
+                    {modeLosslessBadgeText}
+                  </span>
+                </div>
+                <p class="text-xs text-body leading-relaxed">{modeLosslessHintText}</p>
+              </div>
+              <div class="mt-3.5 pt-2.5 border-t border-hairline/60 flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Preserves 100% Vector Text, Fonts & Links</span>
+              </div>
+            </label>
+
+            <!-- Mode 2: Extreme Raster Compression (Flattens Text) -->
+            <label id="mode-card-raster" class="comp-mode-card relative flex flex-col justify-between p-4 rounded-2xl border border-hairline bg-canvas hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
+              <input type="radio" name="comp-mode" value="raster" class="hidden" />
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <span class="font-bold text-ink text-sm sm:text-base leading-snug">{modeRasterText}</span>
+                  </div>
+                  <span class="shrink-0 rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-mono font-semibold text-amber-700 dark:text-amber-300">
+                    {modeRasterBadgeText}
+                  </span>
+                </div>
+                <p class="text-xs text-body leading-relaxed">{modeRasterHintText}</p>
+              </div>
+              <div class="mt-3.5 pt-2.5 border-t border-hairline/60 flex items-center gap-1.5 text-[11px] font-mono text-amber-600 dark:text-amber-400 font-medium">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Flattens text & links into compressed images</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Raster Quality Sub-options (Only shown when Extreme Raster mode is selected) -->
+        <div id="comp-raster-options" class="space-y-3 p-4 rounded-2xl bg-canvas border border-hairline hidden">
+          <div class="flex items-center justify-between">
+            <label class="block text-[13px] font-semibold text-ink">{rasterQualityText}</label>
+            <span class="text-[11px] font-mono text-mute">Downsampling Settings</span>
+          </div>
+
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-center text-[12px] font-medium" id="comp-levels-container">
-            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
+            <label class="comp-level-card p-3 rounded-xl border border-hairline bg-canvas-elevated hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
               <input type="radio" name="comp-level" value="low" class="hidden" />
               <div class="font-bold text-ink text-sm">{t('compress.low')}</div>
               <div class="text-[11px] text-mute font-mono mt-0.5">{t('compress.lowHint')}</div>
             </label>
-            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border-2 border-emerald-500 bg-canvas cursor-pointer transition-all shadow-sm">
+            <label class="comp-level-card p-3 rounded-xl border-2 border-emerald-500 bg-canvas-elevated cursor-pointer transition-all shadow-sm">
               <input type="radio" name="comp-level" value="medium" checked class="hidden" />
               <div class="font-bold text-ink text-sm">{t('compress.medium')}</div>
               <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono mt-0.5 font-semibold">{t('compress.mediumHint')}</div>
             </label>
-            <label class="comp-level-card p-3 sm:p-3.5 rounded-xl border border-hairline bg-canvas hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
+            <label class="comp-level-card p-3 rounded-xl border border-hairline bg-canvas-elevated hover:border-emerald-500/50 cursor-pointer transition-all shadow-sm">
               <input type="radio" name="comp-level" value="high" class="hidden" />
               <div class="font-bold text-ink text-sm">{t('compress.high')}</div>
               <div class="text-[11px] text-mute font-mono mt-0.5">{t('compress.highHint')}</div>
             </label>
           </div>
+
+          <p class="text-[11px] text-mute flex items-center gap-1.5 pt-1">
+            <svg class="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{rasterNoticeText}</span>
+          </p>
         </div>
 
         <!-- Dynamic Progress Bar Box -->
@@ -103,15 +188,16 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
 
       <!-- 3. Results Section (displayed after compression) -->
       <div id="comp-results" class="mt-6 sm:mt-8 space-y-6 hidden">
-        <div class="flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-          <div class="h-10 w-10 shrink-0 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+        <!-- Status Box -->
+        <div id="comp-status-box" class="flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+          <div id="comp-status-icon" class="h-10 w-10 shrink-0 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <div>
-            <h3 class="font-bold text-ink text-base">{successTitleText}</h3>
-            <p class="text-xs text-body mt-0.5">{successSubtitleText}</p>
+            <h3 id="comp-status-title" class="font-bold text-ink text-base">{successTitleText}</h3>
+            <p id="comp-status-subtitle" class="text-xs text-body mt-0.5">{successSubtitleText}</p>
           </div>
         </div>
 
@@ -137,7 +223,7 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            <span>{downloadAgainText}</span>
+            <span id="btn-comp-download-text">{downloadAgainText}</span>
           </button>
           <button id="btn-comp-reset" class="flex items-center justify-center gap-2 rounded-full border border-hairline bg-canvas-elevated py-3 px-6 text-[14px] font-semibold text-ink hover:bg-hairline-soft transition-all active:scale-[0.99] cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,10 +237,24 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
   </div>
 </div>
 
-<script is:inline define:vars={{ processingText, executeText, errorFallback, downloadPrefixText, processingPageText, finalizingText, alreadyOptimizedText }}>
+<script is:inline define:vars={{
+  processingText,
+  executeText,
+  errorFallback,
+  downloadPrefixText,
+  processingPageText,
+  finalizingText,
+  alreadyOptimizedText,
+  successTitleText,
+  successSubtitleText,
+  downloadAgainText,
+  fallbackWarningText,
+  alreadyOptimalWarningText
+}}>
   document.addEventListener('DOMContentLoaded', () => {
     let currentFile = null;
-    let selectedLevel = 'medium';
+    let selectedMode = 'lossless'; // 'lossless' (default) or 'raster'
+    let selectedLevel = 'medium'; // For raster mode: 'low', 'medium', 'high'
     let lastDownloadUrl = null;
     let lastDownloadName = '';
 
@@ -165,17 +265,28 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
     const filenameSpan = document.getElementById('comp-filename');
     const origSizeSpan = document.getElementById('comp-orig-size');
     const executeBtn = document.getElementById('btn-execute-comp');
+
+    // Mode selection elements
+    const modeCards = document.querySelectorAll('.comp-mode-card');
+    const rasterOptions = document.getElementById('comp-raster-options');
     const levelCards = document.querySelectorAll('.comp-level-card');
 
+    // Progress elements
     const progressBox = document.getElementById('comp-progress-box');
     const progressLabel = document.getElementById('comp-progress-label');
     const progressPct = document.getElementById('comp-progress-pct');
     const progressBar = document.getElementById('comp-progress-bar');
 
+    // Results elements
     const resOrigSize = document.getElementById('res-orig-size');
     const resCompSize = document.getElementById('res-comp-size');
     const resSavings = document.getElementById('res-savings');
+    const statusBox = document.getElementById('comp-status-box');
+    const statusIcon = document.getElementById('comp-status-icon');
+    const statusTitle = document.getElementById('comp-status-title');
+    const statusSubtitle = document.getElementById('comp-status-subtitle');
     const downloadAgainBtn = document.getElementById('btn-comp-download-again');
+    const downloadAgainBtnText = document.getElementById('btn-comp-download-text');
     const resetBtn = document.getElementById('btn-comp-reset');
 
     function formatBytes(bytes) {
@@ -186,7 +297,31 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    // Compression level card selection
+    // Mode Card Selection Logic
+    modeCards.forEach(card => {
+      card.addEventListener('click', () => {
+        modeCards.forEach(c => {
+          c.classList.remove('border-2', 'border-emerald-500');
+          c.classList.add('border', 'border-hairline');
+        });
+        card.classList.remove('border', 'border-hairline');
+        card.classList.add('border-2', 'border-emerald-500');
+
+        const radio = card.querySelector('input[name="comp-mode"]');
+        if (radio) {
+          radio.checked = true;
+          selectedMode = radio.value;
+        }
+
+        if (selectedMode === 'raster') {
+          rasterOptions.classList.remove('hidden');
+        } else {
+          rasterOptions.classList.add('hidden');
+        }
+      });
+    });
+
+    // Raster Level Selection Logic
     levelCards.forEach(card => {
       card.addEventListener('click', () => {
         levelCards.forEach(c => {
@@ -205,7 +340,7 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
           hint.classList.remove('text-mute');
           hint.classList.add('text-emerald-600', 'dark:text-emerald-400', 'font-semibold');
         }
-        const radio = card.querySelector('input[type="radio"]');
+        const radio = card.querySelector('input[name="comp-level"]');
         if (radio) {
           radio.checked = true;
           selectedLevel = radio.value;
@@ -261,6 +396,22 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
       results.classList.add('hidden');
       progressBox.classList.add('hidden');
       dropzone.classList.remove('hidden');
+
+      // Reset to default mode (lossless)
+      selectedMode = 'lossless';
+      modeCards.forEach(c => {
+        const radio = c.querySelector('input[name="comp-mode"]');
+        if (radio && radio.value === 'lossless') {
+          radio.checked = true;
+          c.classList.remove('border', 'border-hairline');
+          c.classList.add('border-2', 'border-emerald-500');
+        } else {
+          if (radio) radio.checked = false;
+          c.classList.remove('border-2', 'border-emerald-500');
+          c.classList.add('border', 'border-hairline');
+        }
+      });
+      rasterOptions.classList.add('hidden');
     }
 
     resetBtn.addEventListener('click', resetToUpload);
@@ -275,6 +426,166 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
         document.body.removeChild(a);
       }
     });
+
+    // Mode 1: Lossless / Vector-Safe Optimization
+    // Reloads PDF in pdf-lib, strips unused objects, metadata, and redundant streams,
+    // and saves with { useObjectStreams: true } while preserving 100% of vector text, links, and fonts.
+    async function optimizeLossless(buffer) {
+      const { PDFDocument, PDFName } = window.PDFLib;
+      const pdfDoc = await PDFDocument.load(buffer.slice(0), { ignoreEncryption: true });
+
+      // Strip catalog-level XML Metadata stream & piece info
+      try {
+        pdfDoc.catalog.delete(PDFName.of('Metadata'));
+      } catch (e) {
+        console.warn('Could not strip catalog metadata:', e);
+      }
+      try {
+        pdfDoc.catalog.delete(PDFName.of('PieceInfo'));
+      } catch (e) {
+        console.warn('Could not strip catalog PieceInfo:', e);
+      }
+
+      // Clear standard document info dictionary fields
+      try {
+        pdfDoc.setTitle('');
+        pdfDoc.setAuthor('');
+        pdfDoc.setSubject('');
+        pdfDoc.setKeywords([]);
+        pdfDoc.setProducer('RealEditPDF Vector Optimizer');
+        pdfDoc.setCreator('RealEditPDF');
+      } catch (e) {
+        console.warn('Could not reset doc info:', e);
+      }
+
+      // Strip page-level pieceinfo, redundant cached thumbnails, and page metadata
+      const pages = pdfDoc.getPages();
+      for (const page of pages) {
+        try {
+          page.node.delete(PDFName.of('PieceInfo'));
+        } catch (e) {}
+        try {
+          page.node.delete(PDFName.of('Thumb'));
+        } catch (e) {}
+        try {
+          page.node.delete(PDFName.of('Metadata'));
+        } catch (e) {}
+      }
+
+      // Save with useObjectStreams: true to serialize into packed object streams
+      // and strip unreferenced/unused indirect objects
+      const optimizedBytes = await pdfDoc.save({ useObjectStreams: true });
+      return optimizedBytes;
+    }
+
+    // Mode 2: Extreme Raster Compression (Flattens Text)
+    // Downsamples page images for scanned PDFs via canvas JPEG rendering
+    async function optimizeRaster(buffer, qualityLevel, onPageProgress) {
+      const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buffer.slice(0)) }).promise;
+      const numPages = pdf.numPages;
+      const { PDFDocument } = window.PDFLib;
+      const newPdfDoc = await PDFDocument.create();
+
+      let renderScale = 1.35;
+      let jpegQuality = 0.65;
+      if (qualityLevel === 'high') {
+        renderScale = 1.0;
+        jpegQuality = 0.45;
+      } else if (qualityLevel === 'low') {
+        renderScale = 1.75;
+        jpegQuality = 0.80;
+      }
+
+      for (let p = 1; p <= numPages; p++) {
+        if (onPageProgress) {
+          onPageProgress(p, numPages);
+        }
+
+        const page = await pdf.getPage(p);
+        const baseViewport = page.getViewport({ scale: 1.0 });
+        const pageWidth = baseViewport.width;
+        const pageHeight = baseViewport.height;
+
+        const viewport = page.getViewport({ scale: renderScale });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (ctx) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const jpegBlob = await new Promise((resolve) => {
+          canvas.toBlob(resolve, 'image/jpeg', jpegQuality);
+        });
+
+        // Free canvas memory
+        canvas.width = 0;
+        canvas.height = 0;
+        if (typeof page.cleanup === 'function') {
+          page.cleanup();
+        }
+
+        const jpegBuffer = await jpegBlob.arrayBuffer();
+        const jpegBytes = new Uint8Array(jpegBuffer);
+        const embeddedImage = await newPdfDoc.embedJpg(jpegBytes);
+
+        const newPage = newPdfDoc.addPage([pageWidth, pageHeight]);
+        newPage.drawImage(embeddedImage, {
+          x: 0,
+          y: 0,
+          width: pageWidth,
+          height: pageHeight,
+        });
+      }
+
+      newPdfDoc.setProducer('RealEditPDF Raster Optimizer');
+      newPdfDoc.setCreator('RealEditPDF');
+      const rasterBytes = await newPdfDoc.save({ useObjectStreams: true });
+      return rasterBytes;
+    }
+
+    // UI state renderer for the Results Section
+    function renderResultsCard(statusType, origSize, compSize, reductionPct) {
+      resOrigSize.textContent = formatBytes(origSize);
+      resCompSize.textContent = formatBytes(compSize);
+
+      if (statusType === 'guarded') {
+        // Output was larger than or equal to original, download prevented
+        statusBox.className = 'flex items-center gap-3.5 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30';
+        statusIcon.className = 'h-10 w-10 shrink-0 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-xs';
+        statusIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+        statusTitle.textContent = 'Already Optimal — Download Prevented';
+        statusSubtitle.textContent = alreadyOptimalWarningText;
+        resSavings.textContent = alreadyOptimizedText;
+        resSavings.className = 'text-sm sm:text-base font-extrabold text-amber-600 dark:text-amber-400 mt-1';
+        if (downloadAgainBtnText) downloadAgainBtnText.textContent = 'Download Original File';
+      } else if (statusType === 'fallback') {
+        // Fell back from raster to lossless stream
+        statusBox.className = 'flex items-center gap-3.5 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30';
+        statusIcon.className = 'h-10 w-10 shrink-0 rounded-full bg-cyan-500 text-white flex items-center justify-center shadow-xs';
+        statusIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+        statusTitle.textContent = 'Fell Back to Lossless Vector Optimization';
+        statusSubtitle.textContent = fallbackWarningText;
+        resSavings.textContent = `-${reductionPct}%`;
+        resSavings.className = 'text-sm sm:text-base font-extrabold text-cyan-600 dark:text-cyan-400 mt-1';
+        if (downloadAgainBtnText) downloadAgainBtnText.textContent = downloadAgainText;
+      } else {
+        // Normal success
+        statusBox.className = 'flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20';
+        statusIcon.className = 'h-10 w-10 shrink-0 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs';
+        statusIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>`;
+        statusTitle.textContent = successTitleText;
+        statusSubtitle.textContent = successSubtitleText;
+        resSavings.textContent = reductionPct > 0 ? `-${reductionPct}%` : alreadyOptimizedText;
+        resSavings.className = 'text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400 mt-1';
+        if (downloadAgainBtnText) downloadAgainBtnText.textContent = downloadAgainText;
+      }
+    }
 
     executeBtn.addEventListener('click', async () => {
       if (!currentFile) return;
@@ -292,133 +603,102 @@ const alreadyOptimizedText = t('compress.alreadyOptimized');
 
       try {
         const buffer = await currentFile.arrayBuffer();
+        const origSize = currentFile.size;
+        let finalBytes = null;
+        let fallbackOccurred = false;
+        let isGuardedLarger = false;
+        let prefixLevel = selectedMode === 'lossless' ? 'lossless' : selectedLevel;
 
-        // Level parameters: scale and quality
-        let renderScale = 1.35;
-        let jpegQuality = 0.65;
-        if (selectedLevel === 'high') {
-          renderScale = 1.0;
-          jpegQuality = 0.45;
-        } else if (selectedLevel === 'low') {
-          renderScale = 1.75;
-          jpegQuality = 0.80;
-        }
+        if (selectedMode === 'lossless') {
+          // Mode 1: Lossless / Vector-Safe Optimization
+          progressBar.style.width = '35%';
+          progressPct.textContent = '35%';
+          progressLabel.textContent = 'Analyzing object streams & stripping metadata...';
 
-        const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
-        const numPages = pdf.numPages;
-        const { PDFDocument } = window.PDFLib;
-        const newPdfDoc = await PDFDocument.create();
+          finalBytes = await optimizeLossless(buffer);
 
-        for (let p = 1; p <= numPages; p++) {
-          const pct = Math.round(((p - 1) / numPages) * 90);
-          progressBar.style.width = `${pct}%`;
-          progressPct.textContent = `${pct}%`;
-          progressLabel.textContent = processingPageText.replace('{current}', p).replace('{total}', numPages);
+          progressBar.style.width = '90%';
+          progressPct.textContent = '90%';
+          progressLabel.textContent = finalizingText;
 
-          const page = await pdf.getPage(p);
-          const baseViewport = page.getViewport({ scale: 1.0 });
-          const pageWidth = baseViewport.width;
-          const pageHeight = baseViewport.height;
-
-          const viewport = page.getViewport({ scale: renderScale });
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.round(viewport.width);
-          canvas.height = Math.round(viewport.height);
-
-          const ctx = canvas.getContext('2d', { alpha: false });
-          if (ctx) {
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          // Guard output: if lossless compressed byte size is >= original, warn user instead of downloading larger file
+          if (finalBytes.length >= origSize) {
+            isGuardedLarger = true;
           }
-
-          await page.render({ canvasContext: ctx, viewport }).promise;
-
-          const jpegBlob = await new Promise((resolve) => {
-            canvas.toBlob(resolve, 'image/jpeg', jpegQuality);
+        } else {
+          // Mode 2: Extreme Raster Compression (Flattens Text)
+          finalBytes = await optimizeRaster(buffer, selectedLevel, (p, numPages) => {
+            const pct = Math.round(((p - 1) / numPages) * 90);
+            progressBar.style.width = `${pct}%`;
+            progressPct.textContent = `${pct}%`;
+            progressLabel.textContent = processingPageText.replace('{current}', p).replace('{total}', numPages);
           });
 
-          // Free canvas memory
-          canvas.width = 0;
-          canvas.height = 0;
-          if (typeof page.cleanup === 'function') {
-            page.cleanup();
-          }
+          progressBar.style.width = '92%';
+          progressPct.textContent = '92%';
+          progressLabel.textContent = finalizingText;
 
-          const jpegBuffer = await jpegBlob.arrayBuffer();
-          const jpegBytes = new Uint8Array(jpegBuffer);
-          const embeddedImage = await newPdfDoc.embedJpg(jpegBytes);
-
-          const newPage = newPdfDoc.addPage([pageWidth, pageHeight]);
-          newPage.drawImage(embeddedImage, {
-            x: 0,
-            y: 0,
-            width: pageWidth,
-            height: pageHeight,
-          });
-        }
-
-        progressBar.style.width = '95%';
-        progressPct.textContent = '95%';
-        progressLabel.textContent = finalizingText;
-
-        newPdfDoc.setProducer('RealEditPDF Optimizer');
-        newPdfDoc.setCreator('RealEditPDF');
-        let optimizedBytes = await newPdfDoc.save({ useObjectStreams: true });
-
-        // Safety fallback: if rasterization made a tiny vector PDF larger, check direct stream compression
-        if (optimizedBytes.length >= currentFile.size) {
-          try {
-            const directPdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
-            directPdfDoc.setTitle('');
-            directPdfDoc.setAuthor('');
-            directPdfDoc.setProducer('RealEditPDF Optimizer');
-            const directBytes = await directPdfDoc.save({ useObjectStreams: true });
-            if (directBytes.length < optimizedBytes.length) {
-              optimizedBytes = directBytes;
+          // Guard output: if raster output is larger than original file,
+          // fall back to the lossless stream or warn the user instead of downloading a larger file
+          if (finalBytes.length >= origSize) {
+            progressLabel.textContent = 'Checking lossless vector optimization fallback...';
+            try {
+              const losslessBytes = await optimizeLossless(buffer);
+              if (losslessBytes.length < origSize) {
+                // Lossless optimization is smaller than original! Fall back to it.
+                finalBytes = losslessBytes;
+                fallbackOccurred = true;
+                prefixLevel = 'lossless-fallback';
+              } else {
+                // Both raster and lossless are >= original file size
+                isGuardedLarger = true;
+              }
+            } catch (fallbackErr) {
+              console.warn('Lossless fallback error:', fallbackErr);
+              isGuardedLarger = true;
             }
-          } catch (e) {
-            console.warn('Direct stream optimization fallback error:', e);
           }
         }
 
         progressBar.style.width = '100%';
         progressPct.textContent = '100%';
 
-        const origSize = currentFile.size;
-        const compSize = optimizedBytes.length;
+        const compSize = finalBytes.length;
         const reductionPct = Math.max(0, Math.round(((origSize - compSize) / origSize) * 100));
 
-        const blob = new Blob([optimizedBytes], { type: 'application/pdf' });
-        if (lastDownloadUrl) {
-          URL.revokeObjectURL(lastDownloadUrl);
-        }
-        lastDownloadUrl = URL.createObjectURL(blob);
-        lastDownloadName = downloadPrefixText.replace('{level}', selectedLevel) + currentFile.name;
+        if (isGuardedLarger) {
+          // Guarded: Do NOT download a larger file. Warn the user!
+          const originalBlob = new Blob([buffer], { type: 'application/pdf' });
+          if (lastDownloadUrl) URL.revokeObjectURL(lastDownloadUrl);
+          lastDownloadUrl = URL.createObjectURL(originalBlob);
+          lastDownloadName = currentFile.name;
 
-        // Auto download
-        const a = document.createElement('a');
-        a.href = lastDownloadUrl;
-        a.download = lastDownloadName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        // Update result metrics
-        resOrigSize.textContent = formatBytes(origSize);
-        resCompSize.textContent = formatBytes(compSize);
-        if (reductionPct > 0) {
-          resSavings.textContent = `-${reductionPct}%`;
+          renderResultsCard('guarded', origSize, compSize, 0);
         } else {
-          resSavings.textContent = alreadyOptimizedText;
+          // Successful compression (or successful fallback to lossless)
+          const blob = new Blob([finalBytes], { type: 'application/pdf' });
+          if (lastDownloadUrl) URL.revokeObjectURL(lastDownloadUrl);
+          lastDownloadUrl = URL.createObjectURL(blob);
+          lastDownloadName = downloadPrefixText.replace('{level}', prefixLevel) + currentFile.name;
+
+          // Auto download the reduced file
+          const a = document.createElement('a');
+          a.href = lastDownloadUrl;
+          a.download = lastDownloadName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          renderResultsCard(fallbackOccurred ? 'fallback' : 'success', origSize, compSize, reductionPct);
+
+          if (window.confetti) {
+            window.confetti({ particleCount: 90, spread: 60 });
+          }
         }
 
-        // Show result card
+        // Switch view to results
         controls.classList.add('hidden');
         results.classList.remove('hidden');
-
-        if (window.confetti) {
-          window.confetti({ particleCount: 90, spread: 60 });
-        }
       } catch (err) {
         console.error('Compression error:', err);
         alert(errorFallback);

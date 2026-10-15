@@ -19,36 +19,87 @@ const { t } = Astro.props as Props;
 
 <section class="py-12 sm:py-16 bg-canvas">
   <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
+    <!-- Contact Info Cards -->
     <div class="rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-8 shadow-whisper space-y-4">
       <h2 class="text-lg sm:text-xl font-bold text-ink">{t('contact.info.title')}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <p class="text-[12px] sm:text-[13px] font-medium text-ink">{t('contact.email')}</p>
-          <a href="mailto:contact@realeditpdf.com" class="text-[13px] sm:text-[14px] text-body hover:underline transition-colors">contact@realeditpdf.com</a>
+          <div class="flex items-center gap-2 mt-1">
+            <a href="mailto:contact@realeditpdf.com" class="text-[13px] sm:text-[14px] text-body hover:underline transition-colors">contact@realeditpdf.com</a>
+            <button
+              type="button"
+              id="btn-copy-direct-email"
+              class="text-[11px] font-mono px-2 py-0.5 rounded border border-hairline bg-canvas text-mute hover:text-ink transition-colors cursor-pointer"
+              title="Copy email to clipboard"
+            >
+              Copy
+            </button>
+          </div>
         </div>
         <div>
           <p class="text-[12px] sm:text-[13px] font-medium text-ink">{t('contact.website')}</p>
-          <a href="https://realeditpdf.com" target="_blank" rel="noopener" class="text-[13px] sm:text-[14px] text-body hover:underline transition-colors">realeditpdf.com</a>
+          <a href="https://realeditpdf.com" target="_blank" rel="noopener" class="text-[13px] sm:text-[14px] text-body hover:underline transition-colors mt-1 inline-block">realeditpdf.com</a>
         </div>
       </div>
     </div>
 
+    <!-- Contact Form with Client-side Mailto & Copy-Email Fallback -->
     <div class="rounded-2xl border border-hairline bg-canvas-elevated p-5 sm:p-8 shadow-whisper space-y-4">
       <h2 class="text-lg sm:text-xl font-bold text-ink">{t('contact.form.title')}</h2>
-      <form class="space-y-4">
+
+      <!-- Feedback / Confirmation Toast Banner -->
+      <div id="contact-toast" class="hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 sm:p-5 text-ink space-y-3">
+        <div class="flex items-start gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-ink">Opening Your Email Client</h4>
+            <p class="text-xs text-body mt-0.5 leading-relaxed">
+              We've pre-filled your message and launched your default mail app to send to <strong class="text-ink">contact@realeditpdf.com</strong>.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-emerald-500/20 text-xs">
+          <span class="text-mute font-mono text-[11px]">Email app didn't open?</span>
+          <button
+            type="button"
+            id="btn-copy-email-toast"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-canvas-elevated px-3 py-1 font-mono text-emerald-600 dark:text-emerald-400 font-medium hover:bg-emerald-500/15 transition-all cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span id="btn-copy-email-text">Copy contact@realeditpdf.com</span>
+          </button>
+          <button
+            type="button"
+            id="btn-copy-msg-toast"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-hairline bg-canvas-elevated px-3 py-1 font-mono text-mute hover:text-ink transition-all cursor-pointer"
+          >
+            <span id="btn-copy-msg-text">Copy Message Text</span>
+          </button>
+        </div>
+      </div>
+
+      <form id="contact-form" class="space-y-4">
         <div>
           <label class="block text-[12px] sm:text-[13px] font-medium text-ink mb-2">{t('contact.form.name')}</label>
-          <input type="text" name="name" placeholder={t('contact.form.namePlaceholder')} required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 transition-colors">
+          <input type="text" id="contact-name" name="name" placeholder={t('contact.form.namePlaceholder')} required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 transition-colors">
         </div>
         <div>
           <label class="block text-[12px] sm:text-[13px] font-medium text-ink mb-2">{t('contact.form.emailLabel')}</label>
-          <input type="email" name="email" placeholder={t('contact.form.emailPlaceholder')} required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 transition-colors">
+          <input type="email" id="contact-email" name="email" placeholder={t('contact.form.emailPlaceholder')} required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 transition-colors">
         </div>
         <div>
           <label class="block text-[12px] sm:text-[13px] font-medium text-ink mb-2">{t('contact.form.message')}</label>
-          <textarea name="message" rows="4" placeholder={t('contact.form.messagePlaceholder')} required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 resize-h transition-colors"></textarea>
+          <textarea id="contact-message" name="message" rows="4" placeholder={t('contact.form.messagePlaceholder')} required class="w-full rounded-xl border border-hairline bg-canvas px-4 py-3 text-[14px] text-ink placeholder-text-mute focus:outline-none focus:border-emerald-500 resize-h transition-colors"></textarea>
         </div>
-        <button type="submit" class="w-full sm:w-auto rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-floating hover:shadow-glow-primary transition-all duration-200">
+        <button type="submit" id="contact-submit-btn" class="w-full sm:w-auto rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-floating hover:shadow-glow-primary active:scale-98 transition-all duration-200 cursor-pointer">
           <span class="flex items-center justify-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-3-3m0 0V10m3 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -60,3 +111,85 @@ const { t } = Astro.props as Props;
     </div>
   </div>
 </section>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('contact-form');
+    const toast = document.getElementById('contact-toast');
+    const copyEmailToastBtn = document.getElementById('btn-copy-email-toast');
+    const copyEmailToastText = document.getElementById('btn-copy-email-text');
+    const copyMsgToastBtn = document.getElementById('btn-copy-msg-toast');
+    const copyMsgToastText = document.getElementById('btn-copy-msg-text');
+    const copyDirectEmailBtn = document.getElementById('btn-copy-direct-email');
+
+    let lastMessageText = '';
+
+    function copyToClipboard(text, btnElement, successText, originalText) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          btnElement.textContent = successText;
+          setTimeout(() => {
+            btnElement.textContent = originalText;
+          }, 2500);
+        }).catch(() => {
+          fallbackPromptCopy(text);
+        });
+      } else {
+        fallbackPromptCopy(text);
+      }
+    }
+
+    function fallbackPromptCopy(text) {
+      window.prompt('Copy email to clipboard (Ctrl+C):', text);
+    }
+
+    copyDirectEmailBtn?.addEventListener('click', () => {
+      copyToClipboard('contact@realeditpdf.com', copyDirectEmailBtn, '✓ Copied!', 'Copy');
+    });
+
+    copyEmailToastBtn?.addEventListener('click', () => {
+      copyToClipboard('contact@realeditpdf.com', copyEmailToastText, '✓ Copied to clipboard!', 'Copy contact@realeditpdf.com');
+    });
+
+    copyMsgToastBtn?.addEventListener('click', () => {
+      if (lastMessageText) {
+        copyToClipboard(lastMessageText, copyMsgToastText, '✓ Message copied!', 'Copy Message Text');
+      }
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nameInput = document.getElementById('contact-name');
+      const emailInput = document.getElementById('contact-email');
+      const msgInput = document.getElementById('contact-message');
+
+      const name = (nameInput?.value || '').trim();
+      const email = (emailInput?.value || '').trim();
+      const message = (msgInput?.value || '').trim();
+
+      if (!name || !email || !message) return;
+
+      lastMessageText = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+
+      const subject = encodeURIComponent(`Contact Inquiry from ${name} — RealEditPDF`);
+      const body = encodeURIComponent(lastMessageText);
+      const mailtoUrl = `mailto:contact@realeditpdf.com?subject=${subject}&body=${body}`;
+
+      // Show confirmation toast
+      toast?.classList.remove('hidden');
+
+      // Scroll to toast smoothly
+      toast?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Trigger mail client without reloading the page
+      const tempLink = document.createElement('a');
+      tempLink.href = mailtoUrl;
+      tempLink.target = '_blank';
+      tempLink.rel = 'noopener';
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+    });
+  });
+</script>

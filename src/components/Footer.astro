@@ -38,9 +38,9 @@ const translate = useTranslatedPath();
         <ul class="space-y-2 text-[13px]">
           <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.editor')}</a></li>
           <li><a href={translate('/sign-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.sign')}</a></li>
-          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.redact')}</a></li>
-          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.annotate')}</a></li>
-          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.watermark')}</a></li>
+          <li><a href={translate('/', lang) + '?tool=redact'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.redact')}</a></li>
+          <li><a href={translate('/', lang) + '?tool=text'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.annotate')}</a></li>
+          <li><a href={translate('/', lang) + '?tool=watermark'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col1.watermark')}</a></li>
         </ul>
       </div>
 
@@ -50,7 +50,7 @@ const translate = useTranslatedPath();
         <ul class="space-y-2 text-[13px]">
           <li><a href={translate('/merge-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.merge')}</a></li>
           <li><a href={translate('/split-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.split')}</a></li>
-          <li><a href={translate('/', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.rotate')}</a></li>
+          <li><a href={translate('/', lang) + '?tool=pages'} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.rotate')}</a></li>
           <li><a href={translate('/compress-pdf', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.compress')}</a></li>
           <li><a href={translate('/pdf-to-images', lang)} class="transition-all hover:text-ink hover:translate-x-0.5 inline-block">{t('footer.col2.images')}</a></li>
         </ul>
