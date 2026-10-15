@@ -40,8 +40,16 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
   } = options;
 
   const { PDFDocument, rgb, degrees, StandardFonts } = await getPdfLib();
-  const pdfDoc = await PDFDocument.load(pdfBytes);
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const fontSans = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  let fontSerif = fontSans;
+  let fontMono = fontSans;
+  try {
+    fontSerif = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    fontMono = await pdfDoc.embedFont(StandardFonts.Courier);
+  } catch {
+    // Fallback to fontSans
+  }
+  const font = fontSans;
 
   const pages = pdfDoc.getPages();
   const totalPages = pages.length;
@@ -279,6 +287,65 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
             offCtx.drawImage(img, ix, iy, iw, ih);
           }
           offCtx.restore();
+        } else if (annot.type === 'sticky') {
+          offCtx.save();
+          const sx = annot.x * scaleToCanvasX;
+          const sy = annot.y * scaleToCanvasY;
+          const sw = (annot.width || 200) * scaleToCanvasX;
+          const sh = (annot.height || 120) * scaleToCanvasY;
+          const color = annot.noteColor || '#fef08a';
+
+          if (annot.stickyExpanded !== false) {
+            // Draw callout box
+            offCtx.fillStyle = color;
+            offCtx.strokeStyle = 'rgba(0,0,0,0.15)';
+            offCtx.lineWidth = 1 * scaleToCanvasX;
+            offCtx.beginPath();
+            if (typeof (offCtx as any).roundRect === 'function') {
+              (offCtx as any).roundRect(sx, sy, sw, sh, 8 * scaleToCanvasX);
+            } else {
+              offCtx.rect(sx, sy, sw, sh);
+            }
+            offCtx.fill();
+            offCtx.stroke();
+
+            // Top header stripe
+            offCtx.fillStyle = 'rgba(0,0,0,0.06)';
+            offCtx.fillRect(sx, sy, sw, 20 * scaleToCanvasY);
+
+            // Note header text
+            offCtx.fillStyle = '#171717';
+            offCtx.font = `bold ${Math.max(9, 10 * scaleToCanvasY)}px sans-serif`;
+            offCtx.fillText(`Note: ${annot.author || 'Reviewer'}`, sx + 8 * scaleToCanvasX, sy + 14 * scaleToCanvasY);
+
+            // Note body text
+            offCtx.fillStyle = '#171717';
+            offCtx.font = `${Math.max(9, 10 * scaleToCanvasY)}px sans-serif`;
+            const lines = (annot.text || '').split('\n');
+            let lineY = sy + 32 * scaleToCanvasY;
+            for (const line of lines) {
+              if (lineY > sy + sh - 8) break;
+              offCtx.fillText(line, sx + 8 * scaleToCanvasX, lineY, sw - 16 * scaleToCanvasX);
+              lineY += 13 * scaleToCanvasY;
+            }
+          } else {
+            // Collapsed pin
+            const radius = 12 * scaleToCanvasX;
+            offCtx.fillStyle = color;
+            offCtx.strokeStyle = 'rgba(0,0,0,0.2)';
+            offCtx.lineWidth = 1.5 * scaleToCanvasX;
+            offCtx.beginPath();
+            offCtx.arc(sx + radius, sy + radius, radius, 0, Math.PI * 2);
+            offCtx.fill();
+            offCtx.stroke();
+
+            offCtx.fillStyle = '#171717';
+            offCtx.font = `bold ${Math.max(9, 10 * scaleToCanvasY)}px sans-serif`;
+            offCtx.textAlign = 'center';
+            offCtx.textBaseline = 'middle';
+            offCtx.fillText('💬', sx + radius, sy + radius);
+          }
+          offCtx.restore();
         }
       }
 
@@ -484,13 +551,20 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
           const g = parseInt(hex.slice(3, 5), 16) / 255 || 0.09;
           const b = parseInt(hex.slice(5, 7), 16) / 255 || 0.09;
 
+          let activeFont = fontSans;
+          if (annot.fontFamily?.includes('serif') || annot.fontFamily?.includes('Times')) {
+            activeFont = fontSerif;
+          } else if (annot.fontFamily?.includes('mono') || annot.fontFamily?.includes('Courier')) {
+            activeFont = fontMono;
+          }
+
           // Draw whiteout background box if enabled
           if (annot.bgWhiteout) {
             const bgHex = annot.customBgColor || '#ffffff';
             const bgR = parseInt(bgHex.slice(1, 3), 16) / 255 || 1;
             const bgG = parseInt(bgHex.slice(3, 5), 16) / 255 || 1;
             const bgB = parseInt(bgHex.slice(5, 7), 16) / 255 || 1;
-            const textWidthEstimate = font.widthOfTextAtSize(annot.text || '', fontSize);
+            const textWidthEstimate = activeFont.widthOfTextAtSize(annot.text || '', fontSize);
             const boxW = annot.width ? annot.width * scaleX : textWidthEstimate + 8 * scaleX;
             const boxH = annot.height ? annot.height * scaleY : fontSize * 1.3;
 
@@ -507,7 +581,7 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
             x: pdfX,
             y: pdfY,
             size: fontSize,
-            font,
+            font: activeFont,
             color: rgb(r, g, b),
           });
         } else if (annot.type === 'shape') {
@@ -611,6 +685,103 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
               rotate: degrees(-rotDeg),
               opacity: op,
             });
+          }
+        } else if (annot.type === 'sticky') {
+          const noteColorHex = annot.noteColor || '#fef08a';
+          const cR = parseInt(noteColorHex.slice(1, 3), 16) / 255 || 0.99;
+          const cG = parseInt(noteColorHex.slice(3, 5), 16) / 255 || 0.94;
+          const cB = parseInt(noteColorHex.slice(5, 7), 16) / 255 || 0.54;
+
+          const w = (annot.width || 200) * scaleX;
+          const h = (annot.height || 120) * scaleY;
+          const pdfX = annot.x * scaleX;
+          const pdfY = pHeight - (annot.y + (annot.height || 120)) * scaleY;
+
+          if (annot.stickyExpanded !== false) {
+            // 1. Draw rounded visual callout card
+            page.drawRectangle({
+              x: pdfX,
+              y: pdfY,
+              width: w,
+              height: h,
+              color: rgb(cR, cG, cB),
+              borderColor: rgb(Math.max(0, cR - 0.2), Math.max(0, cG - 0.2), Math.max(0, cB - 0.2)),
+              borderWidth: 1,
+            });
+
+            // 2. Draw subtle header bar
+            const headerH = 18 * scaleY;
+            page.drawRectangle({
+              x: pdfX,
+              y: pdfY + h - headerH,
+              width: w,
+              height: headerH,
+              color: rgb(Math.max(0, cR - 0.08), Math.max(0, cG - 0.08), Math.max(0, cB - 0.08)),
+            });
+
+            // 3. Draw Header Title / Author
+            page.drawText(`Note: ${annot.author || 'Reviewer'}`, {
+              x: pdfX + 6 * scaleX,
+              y: pdfY + h - headerH + 5 * scaleY,
+              size: 8.5,
+              font: fontMono || font,
+              color: rgb(0.1, 0.1, 0.1),
+            });
+
+            // 4. Draw Wrapped Note Content
+            const noteText = annot.text || '';
+            const lines = noteText.split('\n');
+            let textY = pdfY + h - headerH - 12 * scaleY;
+            for (const rawLine of lines) {
+              if (textY < pdfY + 4 * scaleY) break;
+              const maxChars = Math.floor(w / 6);
+              const displayLine = rawLine.length > maxChars ? rawLine.slice(0, maxChars - 1) + '…' : rawLine;
+              page.drawText(displayLine, {
+                x: pdfX + 6 * scaleX,
+                y: textY,
+                size: 9,
+                font: fontSans,
+                color: rgb(0.1, 0.1, 0.1),
+              });
+              textY -= 12 * scaleY;
+            }
+          } else {
+            // Collapsed pin callout
+            const pinSize = 22 * scaleX;
+            page.drawRectangle({
+              x: pdfX,
+              y: pHeight - (annot.y + 22) * scaleY,
+              width: pinSize,
+              height: pinSize,
+              color: rgb(cR, cG, cB),
+              borderColor: rgb(0.2, 0.2, 0.2),
+              borderWidth: 1,
+            });
+            page.drawText('N', {
+              x: pdfX + 6 * scaleX,
+              y: pHeight - (annot.y + 16) * scaleY,
+              size: 11,
+              font: fontMono || font,
+              color: rgb(0.1, 0.1, 0.1),
+            });
+          }
+
+          // 5. Native PDF Text Annotation (PDF Comment Annotation)
+          try {
+            const { PDFName, PDFString } = await getPdfLib();
+            const nativeAnnot = pdfDoc.context.obj({
+              Type: PDFName.of('Annot'),
+              Subtype: PDFName.of('Text'),
+              Rect: [pdfX, pdfY, pdfX + 24, pdfY + 24],
+              Contents: PDFString.of(annot.text || 'Sticky Note'),
+              Name: PDFName.of('Comment'),
+              T: PDFString.of(annot.author || 'Reviewer'),
+              C: [cR, cG, cB],
+            });
+            const nativeRef = pdfDoc.context.register(nativeAnnot);
+            page.node.addAnnot(nativeRef);
+          } catch (nativeErr) {
+            console.warn('Native PDF text annotation export:', nativeErr);
           }
         }
       }

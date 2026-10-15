@@ -6,6 +6,7 @@ import SignatureModal from './SignatureModal.astro';
 import StampModal from './StampModal.astro';
 import WatermarkModal from './WatermarkModal.astro';
 import ImageCropModal from './ImageCropModal.astro';
+import ExportCompleteModal from '../common/ExportCompleteModal.astro';
 import { useTranslations, getLangFromUrl } from '../../i18n/utils';
 
 interface Props {
@@ -95,47 +96,50 @@ const editorStrings = {
 };
 ---
 
-<div id="editor-anchor" class="w-full relative flex flex-col bg-canvas rounded-2xl border border-hairline shadow-floating overflow-hidden">
-  <!-- Top Editor Toolbar -->
-  <EditorToolbar t={t} />
-
-  <!-- Main Editor Workspace (Sidebar + Canvas Viewport) -->
-  <div class="relative flex h-[500px] xs:h-[560px] sm:h-[660px] md:h-[740px] lg:h-[800px] xl:h-[860px] 2xl:h-[900px] min-h-[460px] w-full overflow-hidden bg-canvas-workspace">
-    <!-- Page Thumbnail Sidebar -->
-    <ThumbnailSidebar />
-
-    <!-- Canvas Scrollable Viewport -->
-    <div id="canvas-viewport" class="relative flex-1 min-w-0 w-full max-w-full overflow-auto p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start touch-scroll">
-      
-      <!-- Modern Empty Dropzone State -->
-      <div id="editor-empty-state" class="my-auto flex flex-col items-center justify-center w-full max-w-xl text-center p-4 xs:p-6 sm:p-10 rounded-2xl sm:rounded-3xl border-2 border-dashed border-hairline bg-canvas-elevated/90 backdrop-blur-md shadow-floating transition-all duration-300 hover:border-cyan-500/50 hover:shadow-glow-cyan group">
-        <!-- Animated Icon Container with Radial Glow -->
+<div id="editor-anchor" class="w-full relative flex flex-col transition-all duration-300">
+  
+  <!-- PRE-LOAD (!pdfDoc): Centered, High-Contrast Dropzone View Above the Fold -->
+  <div id="editor-dropzone-view" class="w-full flex flex-col items-center justify-center py-4 sm:py-8 transition-all duration-300">
+    <div
+      id="editor-dropzone-card"
+      class="relative w-full max-w-2xl mx-auto rounded-3xl border-2 border-dashed border-hairline bg-canvas-elevated/95 backdrop-blur-2xl p-6 xs:p-8 sm:p-12 text-center shadow-floating transition-all duration-300 cursor-pointer group hover:border-blue-500/60 dark:hover:border-cyan-400/60 hover:shadow-glow-cyan hover:scale-[1.008]"
+    >
+      <!-- Empty state container anchor -->
+      <div id="editor-empty-state" class="w-full flex flex-col items-center justify-center">
+        <!-- Animated Icon Container with Ambient Radial Glow -->
         <div class="relative mb-5 sm:mb-6">
-          <div class="absolute -inset-2 rounded-full bg-gradient-to-tr from-cyan-500/20 via-blue-600/20 to-indigo-600/20 blur-md group-hover:scale-110 transition-transform duration-300"></div>
-          <div class="relative h-16 w-16 sm:h-18 sm:w-18 rounded-2xl bg-gradient-to-br from-canvas-elevated to-canvas flex items-center justify-center border border-hairline shadow-whisper group-hover:scale-105 transition-transform duration-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-9 sm:w-9 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="absolute -inset-2 rounded-full bg-gradient-to-tr from-cyan-500/20 via-blue-600/20 to-indigo-600/20 blur-md group-hover:scale-115 transition-transform duration-300"></div>
+          <div class="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-gradient-to-br from-canvas-elevated to-canvas flex items-center justify-center border border-hairline shadow-whisper group-hover:scale-105 transition-transform duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-blue-600 dark:text-cyan-400 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
           </div>
         </div>
 
         <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ink mb-2">{editorStrings.uploadHeading}</h3>
-        <p class="text-[13px] sm:text-[14px] text-body mb-6 sm:mb-8 max-w-sm leading-relaxed">
+        <p class="text-[13px] sm:text-[14px] text-body mb-6 sm:mb-8 max-w-md leading-relaxed">
           {editorStrings.uploadBlurb}
         </p>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full sm:w-auto">
-          <label class="w-full sm:w-auto cursor-pointer inline-flex h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 text-sm font-semibold text-white shadow-floating hover:shadow-glow-primary hover:opacity-95 active:scale-95 transition-all duration-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <!-- CTA Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
+          <label class="w-full sm:w-auto cursor-pointer inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-7 text-[14px] font-semibold text-white shadow-floating hover:shadow-glow-primary hover:opacity-95 active:scale-95 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
             <span>{editorStrings.choosePdf}</span>
-            <input type="file" id="main-pdf-input" accept="application/pdf,.pdf" class="hidden" />
+            <input type="file" id="main-pdf-input" accept="application/pdf,.pdf,image/*" class="hidden" />
           </label>
 
-          <button id="btn-load-sample" class="w-full sm:w-auto inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-hairline bg-canvas-elevated px-5 text-sm font-medium text-ink hover:bg-hairline-soft transition-all duration-200 shadow-whisper active:scale-95 cursor-pointer">
+          <button id="btn-load-sample" type="button" class="w-full sm:w-auto inline-flex h-12 items-center justify-center gap-2 rounded-full border border-hairline bg-canvas-elevated px-6 text-[14px] font-medium text-ink hover:bg-hairline-soft transition-all duration-200 shadow-whisper active:scale-95 cursor-pointer">
             <span>✨ {editorStrings.trySample}</span>
           </button>
+        </div>
+
+        <!-- Drag & Clipboard Paste Micro-Hint -->
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-2 text-[12px] text-mute">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-hairline-soft font-mono text-[11px] text-body border border-hairline/80 shadow-2xs">Ctrl+V / ⌘V</span>
+          <span>Paste directly from clipboard or drag & drop PDF / image</span>
         </div>
 
         <!-- Privacy & Specs Footnote -->
@@ -151,58 +155,224 @@ const editorStrings = {
           </span>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Active PDF Page Wrapper (Shown when PDF is loaded) -->
-      <div id="pdf-page-container" class="relative hidden bg-white shadow-floating border border-hairline rounded-md transition-transform origin-top ring-1 ring-black/5 dark:ring-white/10 max-w-full">
-        <!-- PDF.js Underlay Canvas (Renders original PDF page) -->
-        <canvas id="pdf-render-canvas" class="block rounded-md max-w-full h-auto"></canvas>
+  <!-- POST-LOAD (pdfDoc loaded): Full Studio Workspace View -->
+  <div id="editor-studio-view" class="w-full hidden flex-col bg-canvas rounded-2xl border border-hairline shadow-floating overflow-hidden transition-all duration-300">
+    <!-- Top Editor Toolbar (4 Mode Tabs & Subtoolbars) -->
+    <EditorToolbar t={t} />
 
-        <!-- Freehand Drawing Canvas Layer -->
-        <canvas id="pdf-draw-canvas" class="absolute inset-0 z-10 touch-none pointer-events-none"></canvas>
+    <!-- Main Editor Workspace (Sidebar + Canvas Viewport) -->
+    <div id="editor-workspace-container" class="relative flex min-h-[calc(100vh-56px)] w-full overflow-hidden bg-canvas-workspace">
+      <!-- Page Thumbnail Sidebar -->
+      <ThumbnailSidebar />
 
-        <!-- Interactive Annotations Container (Text, Shapes, Signatures, Stamps, Redactions) -->
-        <div id="pdf-annotations-layer" class="absolute inset-0 z-20 overflow-visible"></div>
-      </div>
+      <!-- Canvas Scrollable Viewport -->
+      <div id="canvas-viewport" class="relative flex-1 min-w-0 w-full max-w-full overflow-auto p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start touch-scroll">
+        <!-- Active PDF Page Wrapper (Shown when PDF is loaded) -->
+        <div id="pdf-page-container" class="relative hidden bg-white shadow-floating border border-hairline rounded-md transition-transform origin-top ring-1 ring-black/5 dark:ring-white/10 max-w-full">
+          <!-- PDF.js Underlay Canvas (Renders original PDF page) -->
+          <canvas id="pdf-render-canvas" class="block rounded-md max-w-full h-auto"></canvas>
 
-      <!-- Floating Page Navigation Pill (Bottom of Canvas) -->
-      <div id="floating-page-nav" class="sticky bottom-3 sm:bottom-6 mt-4 sm:mt-6 z-30 hidden items-center gap-1.5 sm:gap-3 rounded-full glass-dock px-3 sm:px-4 py-1.5 sm:py-2 text-[12px] sm:text-[13px] max-w-[calc(100vw-32px)] flex-wrap justify-center shadow-floating">
-        <button id="btn-prev-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title={editorStrings.previousPage}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        <span class="font-mono text-[11px] sm:text-[12px] font-semibold text-ink px-1">
-          {editorStrings.pageLabel} <span id="current-page-num" class="text-blue-600 dark:text-cyan-400">1</span> {editorStrings.ofLabel} <span id="total-page-num">1</span>
-        </span>
-        <button id="btn-next-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title={editorStrings.nextPage}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </button>
-        <div class="h-4 w-px bg-hairline mx-0.5"></div>
-        <button id="btn-floating-rotate" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.rotate}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span class="hidden xs:inline sm:inline">{editorStrings.rotate}</span>
-        </button>
-        <button id="btn-floating-crop" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.cropPage}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
-          </svg>
-          <span class="hidden sm:inline">{editorStrings.cropPage}</span>
-          <span class="inline sm:hidden">{editorStrings.crop}</span>
-        </button>
-        <button id="btn-floating-reset-page" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer" title={editorStrings.resetPage}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span class="hidden sm:inline">{editorStrings.resetPage}</span>
-          <span class="inline sm:hidden">{editorStrings.reset}</span>
-        </button>
-      </div>
+          <!-- Detected Text Runs Interactive Overlay Layer (When in Text Mode) -->
+          <div id="pdf-text-detect-layer" class="absolute inset-0 z-22 pointer-events-none hidden overflow-hidden"></div>
 
-      <!-- Loading Spinner Overlay -->
-      <div id="editor-loading" class="absolute inset-0 z-40 flex items-center justify-center bg-canvas/80 backdrop-blur-sm hidden">
-        <div class="flex flex-col items-center gap-3 p-6 rounded-2xl glass-panel shadow-floating">
-          <div class="h-9 w-9 animate-spin rounded-full border-3 border-blue-600 border-t-transparent"></div>
-          <span id="loading-text" class="text-[13px] font-medium text-ink">{editorStrings.processingDoc}</span>
+          <!-- Freehand Drawing Canvas Layer -->
+          <canvas id="pdf-draw-canvas" class="absolute inset-0 z-10 touch-none pointer-events-none"></canvas>
+
+          <!-- Interactive Annotations Container (Text, Shapes, Signatures, Stamps, Redactions) -->
+          <div id="pdf-annotations-layer" class="absolute inset-0 z-20 overflow-visible"></div>
+
+          <!-- Floating Contextual Popover Pill (Positions 12px dynamically above selected canvas element) -->
+          <div
+            id="element-popover-pill"
+            class="absolute z-40 hidden items-center gap-1.5 rounded-2xl bg-canvas-elevated/95 backdrop-blur-xl border border-hairline/90 p-1.5 shadow-floating text-ink text-[12px] select-none transition-all duration-75 pointer-events-auto ring-1 ring-black/5 dark:ring-white/10"
+            style="will-change: left, top;"
+          >
+            <!-- Element Type Badge -->
+            <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-hairline-soft font-mono text-[10px] text-mute font-semibold tracking-wider uppercase shrink-0">
+              <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+              <span id="inspector-element-type">ELEMENT</span>
+            </div>
+
+            <div class="h-4 w-px bg-hairline/80 mx-0.5 shrink-0"></div>
+
+            <!-- Font Family & Font Size (Text / Watermark) -->
+            <div id="prop-font-group" class="flex items-center gap-1 shrink-0">
+              <select id="prop-font-family" class="h-7 rounded-lg border border-hairline bg-canvas px-1.5 text-[11px] font-medium text-ink focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer" title="Font Family">
+                <option value="Geist, sans-serif">Geist</option>
+                <option value="Geist Mono, monospace">Mono</option>
+                <option value="Times New Roman, serif">Serif</option>
+                <option value="Brush Script MT, cursive">Script</option>
+              </select>
+              <select id="prop-font-size" class="h-7 rounded-lg border border-hairline bg-canvas px-1 text-[11px] font-mono text-ink focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer" title="Font Size">
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="16" selected>16</option>
+                <option value="18">18</option>
+                <option value="20">20</option>
+                <option value="24">24</option>
+                <option value="32">32</option>
+                <option value="40">40</option>
+                <option value="48">48</option>
+              </select>
+            </div>
+
+            <!-- Whiteout Background Toggle (Text Only) -->
+            <div id="pop-whiteout-group" class="flex items-center shrink-0">
+              <button
+                id="btn-pop-whiteout"
+                type="button"
+                class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer"
+                title="Toggle Whiteout Background (solid whiteout mask under text)"
+              >
+                <span id="pop-whiteout-icon" class="h-3 w-3 rounded-xs border border-hairline/80 bg-white inline-block"></span>
+                <span class="hidden sm:inline">Whiteout</span>
+              </button>
+            </div>
+
+            <!-- Color Swatch & Color Picker -->
+            <div id="prop-color-group" class="flex items-center gap-1 shrink-0">
+              <label class="relative flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full border border-hairline/90 bg-canvas p-0 shadow-2xs hover:scale-110 transition-transform" title="Change Color">
+                <input type="color" id="prop-color-picker" value="#171717" class="absolute inset-0 h-full w-full opacity-0 cursor-pointer" />
+                <span id="pop-color-indicator" class="h-4.5 w-4.5 rounded-full border border-black/10 dark:border-white/20 bg-[#171717]"></span>
+              </label>
+            </div>
+
+            <!-- Opacity Control -->
+            <div id="prop-opacity-group" class="flex items-center gap-1 px-1 shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <input type="range" id="prop-opacity" min="0.1" max="1" step="0.05" value="1" class="h-1.5 w-12 sm:w-16 accent-blue-600 cursor-pointer" title="Opacity" />
+              <span id="prop-opacity-val" class="font-mono text-[10px] text-mute min-w-[26px]">100%</span>
+            </div>
+
+            <!-- Stroke Width (Shapes) -->
+            <div id="prop-stroke-group" class="hidden items-center gap-1 shrink-0">
+              <span class="text-mute text-[10px] font-mono">Stroke:</span>
+              <input type="range" id="prop-stroke-width" min="1" max="24" value="2" class="h-1.5 w-12 accent-blue-600 cursor-pointer" />
+              <span id="prop-stroke-val" class="font-mono text-[10px] text-mute">2px</span>
+            </div>
+
+            <!-- Image Resize & Crop Trigger -->
+            <div id="prop-image-group" class="hidden items-center gap-1 shrink-0">
+              <button
+                id="btn-prop-crop-modal"
+                type="button"
+                class="flex h-7 items-center gap-1 rounded-lg bg-blue-600 hover:bg-blue-700 px-2 text-[11px] font-semibold text-white transition-colors cursor-pointer"
+                title="Crop & Resize Image"
+              >
+                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" /></svg>
+                <span>Crop</span>
+              </button>
+            </div>
+
+            <!-- Watermark Layer Toggle -->
+            <div id="prop-watermark-layer-group" class="hidden items-center gap-1 shrink-0">
+              <button
+                id="btn-prop-wm-toggle-layer"
+                type="button"
+                class="flex h-7 items-center gap-1 rounded-lg border border-hairline bg-canvas hover:bg-hairline-soft px-1.5 text-[10px] font-medium text-ink transition-colors cursor-pointer"
+                title="Toggle Watermark Under/Over text"
+              >
+                <span id="prop-wm-layer-text">Under Text</span>
+              </button>
+            </div>
+
+            <!-- Redact Notice Badge -->
+            <div id="prop-redact-group" class="hidden items-center gap-1 shrink-0">
+              <span class="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-semibold text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+                <span>PERMANENT REDACT</span>
+              </span>
+            </div>
+
+            <div class="h-4 w-px bg-hairline/80 mx-0.5 shrink-0"></div>
+
+            <!-- Layer Forward / Backward Controls -->
+            <div id="prop-layer-group" class="flex items-center gap-0.5 shrink-0">
+              <button id="btn-layer-forward" type="button" class="flex h-7 w-7 items-center justify-center rounded-lg hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer" title="Bring Forward">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+              </button>
+              <button id="btn-layer-backward" type="button" class="flex h-7 w-7 items-center justify-center rounded-lg hover:bg-hairline-soft text-body hover:text-ink transition-colors cursor-pointer" title="Send Backward">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              </button>
+            </div>
+
+            <div class="h-4 w-px bg-hairline/80 mx-0.5 shrink-0"></div>
+
+            <!-- Duplicate Element (Ctrl/Cmd + D) -->
+            <button
+              id="btn-pop-duplicate"
+              type="button"
+              class="flex h-7 items-center gap-1 rounded-lg px-2 text-[11px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer shrink-0"
+              title="Duplicate (Ctrl+D / ⌘D)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+              </svg>
+              <span class="hidden sm:inline">Duplicate</span>
+            </button>
+
+            <!-- Delete Selected Element (Delete/Backspace) -->
+            <button
+              id="btn-delete-element"
+              type="button"
+              class="flex h-7 items-center gap-1 rounded-lg bg-rose-500/10 border border-rose-500/20 px-2 text-[11px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-all cursor-pointer shrink-0"
+              title="Delete (Delete / Backspace)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Page Navigation Pill (Bottom of Canvas) -->
+        <div id="floating-page-nav" class="sticky bottom-3 sm:bottom-6 mt-4 sm:mt-6 z-30 hidden items-center gap-1.5 sm:gap-3 rounded-full glass-dock px-3 sm:px-4 py-1.5 sm:py-2 text-[12px] sm:text-[13px] max-w-[calc(100vw-32px)] flex-wrap justify-center shadow-floating">
+          <button id="btn-prev-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title={editorStrings.previousPage}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <span class="font-mono text-[11px] sm:text-[12px] font-semibold text-ink px-1">
+            {editorStrings.pageLabel} <span id="current-page-num" class="text-blue-600 dark:text-cyan-400">1</span> {editorStrings.ofLabel} <span id="total-page-num">1</span>
+          </span>
+          <button id="btn-next-page" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-hairline-soft text-body hover:text-ink disabled:opacity-30 transition-colors" title={editorStrings.nextPage}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <div class="h-4 w-px bg-hairline mx-0.5"></div>
+          <button id="btn-floating-rotate" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.rotate}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span class="hidden xs:inline sm:inline">{editorStrings.rotate}</span>
+          </button>
+          <button id="btn-floating-crop" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.cropPage}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h14a2 2 0 012 2v14M7 3v14a2 2 0 002 2h14" />
+            </svg>
+            <span class="hidden sm:inline">{editorStrings.cropPage}</span>
+            <span class="inline sm:hidden">{editorStrings.crop}</span>
+          </button>
+          <button id="btn-floating-reset-page" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer" title={editorStrings.resetPage}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span class="hidden sm:inline">{editorStrings.resetPage}</span>
+            <span class="inline sm:hidden">{editorStrings.reset}</span>
+          </button>
+        </div>
+
+        <!-- Loading Spinner Overlay -->
+        <div id="editor-loading" class="absolute inset-0 z-40 flex items-center justify-center bg-canvas/80 backdrop-blur-sm hidden">
+          <div class="flex flex-col items-center gap-3 p-6 rounded-2xl glass-panel shadow-floating">
+            <div class="h-9 w-9 animate-spin rounded-full border-3 border-blue-600 border-t-transparent"></div>
+            <span id="loading-text" class="text-[13px] font-medium text-ink">{editorStrings.processingDoc}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -213,6 +383,7 @@ const editorStrings = {
   <StampModal t={t} />
   <WatermarkModal t={t} />
   <ImageCropModal t={t} />
+  <ExportCompleteModal lang={lang} />
 
   <!-- Action Confirmation Modal (Reset Page, Reset All, New Session) -->
   <div id="confirm-action-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden">
@@ -267,6 +438,11 @@ const editorStrings = {
     exportPdfWithAnnotations,
     inspectTextAtPoint,
   } from '../../lib/editor';
+  import {
+    savePdfToSession,
+    getPdfFromSession,
+    openExportCompleteModal,
+  } from '../../lib/pdfSessionStore';
 
   function initPdfEditor() {
     const stringsEl = document.getElementById('pdf-editor-strings');
@@ -305,6 +481,7 @@ const editorStrings = {
     const renderCanvas = document.getElementById('pdf-render-canvas');
     const drawCanvas = document.getElementById('pdf-draw-canvas');
     const annotationsLayer = document.getElementById('pdf-annotations-layer');
+    const textDetectLayer = document.getElementById('pdf-text-detect-layer');
     const fileInput = document.getElementById('main-pdf-input');
     const appendFileInput = document.getElementById('append-pdf-input');
     const sampleBtn = document.getElementById('btn-load-sample');
@@ -321,9 +498,16 @@ const editorStrings = {
     const zoomInBtn = document.getElementById('btn-zoom-in');
     const zoomOutBtn = document.getElementById('btn-zoom-out');
     const propertyBar = document.getElementById('property-bar');
+    const popoverPill = document.getElementById('element-popover-pill');
+    const btnPopWhiteout = document.getElementById('btn-pop-whiteout');
+    const btnPopDuplicate = document.getElementById('btn-pop-duplicate');
     const exportBtn = document.getElementById('btn-export-pdf');
     const undoBtn = document.getElementById('btn-undo');
     const redoBtn = document.getElementById('btn-redo');
+
+    // Prevent interactions inside the popover pill from bubbling to canvas or deselection
+    popoverPill?.addEventListener('click', (e) => e.stopPropagation());
+    popoverPill?.addEventListener('mousedown', (e) => e.stopPropagation());
 
     function showLoading(msg = editorStrings.processingDoc) {
       loadingText.textContent = msg;
@@ -374,21 +558,74 @@ const editorStrings = {
       }
     });
 
-    // Keyboard Shortcuts (Ctrl+Z for Undo, Ctrl+Y or Ctrl+Shift+Z for Redo)
+    // Global Keyboard Shortcuts (V, T, D, H, R, S, Undo/Redo, Duplicate, Delete, Zoom)
     document.addEventListener('keydown', (e) => {
-      if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.isContentEditable) {
+      const target = e.target;
+      if (
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName) ||
+        target?.isContentEditable ||
+        target?.closest?.('.annot-text-content') ||
+        target?.closest?.('[contenteditable="true"]')
+      ) {
         return;
       }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        if (e.shiftKey) {
+
+      const isMod = e.ctrlKey || e.metaKey;
+
+      if (isMod) {
+        const key = e.key.toLowerCase();
+        if (key === 'z') {
+          e.preventDefault();
+          if (e.shiftKey) {
+            if (!redoBtn.disabled) redoBtn.click();
+          } else {
+            if (!undoBtn.disabled) undoBtn.click();
+          }
+        } else if (key === 'y') {
+          e.preventDefault();
           if (!redoBtn.disabled) redoBtn.click();
-        } else {
-          if (!undoBtn.disabled) undoBtn.click();
+        } else if (key === 'd') {
+          e.preventDefault();
+          duplicateSelectedAnnotation();
         }
-      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
-        e.preventDefault();
-        if (!redoBtn.disabled) redoBtn.click();
+        return;
+      }
+
+      if (!e.altKey) {
+        const key = e.key.toLowerCase();
+        if (key === 'v') {
+          e.preventDefault();
+          document.getElementById('tool-select')?.click();
+        } else if (key === 't') {
+          e.preventDefault();
+          document.getElementById('tool-text')?.click();
+        } else if (key === 'd') {
+          e.preventDefault();
+          document.getElementById('tool-draw')?.click();
+        } else if (key === 'h') {
+          e.preventDefault();
+          document.getElementById('tool-highlight')?.click();
+        } else if (key === 'r') {
+          e.preventDefault();
+          document.getElementById('tool-redact')?.click();
+        } else if (key === 's') {
+          e.preventDefault();
+          document.getElementById('btn-open-sign-modal')?.click();
+        } else if (key === 'n') {
+          e.preventDefault();
+          document.getElementById('tool-sticky-note')?.click();
+        } else if (e.key === 'Delete' || e.key === 'Backspace') {
+          if (state.selectedAnnotationId) {
+            e.preventDefault();
+            deleteSelectedAnnotation();
+          }
+        } else if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          zoomInBtn?.click();
+        } else if (e.key === '-' || e.key === '_') {
+          e.preventDefault();
+          zoomOutBtn?.click();
+        }
       }
     });
 
@@ -637,6 +874,10 @@ const editorStrings = {
 
           // Reset DOM layers and counters
           annotationsLayer.innerHTML = '';
+          if (textDetectLayer) {
+            textDetectLayer.innerHTML = '';
+            textDetectLayer.classList.add('hidden');
+          }
           thumbnailsList.innerHTML = '';
           sidebarCount.textContent = '0';
           curPageSpan.textContent = '1';
@@ -647,8 +888,26 @@ const editorStrings = {
           pageContainer.classList.add('hidden');
           pageNav.classList.add('hidden');
           pageNav.classList.remove('flex');
-          propertyBar.classList.add('hidden');
+          propertyBar?.classList.add('hidden');
+          deselectAnnotation();
           emptyState.classList.remove('hidden');
+
+          // Transition back to Dropzone view
+          const dropzoneView = document.getElementById('editor-dropzone-view');
+          const studioView = document.getElementById('editor-studio-view');
+          if (studioView) {
+            studioView.classList.add('hidden');
+            studioView.classList.remove('flex');
+          }
+          if (dropzoneView) {
+            dropzoneView.classList.remove('hidden');
+          }
+
+          // Uncollapse secondary tools strip and hero intro header
+          const toolsStrip = document.getElementById('tools-strip');
+          if (toolsStrip) toolsStrip.classList.remove('!hidden');
+          const heroHeader = document.getElementById('hero-intro-header');
+          if (heroHeader) heroHeader.classList.remove('hidden');
 
           // Reset file inputs
           if (fileInput) fileInput.value = '';
@@ -665,7 +924,7 @@ const editorStrings = {
           document.getElementById('image-crop-modal')?.classList.add('hidden');
 
           showToast(editorStrings.newSessionStarted, 'info');
-          emptyState.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          dropzoneView ? dropzoneView.scrollIntoView({ behavior: 'smooth', block: 'center' }) : emptyState.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       });
     }
@@ -707,6 +966,29 @@ const editorStrings = {
           state.pageRotations[i] = 0;
         }
 
+        // Progressive disclosure: transition from Dropzone to Studio View
+        const dropzoneView = document.getElementById('editor-dropzone-view');
+        const studioView = document.getElementById('editor-studio-view');
+        if (dropzoneView) dropzoneView.classList.add('hidden');
+        if (studioView) {
+          studioView.classList.remove('hidden');
+          studioView.classList.add('flex');
+        }
+
+        // Collapse redundant secondary tool-switcher bar
+        const toolsStrip = document.getElementById('tools-strip');
+        if (toolsStrip) toolsStrip.classList.add('!hidden');
+
+        // Collapse hero intro header to give studio maximum vertical room
+        const heroHeader = document.getElementById('hero-intro-header');
+        if (heroHeader) heroHeader.classList.add('hidden');
+
+        // Smoothly auto-scroll the workspace to the top of the viewport
+        const anchor = document.getElementById('editor-anchor');
+        if (anchor) {
+          anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         emptyState.classList.add('hidden');
         pageContainer.classList.remove('hidden');
         pageNav.classList.remove('hidden');
@@ -719,6 +1001,9 @@ const editorStrings = {
         await renderThumbnails();
         await renderCurrentPage();
 
+        // Default studio mode to 'Edit Text'
+        setStudioMode('text');
+
         const urlParams = new URLSearchParams(window.location.search);
         const pendingTool = urlParams.get('tool');
         if (pendingTool) {
@@ -729,6 +1014,252 @@ const editorStrings = {
         alert(editorStrings.loadFailed + err.message);
       } finally {
         hideLoading();
+      }
+    }
+
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function mapFontFamily(fontName) {
+      if (!fontName || typeof fontName !== 'string') return 'Geist, sans-serif';
+      const fn = fontName.toLowerCase();
+      if (
+        fn.includes('times') ||
+        fn.includes('serif') ||
+        fn.includes('georgia') ||
+        fn.includes('garamond') ||
+        fn.includes('palatino') ||
+        fn.includes('baskerville') ||
+        fn.includes('minion') ||
+        fn.includes('cambria') ||
+        fn.includes('century') ||
+        fn.includes('bookman') ||
+        fn.includes('roman')
+      ) {
+        return 'Times New Roman, serif';
+      }
+      if (
+        fn.includes('mono') ||
+        fn.includes('courier') ||
+        fn.includes('consolas') ||
+        fn.includes('menlo') ||
+        fn.includes('code') ||
+        fn.includes('typewriter') ||
+        fn.includes('fixed')
+      ) {
+        return 'Geist Mono, monospace';
+      }
+      return 'Geist, sans-serif';
+    }
+
+    function sampleCanvasBackground(canvas, box) {
+      try {
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return '#ffffff';
+
+        const dispW = parseFloat(canvas.style.width) || (canvas.width / 1.5) || canvas.width;
+        const dispH = parseFloat(canvas.style.height) || (canvas.height / 1.5) || canvas.height;
+        const scaleX = canvas.width / dispW;
+        const scaleY = canvas.height / dispH;
+
+        const left = Math.round(box.x * scaleX);
+        const top = Math.round(box.y * scaleY);
+        const right = Math.round((box.x + box.width) * scaleX);
+        const bottom = Math.round((box.y + box.height) * scaleY);
+        const midX = Math.round((left + right) / 2);
+        const midY = Math.round((top + bottom) / 2);
+
+        const perimeterPoints = [
+          [Math.max(0, left - 4), Math.max(0, Math.min(canvas.height - 1, midY))],
+          [Math.min(canvas.width - 1, right + 4), Math.max(0, Math.min(canvas.height - 1, midY))],
+          [Math.max(0, Math.min(canvas.width - 1, midX)), Math.max(0, top - 4)],
+          [Math.max(0, Math.min(canvas.width - 1, midX)), Math.min(canvas.height - 1, bottom + 4)],
+          [Math.max(0, left - 3), Math.max(0, top - 3)],
+          [Math.min(canvas.width - 1, right + 3), Math.max(0, top - 3)],
+          [Math.max(0, left - 3), Math.min(canvas.height - 1, bottom + 3)],
+          [Math.min(canvas.width - 1, right + 3), Math.min(canvas.height - 1, bottom + 3)],
+          [Math.max(0, Math.min(canvas.width - 1, midX)), Math.min(canvas.height - 1, top + 1)],
+          [Math.max(0, Math.min(canvas.width - 1, midX)), Math.max(0, bottom - 1)],
+        ];
+
+        const samples = [];
+        for (const [sx, sy] of perimeterPoints) {
+          const data = ctx.getImageData(sx, sy, 1, 1).data;
+          if (data[3] < 20) continue;
+          const brightness = 0.299 * data[0] + 0.587 * data[1] + 0.114 * data[2];
+          samples.push({ r: data[0], g: data[1], b: data[2], brightness });
+        }
+
+        if (samples.length === 0) return '#ffffff';
+
+        samples.sort((a, b) => b.brightness - a.brightness);
+        const best = samples[0];
+        const r = best.r.toString(16).padStart(2, '0');
+        const g = best.g.toString(16).padStart(2, '0');
+        const b = best.b.toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`;
+      } catch (err) {
+        console.warn('Canvas background sample error:', err);
+        return '#ffffff';
+      }
+    }
+
+    function handleTextRunClick(boxData, boxEl) {
+      const sampledBg = sampleCanvasBackground(renderCanvas, boxData);
+      const closestFont = mapFontFamily(boxData.fontName);
+
+      if (boxEl) {
+        boxEl.style.display = 'none';
+      }
+
+      insertTextAnnotation(boxData.x, boxData.y, {
+        text: boxData.str,
+        fontSize: boxData.fontSize,
+        fontFamily: closestFont,
+        bgWhiteout: true,
+        customBgColor: sampledBg,
+        width: boxData.width,
+        height: boxData.height,
+        baselineY: boxData.baselineY,
+        color: '#171717',
+      });
+
+      const propFam = document.getElementById('prop-font-family');
+      if (propFam) propFam.value = closestFont;
+      const propSize = document.getElementById('prop-font-size');
+      if (propSize) {
+        let matchedOpt = Array.from(propSize.options).find(opt => opt.value === String(boxData.fontSize));
+        if (!matchedOpt) {
+          const newOpt = document.createElement('option');
+          newOpt.value = String(boxData.fontSize);
+          newOpt.textContent = `${boxData.fontSize}px`;
+          propSize.appendChild(newOpt);
+        }
+        propSize.value = String(boxData.fontSize);
+      }
+
+      showToast('Text ready to edit inline with matching background', 'info', 1800);
+    }
+
+    // Render Detected Text Runs Interactive Overlay Layer
+    async function renderTextDetectOverlay(page) {
+      if (!textDetectLayer || !page || typeof page.getTextContent !== 'function') return;
+      textDetectLayer.innerHTML = '';
+
+      const totalRotation = ((page.rotate || 0) + (state.pageRotations[state.currentPage] || 0)) % 360;
+      const viewport = page.getViewport({ scale: state.scale, rotation: totalRotation });
+
+      let textContent;
+      try {
+        textContent = await page.getTextContent({ normalizeWhitespace: true });
+      } catch (err) {
+        console.warn('Failed to retrieve text content for page:', err);
+        return;
+      }
+
+      if (!textContent || !Array.isArray(textContent.items) || textContent.items.length === 0) {
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      for (const item of textContent.items) {
+        if (!item.str || typeof item.str !== 'string' || item.str.trim().length === 0) {
+          continue;
+        }
+        if (!item.transform || item.transform.length < 6) {
+          continue;
+        }
+
+        // Map text item's transform matrix to canvas viewport coordinates using pdfjsLib.Util.transform
+        const tx = (window.pdfjsLib && window.pdfjsLib.Util && typeof window.pdfjsLib.Util.transform === 'function')
+          ? window.pdfjsLib.Util.transform(viewport.transform, item.transform)
+          : [
+              viewport.transform[0] * item.transform[0] + viewport.transform[2] * item.transform[1],
+              viewport.transform[1] * item.transform[0] + viewport.transform[3] * item.transform[1],
+              viewport.transform[0] * item.transform[2] + viewport.transform[2] * item.transform[3],
+              viewport.transform[1] * item.transform[2] + viewport.transform[3] * item.transform[3],
+              viewport.transform[0] * item.transform[4] + viewport.transform[2] * item.transform[5] + viewport.transform[4],
+              viewport.transform[1] * item.transform[4] + viewport.transform[3] * item.transform[5] + viewport.transform[5],
+            ];
+
+        const fontSizePdf = Math.hypot(item.transform[0], item.transform[1]) || item.height || 12;
+        const fontHeight = Math.hypot(tx[2], tx[3]) || Math.hypot(tx[0], tx[1]) || (fontSizePdf * state.scale) || 14;
+        const localW = fontSizePdf > 0 ? (item.width || 0) / fontSizePdf : 0;
+
+        // Viewport corners
+        const p1 = [tx[4], tx[5]]; // baseline start
+        const p2 = [tx[0] * localW + tx[4], tx[1] * localW + tx[5]]; // baseline end
+        const p3 = [tx[0] * localW + tx[2] + tx[4], tx[1] * localW + tx[3] + tx[5]]; // top end
+        const p4 = [tx[2] + tx[4], tx[3] + tx[5]]; // top start
+
+        let minX = Math.min(p1[0], p2[0], p3[0], p4[0]);
+        let maxX = Math.max(p1[0], p2[0], p3[0], p4[0]);
+        let minY = Math.min(p1[1], p2[1], p3[1], p4[1]);
+        let maxY = Math.max(p1[1], p2[1], p3[1], p4[1]);
+
+        // Account for ascenders/descenders
+        const descenderDepth = fontHeight * 0.22;
+        maxY += descenderDepth;
+        minY -= fontHeight * 0.05;
+        minX -= 2;
+        maxX += 2;
+
+        const boxX = Math.max(0, Math.round(minX));
+        const boxY = Math.max(0, Math.round(minY));
+        const boxW = Math.max(16, Math.round(maxX - minX));
+        const boxH = Math.max(14, Math.round(maxY - minY));
+        const baselineY = Math.round(tx[5]);
+        const baselineX = Math.round(tx[4]);
+        const calculatedFontSize = Math.max(10, Math.min(72, Math.round(fontHeight)));
+
+        const boxEl = document.createElement('div');
+        boxEl.className = 'absolute border border-dashed border-transparent hover:border-blue-500 hover:bg-blue-500/10 transition-colors cursor-text pointer-events-auto rounded-xs';
+        boxEl.style.left = `${boxX}px`;
+        boxEl.style.top = `${boxY}px`;
+        boxEl.style.width = `${boxW}px`;
+        boxEl.style.height = `${boxH}px`;
+        boxEl.title = `Click to edit: "${escapeHtml(item.str)}"`;
+        boxEl.setAttribute('role', 'button');
+        boxEl.setAttribute('aria-label', `Edit text: ${item.str}`);
+
+        const boxData = {
+          x: boxX,
+          y: boxY,
+          width: boxW,
+          height: boxH,
+          baselineX,
+          baselineY,
+          fontSize: calculatedFontSize,
+          fontName: item.fontName,
+          str: item.str,
+          transform: item.transform,
+          itemWidth: item.width,
+          itemHeight: item.height,
+        };
+
+        boxEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handleTextRunClick(boxData, boxEl);
+        });
+
+        fragment.appendChild(boxEl);
+      }
+
+      textDetectLayer.appendChild(fragment);
+
+      if (state.activeTool === 'text') {
+        textDetectLayer.classList.remove('hidden');
+      } else {
+        textDetectLayer.classList.add('hidden');
       }
     }
 
@@ -754,6 +1285,9 @@ const editorStrings = {
         renderAnnotationsLayer(result.displayWidth, result.displayHeight);
         renderDrawingsOnCanvas();
         highlightActiveThumbnail();
+
+        // Render detected text runs interactive overlay
+        await renderTextDetectOverlay(page);
       } catch (err) {
         console.error('Render error:', err);
       } finally {
@@ -797,10 +1331,16 @@ const editorStrings = {
         el.style.zIndex = annot.zIndex || '25';
 
         if (annot.type === 'text') {
+          const isWhiteout = !!annot.bgWhiteout;
+          const paddingStyle = isWhiteout ? 'padding: 0 2px;' : 'padding: 4px 10px;';
+          const minWStyle = annot.width ? `min-width: ${annot.width}px;` : 'min-width: 50px;';
+          const minHStyle = annot.height ? `min-height: ${annot.height}px;` : '';
+          const bgStyle = isWhiteout ? `background-color: ${annot.customBgColor || '#ffffff'};` : '';
+          const borderClass = isWhiteout ? 'border border-dashed border-blue-400/50 hover:border-blue-500' : 'border border-dashed border-ink/30 hover:border-link';
           el.innerHTML = `
-            <div class="relative px-2.5 py-1 rounded-xs bg-transparent border border-dashed border-ink/30 hover:border-link focus-within:border-link focus-within:ring-1 focus-within:ring-link/30 transition-all cursor-text select-text"
-                 style="color: ${annot.color || '#171717'}; font-size: ${annot.fontSize || 16}px; font-family: ${annot.fontFamily || 'Geist, sans-serif'}; ${annot.bgWhiteout ? `background-color: ${annot.customBgColor || '#ffffff'};` : ''}">
-              <div class="annot-text-content select-text cursor-text outline-none inline-block min-w-[50px] whitespace-pre-wrap break-words" contenteditable="true" spellcheck="false">${annot.text || editorStrings.typeTextPlaceholder}</div>
+            <div class="relative rounded-xs bg-transparent ${borderClass} focus-within:border-link focus-within:ring-1 focus-within:ring-link/30 transition-all cursor-text select-text"
+                 style="color: ${annot.color || '#171717'}; font-size: ${annot.fontSize || 16}px; font-family: ${annot.fontFamily || 'Geist, sans-serif'}; line-height: 1.15; ${bgStyle} ${minWStyle} ${minHStyle} ${paddingStyle}">
+              <div class="annot-text-content select-text cursor-text outline-none inline-block whitespace-pre-wrap break-words" style="${minWStyle} line-height: 1.15;" contenteditable="true" spellcheck="false">${annot.text !== undefined ? escapeHtml(annot.text) : editorStrings.typeTextPlaceholder}</div>
               <button type="button" class="annot-del-btn absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm transition-opacity cursor-pointer z-30" title="Delete text">&times;</button>
               <div class="annot-drag-handle absolute -top-2.5 -left-2.5 h-5 w-5 rounded-full bg-ink text-on-primary text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-sm cursor-grab active:cursor-grabbing transition-opacity z-30 select-none" title="Drag to move">✥</div>
             </div>
@@ -935,6 +1475,80 @@ const editorStrings = {
               <div class="annot-resize-handle absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-rose-500 border-2 border-white shadow-xs cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity z-30" title="Drag to resize"></div>
             </div>
           `;
+        } else if (annot.type === 'sticky') {
+          const isSelected = (state.selectedAnnotationId === annot.id);
+          const color = annot.noteColor || '#fef08a';
+          const isExpanded = annot.stickyExpanded !== false;
+          const w = annot.width || 210;
+          const h = annot.height || 130;
+
+          if (isExpanded) {
+            el.innerHTML = `
+              <div class="annot-sticky-card relative rounded-xl shadow-floating border border-black/15 overflow-hidden transition-all select-none ${isSelected ? 'ring-2 ring-blue-500' : 'hover:shadow-lg'}"
+                   style="background-color: ${color}; width: ${w}px; min-height: ${h}px;">
+                <!-- Header (Drag Handle) -->
+                <div class="annot-drag-handle flex items-center justify-between px-2.5 py-1.5 border-b border-black/10 bg-black/5 cursor-grab active:cursor-grabbing select-none">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="text-xs">💬</span>
+                    <span class="text-[11px] font-bold text-zinc-800 truncate">${escapeHtml(annot.author || 'Sticky Note')}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <!-- Color Swatches -->
+                    <div class="flex items-center gap-0.5 mr-1">
+                      <button type="button" class="sticky-color-dot h-3 w-3 rounded-full bg-[#fef08a] border border-black/20 hover:scale-125 transition-transform cursor-pointer" data-color="#fef08a" title="Yellow"></button>
+                      <button type="button" class="sticky-color-dot h-3 w-3 rounded-full bg-[#bae6fd] border border-black/20 hover:scale-125 transition-transform cursor-pointer" data-color="#bae6fd" title="Sky Blue"></button>
+                      <button type="button" class="sticky-color-dot h-3 w-3 rounded-full bg-[#bbf7d0] border border-black/20 hover:scale-125 transition-transform cursor-pointer" data-color="#bbf7d0" title="Mint Green"></button>
+                      <button type="button" class="sticky-color-dot h-3 w-3 rounded-full bg-[#fbcfe8] border border-black/20 hover:scale-125 transition-transform cursor-pointer" data-color="#fbcfe8" title="Soft Pink"></button>
+                      <button type="button" class="sticky-color-dot h-3 w-3 rounded-full bg-[#e9d5ff] border border-black/20 hover:scale-125 transition-transform cursor-pointer" data-color="#e9d5ff" title="Lavender"></button>
+                    </div>
+                    <!-- Minimize / Collapse Button -->
+                    <button type="button" class="sticky-collapse-btn h-5 w-5 rounded hover:bg-black/10 text-zinc-700 text-xs flex items-center justify-center transition-colors cursor-pointer" title="Minimize to Pin">
+                      −
+                    </button>
+                    <!-- Delete Button -->
+                    <button type="button" class="annot-del-btn h-5 w-5 rounded hover:bg-rose-500 hover:text-white text-zinc-700 text-xs flex items-center justify-center transition-colors cursor-pointer" title="Delete note">
+                      &times;
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Textarea Body -->
+                <div class="p-2.5">
+                  <textarea
+                    id="sticky-input-${annot.id}"
+                    class="sticky-note-input w-full bg-transparent border-none outline-none text-[12.5px] leading-snug text-zinc-900 placeholder:text-zinc-600/60 resize-none font-sans"
+                    rows="3"
+                    placeholder="Type review note or comment..."
+                  >${escapeHtml(annot.text || '')}</textarea>
+                </div>
+
+                <!-- Footer / Export Mode Indicator -->
+                <div class="px-2.5 py-1 bg-black/5 border-t border-black/10 flex items-center justify-between text-[9.5px] font-mono text-zinc-600">
+                  <span class="flex items-center gap-1">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    <span>PDF Comment & Callout</span>
+                  </span>
+                  <span>Drag header to move</span>
+                </div>
+              </div>
+            `;
+          } else {
+            // Collapsed Pin Mode
+            const textPreview = annot.text ? escapeHtml(annot.text.slice(0, 50)) : 'Empty comment';
+            el.innerHTML = `
+              <div class="relative group/pin select-none">
+                <button
+                  type="button"
+                  class="sticky-collapse-btn flex h-8 w-8 items-center justify-center rounded-full shadow-floating border-2 border-white ring-1 ring-black/20 hover:scale-115 active:scale-95 transition-all cursor-pointer"
+                  style="background-color: ${color};"
+                  title="Expand Sticky Note: ${textPreview}"
+                >
+                  <span class="text-sm">💬</span>
+                </button>
+                <button type="button" class="annot-del-btn absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-600 text-white text-[10px] flex items-center justify-center opacity-0 group-hover/pin:opacity-100 shadow-sm transition-opacity cursor-pointer z-30" title="Delete note">&times;</button>
+              </div>
+            `;
+          }
         }
 
         // Attach Drag Handling & Resize Handling
@@ -970,6 +1584,47 @@ const editorStrings = {
         });
       }
 
+      // Sticky Note Listeners (Input, Collapse, Colors)
+      const stickyInput = el.querySelector('.sticky-note-input');
+      if (stickyInput) {
+        stickyInput.addEventListener('input', () => {
+          annot.text = stickyInput.value;
+        });
+        stickyInput.addEventListener('focus', () => {
+          selectAnnotation(annot);
+        });
+        stickyInput.addEventListener('blur', () => {
+          annot.text = stickyInput.value;
+          saveHistory();
+        });
+        stickyInput.addEventListener('keydown', (e) => {
+          e.stopPropagation();
+        });
+      }
+
+      const stickyCollapseBtns = el.querySelectorAll('.sticky-collapse-btn');
+      stickyCollapseBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          annot.stickyExpanded = !annot.stickyExpanded;
+          saveHistory();
+          renderAnnotationsLayer();
+        });
+      });
+
+      const stickyColorDots = el.querySelectorAll('.sticky-color-dot');
+      stickyColorDots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const newColor = dot.dataset.color;
+          if (newColor) {
+            annot.noteColor = newColor;
+            saveHistory();
+            renderAnnotationsLayer();
+          }
+        });
+      });
+
       // Selection & Inspector
       el.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -984,6 +1639,11 @@ const editorStrings = {
       el.addEventListener('mousedown', (e) => {
         // If clicking inside editable text area, let user write/select text freely
         if (e.target.classList.contains('annot-text-content') || e.target.closest('.annot-text-content') || e.target.isContentEditable) {
+          return;
+        }
+        if (e.target.classList.contains('sticky-note-input') || e.target.closest('.sticky-note-input') ||
+            e.target.classList.contains('sticky-collapse-btn') || e.target.closest('.sticky-collapse-btn') ||
+            e.target.classList.contains('sticky-color-dot') || e.target.closest('.sticky-color-dot')) {
           return;
         }
         if (e.target.classList.contains('annot-resize-handle') || e.target.closest('.annot-resize-handle') ||
@@ -1019,6 +1679,7 @@ const editorStrings = {
           annot.y = Math.max(0, initialTop + dy);
           el.style.left = annot.x + 'px';
           el.style.top = annot.y + 'px';
+          positionPopoverPill(annot);
         }
 
         function onMouseUp() {
@@ -1211,6 +1872,7 @@ const editorStrings = {
               const propH = document.getElementById('prop-img-h');
               if (propW && state.selectedAnnotationId === annot.id) propW.value = newWidth;
               if (propH && state.selectedAnnotationId === annot.id) propH.value = newHeight;
+              positionPopoverPill(annot);
               return;
             }
 
@@ -1263,6 +1925,7 @@ const editorStrings = {
                 }
               }
             }
+            positionPopoverPill(annot);
           }
 
           function onResizeMouseUp() {
@@ -1283,15 +1946,64 @@ const editorStrings = {
       setupResize(el.querySelector('.annot-resize-handle-nw'), 'nw');
     }
 
+    function positionPopoverPill(annot) {
+      if (!popoverPill || !pageContainer) return;
+      popoverPill.classList.remove('hidden');
+      popoverPill.classList.add('flex');
+
+      const el = document.getElementById('annot-' + annot.id);
+      const elW = el ? el.offsetWidth : (annot.width || 120);
+      const elH = el ? el.offsetHeight : (annot.height || 40);
+
+      const popW = popoverPill.offsetWidth || 380;
+      const popH = popoverPill.offsetHeight || 44;
+
+      const pageW = pageContainer.clientWidth;
+      const pageH = pageContainer.clientHeight;
+
+      // Position 12px dynamically above element
+      let targetLeft = (annot.x || 0) + (elW / 2) - (popW / 2);
+      let targetTop = (annot.y || 0) - popH - 12;
+
+      // If near top edge, flip to 12px below the element
+      if (targetTop < 8) {
+        targetTop = (annot.y || 0) + elH + 12;
+      }
+
+      // Clamp within canvas bounds
+      targetLeft = Math.max(8, Math.min(pageW - popW - 8, targetLeft));
+      targetTop = Math.max(8, Math.min(pageH - popH - 8, targetTop));
+
+      popoverPill.style.left = `${Math.round(targetLeft)}px`;
+      popoverPill.style.top = `${Math.round(targetTop)}px`;
+    }
+
+    function deselectAnnotation() {
+      state.selectedAnnotationId = null;
+      if (popoverPill) {
+        popoverPill.classList.add('hidden');
+        popoverPill.classList.remove('flex');
+      }
+      document.querySelectorAll('.annot-rot-wrapper').forEach(w => {
+        w.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
+        w.classList.add('group-hover:outline', 'group-hover:outline-1', 'group-hover:outline-link');
+      });
+      document.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => {
+        h.classList.remove('!opacity-100');
+      });
+    }
+
     function selectAnnotation(annot) {
       state.selectedAnnotationId = annot.id;
-      propertyBar.classList.remove('hidden');
+      propertyBar?.classList.remove('hidden');
       const typeDisplay = annot.type === 'redact'
         ? editorStrings.redactType
         : (annot.type.toUpperCase() + (annot.shapeType ? ` (${annot.shapeType})` : ''));
-      document.getElementById('inspector-element-type').textContent = typeDisplay;
+      const typeBadge = document.getElementById('inspector-element-type');
+      if (typeBadge) typeBadge.textContent = typeDisplay;
 
       const fontGroup = document.getElementById('prop-font-group');
+      const whiteoutGroup = document.getElementById('pop-whiteout-group');
       const strokeGroup = document.getElementById('prop-stroke-group');
       const opacityGroup = document.getElementById('prop-opacity-group');
       const imageGroup = document.getElementById('prop-image-group');
@@ -1359,17 +2071,36 @@ const editorStrings = {
           });
         }
       } else if (annot.type === 'text') {
-        if (fontGroup) fontGroup.classList.remove('hidden');
+        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+        if (fontGroup) { fontGroup.classList.remove('hidden'); fontGroup.classList.add('flex'); }
+        if (whiteoutGroup) { whiteoutGroup.classList.remove('hidden'); whiteoutGroup.classList.add('flex'); }
         if (strokeGroup) strokeGroup.classList.add('hidden');
-        if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (opacityGroup) { opacityGroup.classList.remove('hidden'); opacityGroup.classList.add('flex'); }
         if (imageGroup) imageGroup.classList.add('hidden');
-        if (colorGroup) colorGroup.classList.remove('hidden');
+        if (colorGroup) { colorGroup.classList.remove('hidden'); colorGroup.classList.add('flex'); }
         if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
         if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
+
         const fontFamSel = document.getElementById('prop-font-family');
         if (fontFamSel && annot.fontFamily) fontFamSel.value = annot.fontFamily;
         const fontSizeSel = document.getElementById('prop-font-size');
-        if (fontSizeSel && annot.fontSize) fontSizeSel.value = annot.fontSize;
+        if (fontSizeSel && annot.fontSize) {
+          let matchedOpt = Array.from(fontSizeSel.options).find(opt => opt.value === String(annot.fontSize));
+          if (!matchedOpt) {
+            const newOpt = document.createElement('option');
+            newOpt.value = String(annot.fontSize);
+            newOpt.textContent = `${annot.fontSize}px`;
+            fontSizeSel.appendChild(newOpt);
+          }
+          fontSizeSel.value = String(annot.fontSize);
+        }
+
+        const opInput = document.getElementById('prop-opacity');
+        if (opInput) opInput.value = annot.opacity !== undefined ? annot.opacity : 1.0;
+        const opVal = document.getElementById('prop-opacity-val');
+        if (opVal) opVal.textContent = Math.round((annot.opacity !== undefined ? annot.opacity : 1.0) * 100) + '%';
+
+        updateWhiteoutButtonUI(!!annot.bgWhiteout);
       } else if (annot.type === 'shape') {
         if (fontGroup) fontGroup.classList.add('hidden');
         if (strokeGroup) strokeGroup.classList.remove('hidden');
@@ -1438,6 +2169,16 @@ const editorStrings = {
         if (colorGroup) colorGroup.classList.add('hidden');
         if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
         if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
+      } else if (annot.type === 'sticky') {
+        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (whiteoutGroup) whiteoutGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (colorGroup) colorGroup.classList.add('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
       } else {
         if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
         if (fontGroup) fontGroup.classList.add('hidden');
@@ -1450,9 +2191,15 @@ const editorStrings = {
       }
 
       const colorInput = document.getElementById('prop-color-picker');
+      const colorIndicator = document.getElementById('pop-color-indicator');
       if (colorInput && annot.color) {
         colorInput.value = annot.color;
       }
+      if (colorIndicator && annot.color) {
+        colorIndicator.style.backgroundColor = annot.color;
+      }
+
+      positionPopoverPill(annot);
     }
 
     // Rearrange Layer Order (Bring Forward / Send Backward)
@@ -1481,9 +2228,64 @@ const editorStrings = {
     function deleteAnnotation(id) {
       const list = state.annotations[state.currentPage] || [];
       state.annotations[state.currentPage] = list.filter(a => a.id !== id);
-      propertyBar.classList.add('hidden');
+      propertyBar?.classList.add('hidden');
+      deselectAnnotation();
       renderAnnotationsLayer();
       saveHistory();
+    }
+
+    function deleteSelectedAnnotation() {
+      if (state.selectedAnnotationId) {
+        deleteAnnotation(state.selectedAnnotationId);
+      }
+    }
+
+    function duplicateSelectedAnnotation() {
+      if (!state.selectedAnnotationId || !state.currentPage) return;
+      const list = state.annotations[state.currentPage] || [];
+      const annot = list.find(a => a.id === state.selectedAnnotationId);
+      if (!annot) return;
+
+      const clone = JSON.parse(JSON.stringify(annot));
+      clone.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      clone.x = (annot.x || 0) + 16;
+      clone.y = (annot.y || 0) + 16;
+      list.push(clone);
+      renderAnnotationsLayer();
+      selectAnnotation(clone);
+      saveHistory();
+      showToast('Element duplicated', 'info', 1200);
+    }
+
+    function toggleWhiteoutBackground() {
+      if (!state.selectedAnnotationId || !state.currentPage) return;
+      const list = state.annotations[state.currentPage] || [];
+      const annot = list.find(a => a.id === state.selectedAnnotationId);
+      if (!annot || annot.type !== 'text') return;
+
+      annot.bgWhiteout = !annot.bgWhiteout;
+      if (annot.bgWhiteout && !annot.customBgColor) {
+        annot.customBgColor = '#ffffff';
+      }
+      updateWhiteoutButtonUI(annot.bgWhiteout);
+      renderAnnotationsLayer();
+      selectAnnotation(annot);
+      saveHistory();
+    }
+
+    function updateWhiteoutButtonUI(isWhiteout) {
+      const btn = document.getElementById('btn-pop-whiteout');
+      const icon = document.getElementById('pop-whiteout-icon');
+      if (!btn) return;
+      if (isWhiteout) {
+        btn.classList.add('bg-blue-500/15', 'text-blue-600', 'border-blue-500/40', 'dark:text-cyan-400');
+        btn.classList.remove('bg-canvas', 'text-body', 'border-hairline');
+        if (icon) icon.className = 'h-3 w-3 rounded-xs border border-blue-500 bg-white inline-block shadow-2xs';
+      } else {
+        btn.classList.remove('bg-blue-500/15', 'text-blue-600', 'border-blue-500/40', 'dark:text-cyan-400');
+        btn.classList.add('bg-canvas', 'text-body', 'border-hairline');
+        if (icon) icon.className = 'h-3 w-3 rounded-xs border border-hairline/80 bg-white inline-block';
+      }
     }
 
     // Render Freehand Drawings
@@ -1718,9 +2520,54 @@ const editorStrings = {
       selectAnnotation(newRedact);
     }
 
-    // Canvas click to add element
+    function insertStickyAnnotation(customX, customY, options = {}) {
+      if (!state.currentPage || !state.pdfDocProxy) {
+        alert(editorStrings.addTextAlert || 'Please select a page first');
+        return;
+      }
+      if (!state.annotations[state.currentPage]) {
+        state.annotations[state.currentPage] = [];
+      }
+      const displayW = renderCanvas.width / 1.5 || 600;
+      const displayH = renderCanvas.height / 1.5 || 800;
+      const w = 210;
+      const h = 130;
+
+      const x = customX !== undefined ? customX : Math.max(30, Math.round((displayW - w) / 2));
+      const y = customY !== undefined ? customY : Math.max(30, Math.round((displayH - h) / 3));
+
+      const newSticky = {
+        id: 'stk-' + Date.now(),
+        type: 'sticky',
+        x,
+        y,
+        width: w,
+        height: h,
+        text: options.text || '',
+        author: options.author || 'Reviewer',
+        noteColor: options.noteColor || '#fef08a',
+        stickyExpanded: true,
+        exportAsPdfAnnotation: true,
+      };
+
+      state.annotations[state.currentPage].push(newSticky);
+      saveHistory();
+      renderAnnotationsLayer();
+      selectAnnotation(newSticky);
+
+      setTimeout(() => {
+        const input = document.getElementById('sticky-input-' + newSticky.id);
+        input?.focus();
+      }, 50);
+    }
+
+    // Canvas click to add element or deselect
     annotationsLayer.addEventListener('click', async (e) => {
       if (e.target !== annotationsLayer) return;
+      if (state.activeTool === 'select') {
+        deselectAnnotation();
+        return;
+      }
       const rect = annotationsLayer.getBoundingClientRect();
       const x = Math.max(10, Math.round(e.clientX - rect.left));
       const y = Math.max(10, Math.round(e.clientY - rect.top));
@@ -1754,6 +2601,14 @@ const editorStrings = {
         insertShapeAnnotation(state.activeShape, x, y);
       } else if (state.activeTool === 'redact') {
         insertRedactAnnotation(x, y);
+      } else if (state.activeTool === 'sticky') {
+        insertStickyAnnotation(x, y);
+      }
+    });
+
+    pageContainer?.addEventListener('click', (e) => {
+      if (e.target === pageContainer || e.target === renderCanvas || e.target === drawCanvas) {
+        deselectAnnotation();
       }
     });
 
@@ -2140,9 +2995,7 @@ const editorStrings = {
       const delParent = document.getElementById('btn-delete-element')?.parentElement;
 
       if (toolName === 'draw') {
-        state.selectedAnnotationId = null;
-        document.querySelectorAll('.annot-rot-wrapper').forEach(w => w.classList.remove('ring-2', 'ring-blue-500', 'shadow-md'));
-        document.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => h.classList.remove('!opacity-100'));
+        deselectAnnotation();
 
         drawCanvas.style.pointerEvents = 'auto';
         drawCanvas.classList.remove('pointer-events-none');
@@ -2150,8 +3003,9 @@ const editorStrings = {
         annotationsLayer.style.pointerEvents = 'none';
         annotationsLayer.classList.remove('cursor-crosshair');
 
-        propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = editorStrings.freehandPen;
+        propertyBar?.classList.remove('hidden');
+        const inspectorType = document.getElementById('inspector-element-type');
+        if (inspectorType) inspectorType.textContent = editorStrings.freehandPen;
 
         if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
         if (drawGroup) { drawGroup.classList.remove('hidden'); drawGroup.classList.add('flex'); }
@@ -2169,9 +3023,7 @@ const editorStrings = {
 
         updateDrawSettings(state.activeDrawWidth, state.activeDrawOpacity, state.activeDrawColor);
       } else if (toolName === 'highlight') {
-        state.selectedAnnotationId = null;
-        document.querySelectorAll('.annot-rot-wrapper').forEach(w => w.classList.remove('ring-2', 'ring-blue-500', 'shadow-md'));
-        document.querySelectorAll('.annot-rotate-handle, .annot-rotate-stem, .annot-action-bar, .annot-resize-handle, .annot-resize-handle-sw, .annot-resize-handle-ne, .annot-resize-handle-nw').forEach(h => h.classList.remove('!opacity-100'));
+        deselectAnnotation();
 
         drawCanvas.style.pointerEvents = 'auto';
         drawCanvas.classList.remove('pointer-events-none');
@@ -2179,8 +3031,9 @@ const editorStrings = {
         annotationsLayer.style.pointerEvents = 'none';
         annotationsLayer.classList.remove('cursor-crosshair');
 
-        propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = editorStrings.highlighter;
+        propertyBar?.classList.remove('hidden');
+        const inspectorType = document.getElementById('inspector-element-type');
+        if (inspectorType) inspectorType.textContent = editorStrings.highlighter;
 
         if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
         if (hlGroup) { hlGroup.classList.remove('hidden'); hlGroup.classList.add('flex'); }
@@ -2198,14 +3051,18 @@ const editorStrings = {
 
         updateHighlightSettings(state.activeHighlightWidth, state.activeHighlightOpacity, state.activeHighlightColor);
       } else if (toolName === 'redact') {
+        deselectAnnotation();
+
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
         annotationsLayer.style.pointerEvents = 'auto';
         annotationsLayer.classList.add('cursor-crosshair');
 
-        propertyBar.classList.remove('hidden');
-        document.getElementById('inspector-element-type').textContent = editorStrings.redactType;
+        propertyBar?.classList.remove('hidden');
+        const inspectorType = document.getElementById('inspector-element-type');
+        if (inspectorType) inspectorType.textContent = editorStrings.redactType;
+
         if (redactGroup) { redactGroup.classList.remove('hidden'); redactGroup.classList.add('flex'); }
         if (drawGroup) drawGroup.classList.add('hidden');
         if (hlGroup) hlGroup.classList.add('hidden');
@@ -2219,7 +3076,60 @@ const editorStrings = {
         if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
         if (layerGroup) { layerGroup.classList.add('hidden'); layerGroup.classList.remove('flex'); }
         if (delParent) delParent.classList.add('hidden');
+      } else if (toolName === 'text') {
+        deselectAnnotation();
+        if (textDetectLayer) textDetectLayer.classList.remove('hidden');
+        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+        drawCanvas.style.pointerEvents = 'none';
+        drawCanvas.classList.add('pointer-events-none');
+        drawCanvas.classList.remove('cursor-crosshair');
+        annotationsLayer.style.pointerEvents = 'auto';
+        annotationsLayer.classList.remove('cursor-crosshair');
+
+        propertyBar?.classList.remove('hidden');
+        const inspectorType = document.getElementById('inspector-element-type');
+        if (inspectorType) inspectorType.textContent = editorStrings.annotation || 'Text';
+
+        if (fontGroup) fontGroup.classList.remove('hidden');
+        if (colorGroup) { colorGroup.classList.remove('hidden'); colorGroup.classList.add('flex'); }
+        if (drawGroup) drawGroup.classList.add('hidden');
+        if (hlGroup) hlGroup.classList.add('hidden');
+        if (hlColorGroup) hlColorGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
+        if (layerGroup) { layerGroup.classList.add('hidden'); layerGroup.classList.remove('flex'); }
+        if (delParent) delParent.classList.add('hidden');
+      } else if (toolName === 'sticky') {
+        deselectAnnotation();
+        if (textDetectLayer) textDetectLayer.classList.add('hidden');
+        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+        drawCanvas.style.pointerEvents = 'none';
+        drawCanvas.classList.add('pointer-events-none');
+        drawCanvas.classList.remove('cursor-crosshair');
+        annotationsLayer.style.pointerEvents = 'auto';
+        annotationsLayer.classList.add('cursor-crosshair');
+
+        propertyBar?.classList.remove('hidden');
+        const inspectorType = document.getElementById('inspector-element-type');
+        if (inspectorType) inspectorType.textContent = 'Sticky Note';
+
+        if (colorGroup) { colorGroup.classList.remove('hidden'); colorGroup.classList.add('flex'); }
+        if (fontGroup) fontGroup.classList.add('hidden');
+        if (drawGroup) drawGroup.classList.add('hidden');
+        if (hlGroup) hlGroup.classList.add('hidden');
+        if (hlColorGroup) hlColorGroup.classList.add('hidden');
+        if (strokeGroup) strokeGroup.classList.add('hidden');
+        if (opacityGroup) opacityGroup.classList.add('hidden');
+        if (imageGroup) imageGroup.classList.add('hidden');
+        if (rotateGroup) { rotateGroup.classList.add('hidden'); rotateGroup.classList.remove('flex'); }
+        if (wmLayerGroup) { wmLayerGroup.classList.add('hidden'); wmLayerGroup.classList.remove('flex'); }
+        if (layerGroup) { layerGroup.classList.add('hidden'); layerGroup.classList.remove('flex'); }
+        if (delParent) delParent.classList.add('hidden');
       } else {
+        if (textDetectLayer) textDetectLayer.classList.add('hidden');
         if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
@@ -2228,18 +3138,91 @@ const editorStrings = {
         annotationsLayer.classList.remove('cursor-crosshair');
 
         if (!state.selectedAnnotationId) {
-          propertyBar.classList.add('hidden');
+          propertyBar?.classList.add('hidden');
+          deselectAnnotation();
+        }
+      }
+
+      // Sync active mode tab ribbon
+      if (toolName === 'text') {
+        syncModeTabOnly('text');
+      } else if (toolName === 'draw' || toolName === 'highlight' || toolName === 'sticky' || toolName?.startsWith('shape-')) {
+        syncModeTabOnly('draw');
+      } else if (toolName === 'redact') {
+        syncModeTabOnly('sign');
+      }
+    }
+
+    function syncModeTabOnly(mode) {
+      state.studioMode = mode;
+      document.querySelectorAll('.studio-mode-tab').forEach(tab => {
+        if (tab.dataset.mode === mode) {
+          tab.classList.add('active', 'text-ink');
+          tab.classList.remove('text-body');
+        } else {
+          tab.classList.remove('active', 'text-ink');
+          tab.classList.add('text-body');
+        }
+      });
+
+      const subtoolbars = {
+        text: document.getElementById('subtoolbar-text'),
+        draw: document.getElementById('subtoolbar-draw'),
+        sign: document.getElementById('subtoolbar-sign'),
+        pages: document.getElementById('subtoolbar-pages'),
+      };
+      Object.entries(subtoolbars).forEach(([key, el]) => {
+        if (!el) return;
+        if (key === mode) {
+          el.classList.remove('hidden');
+          el.classList.add('flex');
+        } else {
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+        }
+      });
+    }
+
+    function setStudioMode(mode) {
+      syncModeTabOnly(mode);
+
+      if (mode === 'text') {
+        setTool('text');
+      } else if (mode === 'draw') {
+        if (state.activeTool !== 'draw' && state.activeTool !== 'highlight' && state.activeTool !== 'sticky' && !state.activeTool?.startsWith('shape-')) {
+          setTool('draw');
+        }
+      } else if (mode === 'sign') {
+        if (state.activeTool !== 'redact') {
+          setTool('select');
+        }
+      } else if (mode === 'pages') {
+        setTool('select');
+        const sidebar = document.getElementById('thumbnail-sidebar');
+        if (sidebar && sidebar.classList.contains('hidden')) {
+          toggleThumbnailSidebar(true);
         }
       }
     }
 
+    document.querySelectorAll('.studio-mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const m = tab.dataset.mode;
+        if (m) setStudioMode(m);
+      });
+    });
+
     document.getElementById('tool-select')?.addEventListener('click', () => setTool('select'));
     document.getElementById('tool-text')?.addEventListener('click', () => {
       setTool('text');
-      insertTextAnnotation();
+      showToast('Click existing text in PDF to edit inline, or click anywhere to add new text', 'info', 2500);
     });
     document.getElementById('tool-draw')?.addEventListener('click', () => setTool('draw'));
     document.getElementById('tool-highlight')?.addEventListener('click', () => setTool('highlight'));
+    document.getElementById('tool-sticky-note')?.addEventListener('click', () => {
+      setTool('sticky');
+      insertStickyAnnotation();
+    });
     document.getElementById('tool-redact')?.addEventListener('click', () => {
       setTool('redact');
       insertRedactAnnotation();
@@ -2533,20 +3516,100 @@ const editorStrings = {
       }
     });
 
-    // File Input Upload & Drag/Drop
-    function handleSelectedFile(file) {
+    // File Input Upload, Drag/Drop & Clipboard Paste Handling
+    async function handleSelectedFile(file) {
       if (!file) return;
       const isPdf = file.type === 'application/pdf' || file.type.includes('pdf') || (file.name && file.name.toLowerCase().endsWith('.pdf'));
+      const isImage = file.type.startsWith('image/');
+
       if (isPdf) {
         const reader = new FileReader();
         reader.onload = (ev) => {
           loadPdfBuffer(ev.target.result);
-          const anchor = document.getElementById('editor-anchor');
-          if (anchor) {
-            anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
         };
         reader.readAsArrayBuffer(file);
+      } else if (isImage) {
+        if (!state.pdfDocProxy) {
+          // Convert image to standalone 1-page PDF document
+          showLoading('Converting image to PDF document...');
+          try {
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+              try {
+                const imgBuffer = ev.target.result;
+                const { PDFDocument } = window.PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                let embeddedImg;
+
+                if (file.type === 'image/png') {
+                  embeddedImg = await pdfDoc.embedPng(imgBuffer);
+                } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                  embeddedImg = await pdfDoc.embedJpg(imgBuffer);
+                } else {
+                  // Other image formats (webp, bmp, etc.): convert via canvas to PNG first
+                  const imgElem = new Image();
+                  const blobUrl = URL.createObjectURL(file);
+                  await new Promise((res, rej) => {
+                    imgElem.onload = res;
+                    imgElem.onerror = rej;
+                    imgElem.src = blobUrl;
+                  });
+                  const c = document.createElement('canvas');
+                  c.width = imgElem.width;
+                  c.height = imgElem.height;
+                  const ctx = c.getContext('2d');
+                  ctx.drawImage(imgElem, 0, 0);
+                  URL.revokeObjectURL(blobUrl);
+                  const pngDataUrl = c.toDataURL('image/png');
+                  const pngBytes = await (await fetch(pngDataUrl)).arrayBuffer();
+                  embeddedImg = await pdfDoc.embedPng(pngBytes);
+                }
+
+                const dims = embeddedImg.scale(1);
+                const page = pdfDoc.addPage([dims.width, dims.height]);
+                page.drawImage(embeddedImg, {
+                  x: 0,
+                  y: 0,
+                  width: dims.width,
+                  height: dims.height,
+                });
+                const pdfBytes = await pdfDoc.save();
+                await loadPdfBuffer(pdfBytes);
+                showToast('Image converted to PDF successfully!', 'success');
+              } catch (err) {
+                console.error('Failed to convert image to PDF:', err);
+                showToast('Could not convert image to PDF', 'error');
+              } finally {
+                hideLoading();
+              }
+            };
+            reader.readAsArrayBuffer(file);
+          } catch (err) {
+            hideLoading();
+            alert('Failed to process image: ' + err.message);
+          }
+        } else {
+          // A PDF is already open: insert the image onto current page
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const newImg = {
+              id: 'img-' + Date.now(),
+              type: 'image',
+              src: ev.target.result,
+              x: 80,
+              y: 80,
+              width: 220,
+              height: 160,
+            };
+            state.annotations[state.currentPage].push(newImg);
+            state.selectedAnnotationId = newImg.id;
+            saveHistory();
+            renderAnnotationsLayer();
+            selectAnnotation(newImg);
+            showToast('Image inserted onto page!', 'success');
+          };
+          reader.readAsDataURL(file);
+        }
       } else {
         alert(editorStrings.loadPdfFirst);
       }
@@ -2558,10 +3621,12 @@ const editorStrings = {
       fileInput.value = '';
     });
 
-    // Dropzone Drag & Drop Support
-    if (emptyState) {
-      emptyState.addEventListener('click', (e) => {
-        // If clicked inside sample button or label/input, let native behavior handle it
+    // Dropzone Card Click & Drag/Drop with micro-animations
+    const dropzoneCard = document.getElementById('editor-dropzone-card');
+    const dropzoneView = document.getElementById('editor-dropzone-view');
+
+    if (dropzoneCard) {
+      dropzoneCard.addEventListener('click', (e) => {
         if (e.target.closest('#btn-load-sample') || e.target.closest('label') || e.target.closest('input')) {
           return;
         }
@@ -2569,38 +3634,70 @@ const editorStrings = {
       });
     }
 
-    if (canvasViewport && emptyState) {
-      ['dragenter', 'dragover'].forEach((name) => {
-        canvasViewport.addEventListener(name, (e) => {
-          if (!emptyState.classList.contains('hidden')) {
-            e.preventDefault();
-            e.stopPropagation();
-            emptyState.classList.add('border-cyan-500', 'bg-cyan-500/5', 'scale-[1.01]');
-          }
-        });
-      });
-
-      ['dragleave', 'drop'].forEach((name) => {
-        canvasViewport.addEventListener(name, (e) => {
-          if (!emptyState.classList.contains('hidden')) {
-            e.preventDefault();
-            e.stopPropagation();
-            emptyState.classList.remove('border-cyan-500', 'bg-cyan-500/5', 'scale-[1.01]');
-          }
-        });
-      });
-
-      canvasViewport.addEventListener('drop', (e) => {
-        if (!emptyState.classList.contains('hidden')) {
+    ['dragenter', 'dragover'].forEach((name) => {
+      window.addEventListener(name, (e) => {
+        if (dropzoneView && !dropzoneView.classList.contains('hidden')) {
           e.preventDefault();
           e.stopPropagation();
-          const files = e.dataTransfer && e.dataTransfer.files;
-          if (files && files.length > 0) {
-            handleSelectedFile(files[0]);
-          }
+          dropzoneCard?.classList.add('!border-blue-500', '!bg-blue-500/10', 'ring-4', 'ring-blue-500/25', 'scale-[1.02]', 'shadow-glow-cyan');
         }
       });
-    }
+    });
+
+    ['dragleave', 'drop'].forEach((name) => {
+      window.addEventListener(name, (e) => {
+        if (dropzoneView && !dropzoneView.classList.contains('hidden')) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzoneCard?.classList.remove('!border-blue-500', '!bg-blue-500/10', 'ring-4', 'ring-blue-500/25', 'scale-[1.02]', 'shadow-glow-cyan');
+        }
+      });
+    });
+
+    window.addEventListener('drop', (e) => {
+      if (dropzoneView && !dropzoneView.classList.contains('hidden')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (files && files.length > 0) {
+          handleSelectedFile(files[0]);
+        }
+      }
+    });
+
+    // Clipboard Paste Listener (Ctrl+V / Cmd+V) for PDFs and Images
+    window.addEventListener('paste', async (e) => {
+      // Do not intercept if user is typing inside an editable field or text input
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeEl.tagName))) {
+        return;
+      }
+
+      const clipboardData = e.clipboardData;
+      if (!clipboardData) return;
+
+      let fileToLoad = null;
+      if (clipboardData.files && clipboardData.files.length > 0) {
+        fileToLoad = clipboardData.files[0];
+      } else if (clipboardData.items) {
+        for (let i = 0; i < clipboardData.items.length; i++) {
+          const item = clipboardData.items[i];
+          if (item.kind === 'file') {
+            const f = item.getAsFile();
+            if (f) {
+              fileToLoad = f;
+              break;
+            }
+          }
+        }
+      }
+
+      if (fileToLoad) {
+        e.preventDefault();
+        showToast('Pasting from clipboard...', 'info', 1800);
+        handleSelectedFile(fileToLoad);
+      }
+    });
 
     // Auto-trigger if routed from navbar
     if (sessionStorage.getItem('trigger_pdf_upload') === '1') {
@@ -2614,97 +3711,256 @@ const editorStrings = {
       }, 300);
     }
 
-    // Sample Document Generator (Generates a clean PDF using pdf-lib on the fly)
+    // Professional Sample Invoice Document Generator
     sampleBtn.addEventListener('click', async () => {
-      showLoading('Generating Sample Document...');
+      showLoading('Generating Sample Invoice...');
       try {
         const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
         const pdfDoc = await PDFDocument.create();
-        const page1 = pdfDoc.addPage([600, 800]);
+
+        // Page 1: Professional Clean Invoice
+        const page1 = pdfDoc.addPage([595, 842]); // A4
         const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
         const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-        // Header
-        page1.drawText('RealEditPDF — Sample Agreement', {
-          x: 50,
-          y: 720,
-          size: 20,
+        // Header Accent Strip
+        page1.drawRectangle({
+          x: 0,
+          y: 832,
+          width: 595,
+          height: 10,
+          color: rgb(0.15, 0.4, 0.95),
+        });
+
+        // Invoice Title & ID
+        page1.drawText('INVOICE', {
+          x: 48,
+          y: 775,
+          size: 26,
           font: helveticaBold,
-          color: rgb(0.09, 0.09, 0.09),
+          color: rgb(0.09, 0.11, 0.15),
         });
-
-        page1.drawText('Client-Side Free PDF Editor Demo Document', {
-          x: 50,
-          y: 695,
-          size: 12,
+        page1.drawText('#INV-2026-8849', {
+          x: 48,
+          y: 755,
+          size: 13,
           font: helvetica,
-          color: rgb(0.3, 0.3, 0.3),
+          color: rgb(0.35, 0.4, 0.5),
         });
 
+        // Company Details Right
+        page1.drawText('RealEdit Technologies Inc.', {
+          x: 370,
+          y: 775,
+          size: 12,
+          font: helveticaBold,
+          color: rgb(0.09, 0.11, 0.15),
+        });
+        page1.drawText('100 Pine Street, Suite 2400\nSan Francisco, CA 94111\nbilling@realeditpdf.com', {
+          x: 370,
+          y: 755,
+          size: 9.5,
+          font: helvetica,
+          lineHeight: 13,
+          color: rgb(0.4, 0.45, 0.5),
+        });
+
+        // Divider
         page1.drawLine({
-          start: { x: 50, y: 680 },
-          end: { x: 550, y: 680 },
+          start: { x: 48, y: 720 },
+          end: { x: 547, y: 720 },
           thickness: 1,
-          color: rgb(0.85, 0.85, 0.85),
+          color: rgb(0.88, 0.9, 0.92),
         });
 
-        // Body Text
-        const sampleLines = [
-          '1. OVERVIEW: This document is running 100% inside your browser.',
-          '2. PRIVACY GUARANTEE: Zero files are sent to remote servers.',
-          '3. TESTING TOOLS:',
-          '   • Select "Text" above to add new text or replace sentences.',
-          '   • Select "Draw" or "Highlight" to sketch annotations.',
-          '   • Click "Sign" to create and place your calligraphy or drawn e-signature.',
-          '   • Click "Redact" to blackout sensitive details.',
-          '   • Click "Stamp" to place official APPROVED / CONFIDENTIAL badges.',
-          '   • Click "Save & Download" when done to get your high-res PDF!',
+        // Billed To & Dates
+        page1.drawText('BILLED TO:', {
+          x: 48,
+          y: 698,
+          size: 9,
+          font: helveticaBold,
+          color: rgb(0.45, 0.5, 0.55),
+        });
+        page1.drawText('Acme Corporation', {
+          x: 48,
+          y: 682,
+          size: 13,
+          font: helveticaBold,
+          color: rgb(0.09, 0.11, 0.15),
+        });
+        page1.drawText('Attn: Alex Morgan, VP Operations\n500 Tech Boulevard, Floor 8\nAustin, TX 78701', {
+          x: 48,
+          y: 665,
+          size: 9.5,
+          font: helvetica,
+          lineHeight: 13,
+          color: rgb(0.35, 0.4, 0.45),
+        });
+
+        page1.drawText('INVOICE DATE:', {
+          x: 370,
+          y: 698,
+          size: 9,
+          font: helveticaBold,
+          color: rgb(0.45, 0.5, 0.55),
+        });
+        page1.drawText('October 15, 2026', {
+          x: 370,
+          y: 682,
+          size: 11,
+          font: helvetica,
+          color: rgb(0.09, 0.11, 0.15),
+        });
+        page1.drawText('DUE DATE: November 15, 2026', {
+          x: 370,
+          y: 665,
+          size: 9.5,
+          font: helvetica,
+          color: rgb(0.35, 0.4, 0.45),
+        });
+
+        // Table Header
+        page1.drawRectangle({
+          x: 48,
+          y: 605,
+          width: 499,
+          height: 26,
+          color: rgb(0.95, 0.96, 0.98),
+        });
+        page1.drawText('DESCRIPTION', { x: 58, y: 614, size: 9, font: helveticaBold, color: rgb(0.35, 0.4, 0.45) });
+        page1.drawText('QTY', { x: 330, y: 614, size: 9, font: helveticaBold, color: rgb(0.35, 0.4, 0.45) });
+        page1.drawText('RATE', { x: 400, y: 614, size: 9, font: helveticaBold, color: rgb(0.35, 0.4, 0.45) });
+        page1.drawText('AMOUNT', { x: 485, y: 614, size: 9, font: helveticaBold, color: rgb(0.35, 0.4, 0.45) });
+
+        // Line Items
+        const items = [
+          { desc: 'Enterprise PDF Studio License (Annual)', qty: '1', rate: '$2,400.00', amt: '$2,400.00' },
+          { desc: 'Custom Client-Side Workflow Integration', qty: '1', rate: '$1,250.00', amt: '$1,250.00' },
+          { desc: 'Priority 24/7 SLA Technical Support', qty: '1', rate: '$600.00', amt: '$600.00' },
         ];
 
-        let curY = 640;
-        sampleLines.forEach(line => {
-          page1.drawText(line, {
-            x: 50,
-            y: curY,
-            size: 11,
-            font: helvetica,
-            color: rgb(0.15, 0.15, 0.15),
+        let rowY = 575;
+        items.forEach((item) => {
+          page1.drawText(item.desc, { x: 58, y: rowY, size: 10, font: helvetica, color: rgb(0.12, 0.14, 0.18) });
+          page1.drawText(item.qty, { x: 335, y: rowY, size: 10, font: helvetica, color: rgb(0.3, 0.35, 0.4) });
+          page1.drawText(item.rate, { x: 395, y: rowY, size: 10, font: helvetica, color: rgb(0.3, 0.35, 0.4) });
+          page1.drawText(item.amt, { x: 480, y: rowY, size: 10, font: helveticaBold, color: rgb(0.09, 0.11, 0.15) });
+
+          page1.drawLine({
+            start: { x: 48, y: rowY - 12 },
+            end: { x: 547, y: rowY - 12 },
+            thickness: 0.5,
+            color: rgb(0.92, 0.93, 0.95),
           });
-          curY -= 26;
+          rowY -= 34;
+        });
+
+        // Totals
+        page1.drawText('Subtotal:', { x: 380, y: rowY - 10, size: 10, font: helvetica, color: rgb(0.4, 0.45, 0.5) });
+        page1.drawText('$4,250.00', { x: 480, y: rowY - 10, size: 10, font: helvetica, color: rgb(0.09, 0.11, 0.15) });
+
+        page1.drawText('Tax (0%):', { x: 380, y: rowY - 30, size: 10, font: helvetica, color: rgb(0.4, 0.45, 0.5) });
+        page1.drawText('$0.00', { x: 480, y: rowY - 30, size: 10, font: helvetica, color: rgb(0.09, 0.11, 0.15) });
+
+        page1.drawRectangle({
+          x: 360,
+          y: rowY - 65,
+          width: 187,
+          height: 26,
+          color: rgb(0.15, 0.4, 0.95),
+        });
+        page1.drawText('TOTAL DUE:', { x: 372, y: rowY - 56, size: 10, font: helveticaBold, color: rgb(1, 1, 1) });
+        page1.drawText('$4,250.00', { x: 472, y: rowY - 56, size: 11, font: helveticaBold, color: rgb(1, 1, 1) });
+
+        // Interactive Testing Guide Box
+        page1.drawRectangle({
+          x: 48,
+          y: 260,
+          width: 499,
+          height: 70,
+          color: rgb(0.95, 0.97, 1.0),
+          borderColor: rgb(0.75, 0.85, 1.0),
+          borderWidth: 1,
+        });
+        page1.drawText('HOW TO TEST INLINE EDITING & TOOLS ON THIS INVOICE:', {
+          x: 60,
+          y: 312,
+          size: 9.5,
+          font: helveticaBold,
+          color: rgb(0.12, 0.35, 0.85),
+        });
+        page1.drawText('1. In "Edit Text" mode, click on "Acme Corporation" or "$4,250.00" to edit inline!\n2. Use "Sign & Redact" to draw or type an e-signature in the approval box below.\n3. Try "Annotate & Draw" to highlight items or stamp "APPROVED".', {
+          x: 60,
+          y: 295,
+          size: 8.5,
+          font: helvetica,
+          lineHeight: 12,
+          color: rgb(0.25, 0.3, 0.4),
         });
 
         // Signature Box
         page1.drawRectangle({
-          x: 50,
-          y: 200,
-          width: 500,
-          height: 100,
-          borderColor: rgb(0.85, 0.85, 0.85),
+          x: 48,
+          y: 130,
+          width: 499,
+          height: 95,
+          borderColor: rgb(0.85, 0.88, 0.9),
           borderWidth: 1,
         });
-
-        page1.drawText('SIGNATURE AREA (Place E-Signature Here):', {
-          x: 65,
-          y: 275,
-          size: 10,
+        page1.drawText('APPROVAL & SIGNATURE (Place E-Signature Here):', {
+          x: 62,
+          y: 205,
+          size: 9,
           font: helveticaBold,
-          color: rgb(0.5, 0.5, 0.5),
+          color: rgb(0.45, 0.5, 0.55),
         });
+        page1.drawLine({
+          start: { x: 62, y: 155 },
+          end: { x: 280, y: 155 },
+          thickness: 1,
+          color: rgb(0.7, 0.75, 0.8),
+        });
+        page1.drawText('Authorized Signature', { x: 62, y: 142, size: 8.5, font: helvetica, color: rgb(0.5, 0.55, 0.6) });
 
-        // Page 2
-        const page2 = pdfDoc.addPage([600, 800]);
-        page2.drawText('Page 2 — Document Terms & Exhibits', {
-          x: 50,
-          y: 720,
+        page1.drawLine({
+          start: { x: 330, y: 155 },
+          end: { x: 480, y: 155 },
+          thickness: 1,
+          color: rgb(0.7, 0.75, 0.8),
+        });
+        page1.drawText('Date', { x: 330, y: 142, size: 8.5, font: helvetica, color: rgb(0.5, 0.55, 0.6) });
+
+        // Page 2: Exhibits & Payment Terms
+        const page2 = pdfDoc.addPage([595, 842]);
+        page2.drawRectangle({
+          x: 0,
+          y: 832,
+          width: 595,
+          height: 10,
+          color: rgb(0.15, 0.4, 0.95),
+        });
+        page2.drawText('EXHIBIT A: PAYMENT TERMS & POLICIES', {
+          x: 48,
+          y: 775,
           size: 18,
           font: helveticaBold,
-          color: rgb(0.09, 0.09, 0.09),
+          color: rgb(0.09, 0.11, 0.15),
+        });
+        page2.drawText('All invoices are payable in USD within 30 days of issuance.\nPayments can be remitted via ACH or Wire Transfer to RealEdit Technologies Inc.', {
+          x: 48,
+          y: 740,
+          size: 10,
+          font: helvetica,
+          lineHeight: 14,
+          color: rgb(0.3, 0.35, 0.4),
         });
 
         const pdfBytes = await pdfDoc.save();
         await loadPdfBuffer(pdfBytes);
+        showToast('Sample Invoice loaded! Click any text to edit inline.', 'success', 3500);
       } catch (err) {
-        alert('Error creating sample: ' + err.message);
+        console.error('Error generating sample invoice:', err);
+        showToast('Failed to generate sample invoice: ' + err.message, 'error');
       } finally {
         hideLoading();
       }
@@ -2734,7 +3990,7 @@ const editorStrings = {
         });
 
         const blob = new Blob([finalBytes], { type: 'application/pdf' });
-        const downloadUrl = pdfRenderer.urlTracker.create(blob);
+        const downloadUrl = URL.createObjectURL(blob);
 
         const a = document.createElement('a');
         a.href = downloadUrl;
@@ -2742,7 +3998,20 @@ const editorStrings = {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        pdfRenderer.urlTracker.revoke(downloadUrl);
+
+        // Save output to shared IndexedDB session store and open Export Complete modal
+        try {
+          await savePdfToSession(finalBytes, 'RealEditPDF-Document.pdf');
+        } catch (sessionErr) {
+          console.warn('[PdfEditor] Session save error:', sessionErr);
+        }
+
+        openExportCompleteModal({
+          fileName: 'RealEditPDF-Document.pdf',
+          fileSizeBytes: finalBytes.byteLength,
+          downloadUrl,
+          blob,
+        });
 
         // Confetti celebration
         if (window.confetti) {
@@ -4177,6 +5446,15 @@ const editorStrings = {
       }
     });
 
+    // Popover Duplicate & Whiteout Buttons
+    document.getElementById('btn-pop-duplicate')?.addEventListener('click', () => {
+      duplicateSelectedAnnotation();
+    });
+
+    document.getElementById('btn-pop-whiteout')?.addEventListener('click', () => {
+      toggleWhiteoutBackground();
+    });
+
     // URL Query Parameter Listener for Tool/Drawer activation (e.g. ?tool=redact, ?tool=text, ?tool=watermark, ?tool=pages)
     function applyToolFromQuery(rawTool) {
       if (!rawTool) return;
@@ -4189,9 +5467,6 @@ const editorStrings = {
         }
       } else if (tool === 'text') {
         setTool('text');
-        if (state.pdfDocProxy) {
-          insertTextAnnotation();
-        }
       } else if (tool === 'watermark') {
         const wmModal = document.getElementById('watermark-modal');
         if (wmModal) {
@@ -4217,6 +5492,21 @@ const editorStrings = {
     const initialTool = initialParams.get('tool');
     if (initialTool) {
       applyToolFromQuery(initialTool);
+    }
+
+    // Auto-load PDF from session store when chaining from another tool (?from=session)
+    if (initialParams.get('from') === 'session') {
+      (async () => {
+        try {
+          const record = await getPdfFromSession();
+          if (record && record.bytes && record.bytes.length > 0) {
+            await loadPdfBuffer(record.bytes);
+            showToast(`Loaded ${record.fileName || 'PDF'} from session`, 'info', 2500);
+          }
+        } catch (err) {
+          console.warn('[PdfEditor] Session auto-load error:', err);
+        }
+      })();
     }
 
     // Listen to browser navigation history (back / forward)

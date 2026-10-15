@@ -1,11 +1,14 @@
 ---
+import ExportCompleteModal from '../common/ExportCompleteModal.astro';
+
 // Body for the Merge PDF page. Localizes strings via t().
 // The inline client script is pre-resolved with the locale-specific text values
 // so the JS runs unchanged on every page.
 interface Props {
   t: (key: string) => string;
+  lang?: string;
 }
-const { t } = Astro.props as Props;
+const { t, lang = 'en' } = Astro.props as Props;
 const processingText = t('merge.processing');
 const errorMinText = t('merge.errorMin');
 const executeText = t('merge.execute');
@@ -68,6 +71,9 @@ const removeText = t('merge.remove');
   </div>
 </div>
 
+<!-- Cross-tool workflow chaining modal -->
+<ExportCompleteModal lang={lang} />
+
 <script is:inline define:vars={{ processingText, errorMinText, executeText, errorGenericPrefix, filenameText, moveUpText, moveDownText, removeText }}>
   document.addEventListener('DOMContentLoaded', () => {
     let files = [];
@@ -80,6 +86,33 @@ const removeText = t('merge.remove');
     const executeBtn = document.getElementById('btn-execute-merge');
     const addMoreBtn = document.getElementById('btn-add-more-merge');
     const clearBtn = document.getElementById('btn-clear-merge');
+
+    async function getSessionStore() {
+      if (window.pdfSessionStore) return window.pdfSessionStore;
+      for (let i = 0; i < 25; i++) {
+        if (window.pdfSessionStore) return window.pdfSessionStore;
+        await new Promise((r) => setTimeout(r, 40));
+      }
+      return null;
+    }
+
+    // Auto-load PDF from cross-tool session if ?from=session is present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('from') === 'session') {
+      getSessionStore().then(async (store) => {
+        if (!store) return;
+        try {
+          const record = await store.getPdfFromSession();
+          if (record && record.bytes && record.bytes.length > 0) {
+            const sessionFile = new File([record.bytes], record.fileName || 'Document.pdf', { type: 'application/pdf' });
+            files.push(sessionFile);
+            renderFileList();
+          }
+        } catch (err) {
+          console.warn('[MergePdf] Could not auto-load session PDF:', err);
+        }
+      });
+    }
 
     dropzone.addEventListener('click', () => fileInput.click());
     addMoreBtn.addEventListener('click', () => fileInput.click());
@@ -151,8 +184,23 @@ const removeText = t('merge.remove');
         const a = document.createElement('a');
         a.href = url; a.download = filenameText;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+
         if (window.confetti) window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+        // Save output to session store & open export complete modal
+        try {
+          const store = await getSessionStore();
+          if (store) {
+            await store.savePdfToSession(mergedBytes, filenameText);
+            store.openExportCompleteModal({
+              fileName: filenameText,
+              fileSizeBytes: mergedBytes.length,
+              downloadUrl: url,
+            });
+          }
+        } catch (sessionErr) {
+          console.warn('[MergePdf] Failed to save session PDF:', sessionErr);
+        }
       } catch (err) {
         alert(errorGenericPrefix + err.message);
       } finally {

@@ -1,0 +1,236 @@
+---
+// src/components/common/ExportCompleteModal.astro
+// "Export Complete" modal with file size & 1-click workflow chaining
+import { getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang: propLang } = Astro.props as Props;
+const currentLang = (propLang || getLangFromUrl(Astro.url)) as any;
+const translate = useTranslatedPath(currentLang);
+
+const compressUrl = translate('/compress-pdf') + '?from=session';
+const imagesUrl = translate('/pdf-to-images') + '?from=session';
+const splitUrl = translate('/split-pdf') + '?from=session';
+const studioUrl = translate('/') + '?from=session';
+---
+
+<div
+  id="export-complete-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-md p-4 transition-all duration-200"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="export-modal-title"
+>
+  <div class="relative w-full max-w-lg rounded-3xl border border-hairline bg-canvas-elevated p-6 sm:p-7 shadow-floating animate-scale-in text-ink select-none overflow-hidden">
+    <!-- Subtle top glow accent -->
+    <div class="absolute -top-12 left-1/2 -translate-x-1/2 h-24 w-64 rounded-full bg-gradient-to-r from-blue-500/20 via-emerald-500/20 to-cyan-500/20 blur-2xl pointer-events-none"></div>
+
+    <!-- Header Section -->
+    <div class="flex items-start justify-between gap-4 relative z-10">
+      <div class="flex items-center gap-3">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-mono font-semibold tracking-wider uppercase mb-1">
+            <span>🎉</span>
+            <span>Saved to Disk</span>
+          </div>
+          <h2 id="export-modal-title" class="text-[19px] sm:text-[21px] font-bold tracking-tight text-ink">
+            Export Complete!
+          </h2>
+        </div>
+      </div>
+
+      <!-- Close ✕ Button -->
+      <button
+        id="btn-close-export-modal"
+        type="button"
+        class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-hairline-soft text-mute hover:text-ink transition-colors cursor-pointer"
+        aria-label="Close modal"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Output File Details Banner -->
+    <div class="mt-4 rounded-2xl border border-hairline bg-canvas/80 p-3.5 flex items-center justify-between gap-3 relative z-10 shadow-xs">
+      <div class="min-w-0 flex items-center gap-2.5">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-cyan-400 font-mono text-[11px] font-bold">
+          PDF
+        </div>
+        <div class="min-w-0">
+          <div id="export-modal-filename" class="text-[13px] font-semibold text-ink truncate max-w-[210px] sm:max-w-[260px]">
+            RealEditPDF-Document.pdf
+          </div>
+          <div class="flex items-center gap-2 mt-0.5 text-[11px] text-mute">
+            <span>Size:</span>
+            <span id="export-modal-filesize" class="font-mono font-bold text-ink">--</span>
+          </div>
+        </div>
+      </div>
+
+      <a
+        id="export-modal-download-btn"
+        href="#"
+        download="RealEditPDF-Document.pdf"
+        class="flex items-center gap-1.5 h-8 px-3 rounded-xl bg-hairline-soft hover:bg-hairline text-[12px] font-semibold text-ink transition-colors cursor-pointer shrink-0"
+        title="Download again"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span class="hidden sm:inline">Download</span>
+      </a>
+    </div>
+
+    <!-- Workflow Chaining Section (1-Click Pipeline) -->
+    <div class="mt-5 relative z-10">
+      <div class="flex items-center justify-between mb-2.5">
+        <span class="text-[11px] font-mono uppercase tracking-wider text-mute font-semibold">
+          ⚡ 1-Click Workflow Chaining
+        </span>
+        <span class="text-[11px] text-body">No re-upload needed</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <!-- Action 1: Compress This PDF -->
+        <a
+          href={compressUrl}
+          class="chain-tool-card group flex items-start gap-3 rounded-2xl border border-hairline bg-canvas/60 p-3 hover:border-emerald-500/50 hover:bg-canvas hover:shadow-glow-cyan transition-all duration-200 cursor-pointer"
+        >
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[13px] font-semibold text-ink group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors flex items-center justify-between">
+              <span>Compress PDF</span>
+              <span class="text-[10px] text-mute font-mono">→</span>
+            </div>
+            <p class="text-[11px] text-mute leading-snug mt-0.5 line-clamp-1">
+              Reduce file size losslessly
+            </p>
+          </div>
+        </a>
+
+        <!-- Action 2: Convert to PNG/JPG -->
+        <a
+          href={imagesUrl}
+          class="chain-tool-card group flex items-start gap-3 rounded-2xl border border-hairline bg-canvas/60 p-3 hover:border-amber-500/50 hover:bg-canvas hover:shadow-glow-cyan transition-all duration-200 cursor-pointer"
+        >
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[13px] font-semibold text-ink group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors flex items-center justify-between">
+              <span>Convert to Images</span>
+              <span class="text-[10px] text-mute font-mono">→</span>
+            </div>
+            <p class="text-[11px] text-mute leading-snug mt-0.5 line-clamp-1">
+              Export pages as PNG/JPG
+            </p>
+          </div>
+        </a>
+
+        <!-- Action 3: Split Pages -->
+        <a
+          href={splitUrl}
+          class="chain-tool-card group flex items-start gap-3 rounded-2xl border border-hairline bg-canvas/60 p-3 hover:border-indigo-500/50 hover:bg-canvas hover:shadow-glow-cyan transition-all duration-200 cursor-pointer"
+        >
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[13px] font-semibold text-ink group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center justify-between">
+              <span>Split Pages</span>
+              <span class="text-[10px] text-mute font-mono">→</span>
+            </div>
+            <p class="text-[11px] text-mute leading-snug mt-0.5 line-clamp-1">
+              Extract page ranges
+            </p>
+          </div>
+        </a>
+
+        <!-- Action 4: Open in Studio Editor -->
+        <a
+          href={studioUrl}
+          class="chain-tool-card group flex items-start gap-3 rounded-2xl border border-hairline bg-canvas/60 p-3 hover:border-blue-500/50 hover:bg-canvas hover:shadow-glow-cyan transition-all duration-200 cursor-pointer"
+        >
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-cyan-400 group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[13px] font-semibold text-ink group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors flex items-center justify-between">
+              <span>Studio Editor</span>
+              <span class="text-[10px] text-mute font-mono">→</span>
+            </div>
+            <p class="text-[11px] text-mute leading-snug mt-0.5 line-clamp-1">
+              Annotate, sign, redact
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="mt-6 flex items-center justify-end gap-2.5 border-t border-hairline/80 pt-4 relative z-10">
+      <button
+        id="btn-done-export-modal"
+        type="button"
+        class="h-9 px-5 rounded-xl bg-ink hover:opacity-90 text-[13px] font-semibold text-on-primary shadow-sm transition-all cursor-pointer"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../../lib/pdfSessionStore';
+
+  function setupExportCompleteModal() {
+    const modal = document.getElementById('export-complete-modal');
+    const closeBtn = document.getElementById('btn-close-export-modal');
+    const doneBtn = document.getElementById('btn-done-export-modal');
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    closeBtn?.addEventListener('click', closeModal);
+    doneBtn?.addEventListener('click', closeModal);
+
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupExportCompleteModal);
+  } else {
+    setupExportCompleteModal();
+  }
+</script>

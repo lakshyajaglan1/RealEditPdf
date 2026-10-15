@@ -6,7 +6,8 @@ export type AnnotationType =
   | 'image'
   | 'stamp'
   | 'watermark'
-  | 'redact';
+  | 'redact'
+  | 'sticky';
 
 export type ShapeType =
   | 'rect'
@@ -44,6 +45,10 @@ export interface Annotation {
   rotation?: number;
   underText?: boolean;
   zIndex?: number | string;
+  stickyExpanded?: boolean;
+  author?: string;
+  noteColor?: string;
+  exportAsPdfAnnotation?: boolean;
 }
 
 export type AnnotationsMap = Record<number, Annotation[]>;

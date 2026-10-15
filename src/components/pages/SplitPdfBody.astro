@@ -1,9 +1,12 @@
 ---
+import ExportCompleteModal from '../common/ExportCompleteModal.astro';
+
 // Body for the Split PDF page. Localizes strings via t().
 interface Props {
   t: (key: string) => string;
+  lang?: string;
 }
-const { t } = Astro.props as Props;
+const { t, lang = 'en' } = Astro.props as Props;
 const processingText = t('split.processing');
 const totalPagesLabel = t('split.totalPages');
 const executeText = t('split.execute');
@@ -69,6 +72,9 @@ const defaultFilenameText = t('split.defaultFilename');
   </div>
 </div>
 
+<!-- Cross-tool workflow chaining modal -->
+<ExportCompleteModal lang={lang} />
+
 <script is:inline define:vars={{ processingText, totalPagesLabel, executeText, errorEmptyRange, errorPrefix, defaultFilenameText }}>
   document.addEventListener('DOMContentLoaded', () => {
     let currentPdfBytes = null;
@@ -81,20 +87,50 @@ const defaultFilenameText = t('split.defaultFilename');
     const rangeInput = document.getElementById('split-range-input');
     const executeBtn = document.getElementById('btn-execute-split');
 
+    async function getSessionStore() {
+      if (window.pdfSessionStore) return window.pdfSessionStore;
+      for (let i = 0; i < 25; i++) {
+        if (window.pdfSessionStore) return window.pdfSessionStore;
+        await new Promise((r) => setTimeout(r, 40));
+      }
+      return null;
+    }
+
+    async function loadPdfBuffer(buffer, fileName) {
+      filenameSpan.textContent = fileName || defaultFilenameText;
+      currentPdfBytes = buffer;
+      const { PDFDocument } = window.PDFLib;
+      const doc = await PDFDocument.load(currentPdfBytes);
+      totalPages = doc.getPageCount();
+      countSpan.textContent = `${totalPagesLabel}: ${totalPages}`;
+      rangeInput.value = `1-${totalPages}`;
+      dropzone.classList.add('hidden');
+      controls.classList.remove('hidden');
+    }
+
+    // Auto-load PDF from cross-tool session if ?from=session is present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('from') === 'session') {
+      getSessionStore().then(async (store) => {
+        if (!store) return;
+        try {
+          const record = await store.getPdfFromSession();
+          if (record && record.bytes && record.bytes.length > 0) {
+            await loadPdfBuffer(record.bytes, record.fileName);
+          }
+        } catch (err) {
+          console.warn('[SplitPdf] Could not auto-load session PDF:', err);
+        }
+      });
+    }
+
     dropzone.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (file && file.type === 'application/pdf') {
-        filenameSpan.textContent = file.name;
-        currentPdfBytes = await file.arrayBuffer();
-        const { PDFDocument } = window.PDFLib;
-        const doc = await PDFDocument.load(currentPdfBytes);
-        totalPages = doc.getPageCount();
-        countSpan.textContent = `${totalPagesLabel}: ${totalPages}`;
-        rangeInput.value = `1-${totalPages}`;
-        dropzone.classList.add('hidden');
-        controls.classList.remove('hidden');
+        const buffer = await file.arrayBuffer();
+        await loadPdfBuffer(buffer, file.name);
       }
     });
 
@@ -130,11 +166,27 @@ const defaultFilenameText = t('split.defaultFilename');
         const pdfBytes = await newDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
+        const outName = `Extracted-Pages-${rangeInput.value.replace(/\s+/g, '')}.pdf`;
         const a = document.createElement('a');
-        a.href = url; a.download = `Extracted-Pages-${rangeInput.value.replace(/\s+/g, '')}.pdf`;
+        a.href = url; a.download = outName;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+
         if (window.confetti) window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+        // Save output to session store & open export complete modal
+        try {
+          const store = await getSessionStore();
+          if (store) {
+            await store.savePdfToSession(pdfBytes, outName);
+            store.openExportCompleteModal({
+              fileName: outName,
+              fileSizeBytes: pdfBytes.length,
+              downloadUrl: url,
+            });
+          }
+        } catch (sessionErr) {
+          console.warn('[SplitPdf] Failed to save session PDF:', sessionErr);
+        }
       } catch (err) {
         alert(errorPrefix + err.message);
       } finally {

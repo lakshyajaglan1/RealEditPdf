@@ -1,9 +1,12 @@
 ---
+import ExportCompleteModal from '../common/ExportCompleteModal.astro';
+
 // Body for the Compress PDF page. Localizes strings via t().
 interface Props {
   t: (key: string) => string;
+  lang?: string;
 }
-const { t } = Astro.props as Props;
+const { t, lang = 'en' } = Astro.props as Props;
 const processingText = t('compress.processing');
 const executeText = t('compress.execute');
 const errorFallback = t('compress.errorFallback');
@@ -237,6 +240,9 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
   </div>
 </div>
 
+<!-- Cross-tool workflow chaining modal -->
+<ExportCompleteModal lang={lang} />
+
 <script is:inline define:vars={{
   processingText,
   executeText,
@@ -348,6 +354,15 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
       });
     });
 
+    async function getSessionStore() {
+      if (window.pdfSessionStore) return window.pdfSessionStore;
+      for (let i = 0; i < 25; i++) {
+        if (window.pdfSessionStore) return window.pdfSessionStore;
+        await new Promise((r) => setTimeout(r, 40));
+      }
+      return null;
+    }
+
     function handleFile(file) {
       if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
         currentFile = file;
@@ -360,6 +375,23 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         executeBtn.disabled = false;
         executeBtn.textContent = executeText;
       }
+    }
+
+    // Auto-load PDF from cross-tool session if ?from=session is present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('from') === 'session') {
+      getSessionStore().then(async (store) => {
+        if (!store) return;
+        try {
+          const record = await store.getPdfFromSession();
+          if (record && record.bytes && record.bytes.length > 0) {
+            const sessionFile = new File([record.bytes], record.fileName || 'Document.pdf', { type: 'application/pdf' });
+            handleFile(sessionFile);
+          }
+        } catch (err) {
+          console.warn('[CompressPdf] Could not auto-load session PDF:', err);
+        }
+      });
     }
 
     dropzone.addEventListener('click', () => fileInput.click());
@@ -693,6 +725,21 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
 
           if (window.confetti) {
             window.confetti({ particleCount: 90, spread: 60 });
+          }
+
+          // Save output buffer to session store & open export complete modal
+          try {
+            const store = await getSessionStore();
+            if (store) {
+              await store.savePdfToSession(finalBytes, lastDownloadName);
+              store.openExportCompleteModal({
+                fileName: lastDownloadName,
+                fileSizeBytes: compSize,
+                downloadUrl: lastDownloadUrl,
+              });
+            }
+          } catch (sessionErr) {
+            console.warn('[CompressPdf] Failed to save session PDF:', sessionErr);
           }
         }
 
