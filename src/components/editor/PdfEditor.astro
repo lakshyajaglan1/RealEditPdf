@@ -903,9 +903,15 @@ const editorStrings = {
             dropzoneView.classList.remove('hidden');
           }
 
-          // Uncollapse secondary tools strip and hero intro header
+          // Hide secondary tools strip when returning to dropzone view
           const toolsStrip = document.getElementById('tools-strip');
-          if (toolsStrip) toolsStrip.classList.remove('!hidden');
+          if (toolsStrip) {
+            toolsStrip.classList.add('hidden');
+          }
+          const toolsTrigger = document.getElementById('tools-menu-trigger');
+          const toolsChevron = document.getElementById('tools-menu-chevron');
+          toolsTrigger?.setAttribute('aria-expanded', 'false');
+          toolsChevron?.classList.remove('rotate-180');
           const heroHeader = document.getElementById('hero-intro-header');
           if (heroHeader) heroHeader.classList.remove('hidden');
 
@@ -975,19 +981,23 @@ const editorStrings = {
           studioView.classList.add('flex');
         }
 
-        // Collapse redundant secondary tool-switcher bar
+        // Reveal secondary tools strip after loading PDF
         const toolsStrip = document.getElementById('tools-strip');
-        if (toolsStrip) toolsStrip.classList.add('!hidden');
+        if (toolsStrip) {
+          toolsStrip.classList.remove('hidden');
+          toolsStrip.classList.remove('!hidden');
+        }
+        const toolsTrigger = document.getElementById('tools-menu-trigger');
+        const toolsChevron = document.getElementById('tools-menu-chevron');
+        toolsTrigger?.setAttribute('aria-expanded', 'true');
+        toolsChevron?.classList.add('rotate-180');
 
         // Collapse hero intro header to give studio maximum vertical room
         const heroHeader = document.getElementById('hero-intro-header');
         if (heroHeader) heroHeader.classList.add('hidden');
 
-        // Smoothly auto-scroll the workspace to the top of the viewport
-        const anchor = document.getElementById('editor-anchor');
-        if (anchor) {
-          anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        // Scroll to top so Navbar and Tools strip are visible
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         emptyState.classList.add('hidden');
         pageContainer.classList.remove('hidden');
@@ -3278,6 +3288,7 @@ const editorStrings = {
     // Prevent closing dropdown when clicking inside dropdowns
     drawOptDropdown?.addEventListener('click', (e) => e.stopPropagation());
     hlOptDropdown?.addEventListener('click', (e) => e.stopPropagation());
+    shapeDropdown?.addEventListener('click', (e) => e.stopPropagation());
 
     // Zoom Handling (Buttons & Touchpad Gestures)
     zoomInBtn?.addEventListener('click', () => {

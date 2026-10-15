@@ -109,10 +109,10 @@ const tb = {
 };
 
 const modeLabels = {
-  text: t('mode.editText') !== 'mode.editText' ? t('mode.editText') : 'Edit Text',
-  draw: t('mode.annotateDraw') !== 'mode.annotateDraw' ? t('mode.annotateDraw') : 'Annotate & Draw',
-  sign: t('mode.signRedact') !== 'mode.signRedact' ? t('mode.signRedact') : 'Sign & Redact',
-  pages: t('mode.organizePages') !== 'mode.organizePages' ? t('mode.organizePages') : 'Organize Pages',
+  text: t('mode.editText') || 'Edit Text',
+  draw: t('mode.annotateDraw') || 'Annotate & Draw',
+  sign: t('mode.signRedact') || 'Sign & Redact',
+  pages: t('mode.organizePages') || 'Organize Pages',
 };
 ---
 
@@ -254,7 +254,7 @@ const modeLabels = {
   </div>
 
   <!-- Row 2: Contextual Mode Subtoolbars (Persistent Select/Pointer + Active Mode Tools) -->
-  <div id="studio-subtoolbar-ribbon" class="mt-2 flex items-center gap-2 border-t border-hairline/70 pt-2 overflow-x-auto no-scrollbar">
+  <div id="studio-subtoolbar-ribbon" class="mt-2 flex items-center gap-2 border-t border-hairline/70 pt-2 overflow-visible">
     <!-- Persistent Select / Pointer Mode -->
     <div class="flex items-center gap-1.5 shrink-0">
       <button

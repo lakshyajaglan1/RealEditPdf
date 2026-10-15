@@ -536,6 +536,12 @@ export const ui: UIDict = {
     'editor.prevPage': 'Previous Page',
     'editor.nextPage': 'Next Page',
 
+    // Studio mode tabs
+    'mode.editText': 'Edit Text',
+    'mode.annotateDraw': 'Annotate & Draw',
+    'mode.signRedact': 'Sign & Redact',
+    'mode.organizePages': 'Organize Pages',
+
     // Editor toolbar
     'toolbar.text': 'Text',
     'toolbar.textTitle': 'Add Text Box',
