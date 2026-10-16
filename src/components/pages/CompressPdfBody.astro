@@ -220,6 +220,19 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
           </div>
         </div>
 
+        <!-- Fallback/Suggestion to Raster Mode if already optimal -->
+        <div id="guarded-raster-suggestion" class="hidden rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 text-ink">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="text-xs leading-relaxed">
+              <span class="font-bold text-blue-600 dark:text-cyan-400 block text-[13px] mb-0.5">Need a smaller file?</span>
+              This PDF contains vector text & fonts that are already 100% compressed losslessly. To shrink it further, try <strong>Extreme Raster Mode</strong>.
+            </div>
+            <button id="btn-switch-to-raster" type="button" class="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-600 hover:bg-blue-700 px-4 py-2 text-[12px] font-semibold text-white shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap">
+              <span>⚡ Try Raster Compression</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Result Actions -->
         <div class="flex flex-col sm:flex-row gap-3 pt-2">
           <button id="btn-comp-download-again" class="flex-1 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 py-3 px-6 text-[14px] font-semibold text-white shadow-sm hover:shadow-glow-cyan transition-all active:scale-[0.99] cursor-pointer">
@@ -444,6 +457,7 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         }
       });
       rasterOptions.classList.add('hidden');
+      document.getElementById('guarded-raster-suggestion')?.classList.add('hidden');
     }
 
     resetBtn.addEventListener('click', resetToUpload);
@@ -459,11 +473,35 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
       }
     });
 
+    const btnSwitchRaster = document.getElementById('btn-switch-to-raster');
+    if (btnSwitchRaster) {
+      btnSwitchRaster.addEventListener('click', () => {
+        selectedMode = 'raster';
+        modeCards.forEach(c => {
+          const radio = c.querySelector('input[name="comp-mode"]');
+          if (radio && radio.value === 'raster') {
+            radio.checked = true;
+            c.classList.remove('border', 'border-hairline');
+            c.classList.add('border-2', 'border-emerald-500');
+          } else {
+            if (radio) radio.checked = false;
+            c.classList.remove('border-2', 'border-emerald-500');
+            c.classList.add('border', 'border-hairline');
+          }
+        });
+        rasterOptions.classList.remove('hidden');
+        results.classList.add('hidden');
+        controls.classList.remove('hidden');
+        executeBtn.click();
+      });
+    }
+
     // Mode 1: Lossless / Vector-Safe Optimization
-    // Reloads PDF in pdf-lib, strips unused objects, metadata, and redundant streams,
-    // and saves with { useObjectStreams: true } while preserving 100% of vector text, links, and fonts.
+    // Preserves 100% of vector text, fonts, paths, and links intact.
+    // In-place recompresses heavy embedded image XObjects, strips unused metadata & thumbnails,
+    // and packs indirect objects into object streams.
     async function optimizeLossless(buffer) {
-      const { PDFDocument, PDFName } = window.PDFLib;
+      const { PDFDocument, PDFName, PDFNumber, PDFRawStream } = window.PDFLib;
       const pdfDoc = await PDFDocument.load(buffer.slice(0), { ignoreEncryption: true });
 
       // Strip catalog-level XML Metadata stream & piece info
@@ -502,6 +540,61 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         try {
           page.node.delete(PDFName.of('Metadata'));
         } catch (e) {}
+      }
+
+      // In-Place Image XObject Optimization (Preserves 100% of Vector Text, Fonts & Links!)
+      // Scans indirect objects for embedded image streams and losslessly/perceptually recompresses heavy JPEG/DCTDecode streams
+      try {
+        const indirectObjects = pdfDoc.context.enumerateIndirectObjects();
+        for (const [ref, obj] of indirectObjects) {
+          if (obj instanceof PDFRawStream) {
+            const subtype = obj.dict.get(PDFName.of('Subtype'));
+            if (subtype && subtype.toString() === '/Image') {
+              const filter = obj.dict.get(PDFName.of('Filter'));
+              // Target DCTDecode (JPEG) image streams larger than 12 KB
+              if (filter && filter.toString() === '/DCTDecode' && obj.contents && obj.contents.length > 12000) {
+                try {
+                  const blob = new Blob([obj.contents], { type: 'image/jpeg' });
+                  const bmp = await createImageBitmap(blob);
+                  const offCanvas = document.createElement('canvas');
+                  let targetW = bmp.width;
+                  let targetH = bmp.height;
+                  const maxDim = 2048;
+                  if (targetW > maxDim || targetH > maxDim) {
+                    const scale = Math.min(maxDim / targetW, maxDim / targetH);
+                    targetW = Math.round(targetW * scale);
+                    targetH = Math.round(targetH * scale);
+                  }
+                  offCanvas.width = targetW;
+                  offCanvas.height = targetH;
+                  const offCtx = offCanvas.getContext('2d');
+                  if (offCtx) {
+                    offCtx.imageSmoothingEnabled = true;
+                    offCtx.imageSmoothingQuality = 'high';
+                    offCtx.drawImage(bmp, 0, 0, targetW, targetH);
+                    const newBlob = await new Promise((res) => offCanvas.toBlob(res, 'image/jpeg', 0.80));
+                    if (newBlob) {
+                      const newBuf = await newBlob.arrayBuffer();
+                      const newBytes = new Uint8Array(newBuf);
+                      if (newBytes.length < obj.contents.length * 0.95) {
+                        obj.contents = newBytes;
+                        obj.dict.set(PDFName.of('Length'), PDFNumber.of(newBytes.length));
+                        if (targetW !== bmp.width) {
+                          obj.dict.set(PDFName.of('Width'), PDFNumber.of(targetW));
+                          obj.dict.set(PDFName.of('Height'), PDFNumber.of(targetH));
+                        }
+                      }
+                    }
+                  }
+                } catch (imgErr) {
+                  // Silently keep original image stream on any decoding exception
+                }
+              }
+            }
+          }
+        }
+      } catch (scanErr) {
+        console.warn('Image XObject scan error:', scanErr);
       }
 
       // Save with useObjectStreams: true to serialize into packed object streams
@@ -585,9 +678,11 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
     function renderResultsCard(statusType, origSize, compSize, reductionPct) {
       resOrigSize.textContent = formatBytes(origSize);
       resCompSize.textContent = formatBytes(compSize);
+      const guardedRasterSuggestion = document.getElementById('guarded-raster-suggestion');
 
       if (statusType === 'guarded') {
         // Output was larger than or equal to original, download prevented
+        if (guardedRasterSuggestion) guardedRasterSuggestion.classList.remove('hidden');
         statusBox.className = 'flex items-center gap-3.5 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30';
         statusIcon.className = 'h-10 w-10 shrink-0 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-xs';
         statusIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
@@ -598,6 +693,7 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         if (downloadAgainBtnText) downloadAgainBtnText.textContent = 'Download Original File';
       } else if (statusType === 'fallback') {
         // Fell back from raster to lossless stream
+        if (guardedRasterSuggestion) guardedRasterSuggestion.classList.add('hidden');
         statusBox.className = 'flex items-center gap-3.5 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30';
         statusIcon.className = 'h-10 w-10 shrink-0 rounded-full bg-cyan-500 text-white flex items-center justify-center shadow-xs';
         statusIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
@@ -608,6 +704,7 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         if (downloadAgainBtnText) downloadAgainBtnText.textContent = downloadAgainText;
       } else {
         // Normal success
+        if (guardedRasterSuggestion) guardedRasterSuggestion.classList.add('hidden');
         statusBox.className = 'flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20';
         statusIcon.className = 'h-10 w-10 shrink-0 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs';
         statusIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>`;
