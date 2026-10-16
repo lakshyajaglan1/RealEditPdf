@@ -492,7 +492,8 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         rasterOptions.classList.remove('hidden');
         results.classList.add('hidden');
         controls.classList.remove('hidden');
-        executeBtn.click();
+        document.getElementById('guarded-raster-suggestion')?.classList.add('hidden');
+        startCompression();
       });
     }
 
@@ -716,7 +717,7 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
       }
     }
 
-    executeBtn.addEventListener('click', async () => {
+    async function startCompression() {
       if (!currentFile) return;
       if (!window.pdfjsLib || !window.PDFLib) {
         alert('PDF processing libraries are still loading. Please try again in a moment.');
@@ -850,6 +851,8 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         executeBtn.disabled = false;
         executeBtn.textContent = executeText;
       }
-    });
+    }
+
+    executeBtn.addEventListener('click', startCompression);
   });
 </script>
