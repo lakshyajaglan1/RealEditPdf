@@ -1258,8 +1258,10 @@ const editorStrings = {
 
       if (state.activeTool === 'text') {
         textDetectLayer.classList.remove('hidden');
+        textDetectLayer.style.display = '';
       } else {
         textDetectLayer.classList.add('hidden');
+        textDetectLayer.style.display = 'none';
       }
     }
 
@@ -2976,6 +2978,18 @@ const editorStrings = {
     // Tool switching
     function setTool(toolName) {
       state.activeTool = toolName;
+
+      // Always ensure text detection overlay is strictly visible ONLY in 'text' tool
+      if (textDetectLayer) {
+        if (toolName === 'text') {
+          textDetectLayer.classList.remove('hidden');
+          textDetectLayer.style.display = '';
+        } else {
+          textDetectLayer.classList.add('hidden');
+          textDetectLayer.style.display = 'none';
+        }
+      }
+
       document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
       const activeBtn = (toolName === 'shape') ? document.getElementById('tool-shape-btn') : document.getElementById('tool-' + toolName);
       if (activeBtn) activeBtn.classList.add('active');
@@ -2997,6 +3011,7 @@ const editorStrings = {
       if (toolName === 'draw') {
         deselectAnnotation();
 
+        drawCanvas.style.zIndex = '30';
         drawCanvas.style.pointerEvents = 'auto';
         drawCanvas.classList.remove('pointer-events-none');
         drawCanvas.classList.add('cursor-crosshair');
@@ -3025,6 +3040,7 @@ const editorStrings = {
       } else if (toolName === 'highlight') {
         deselectAnnotation();
 
+        drawCanvas.style.zIndex = '30';
         drawCanvas.style.pointerEvents = 'auto';
         drawCanvas.classList.remove('pointer-events-none');
         drawCanvas.classList.add('cursor-crosshair');
@@ -3053,6 +3069,7 @@ const editorStrings = {
       } else if (toolName === 'redact') {
         deselectAnnotation();
 
+        drawCanvas.style.zIndex = '';
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
@@ -3078,8 +3095,8 @@ const editorStrings = {
         if (delParent) delParent.classList.add('hidden');
       } else if (toolName === 'text') {
         deselectAnnotation();
-        if (textDetectLayer) textDetectLayer.classList.remove('hidden');
-        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+
+        drawCanvas.style.zIndex = '';
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
@@ -3104,8 +3121,8 @@ const editorStrings = {
         if (delParent) delParent.classList.add('hidden');
       } else if (toolName === 'sticky') {
         deselectAnnotation();
-        if (textDetectLayer) textDetectLayer.classList.add('hidden');
-        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+
+        drawCanvas.style.zIndex = '';
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
@@ -3129,8 +3146,7 @@ const editorStrings = {
         if (layerGroup) { layerGroup.classList.add('hidden'); layerGroup.classList.remove('flex'); }
         if (delParent) delParent.classList.add('hidden');
       } else {
-        if (textDetectLayer) textDetectLayer.classList.add('hidden');
-        if (redactGroup) { redactGroup.classList.add('hidden'); redactGroup.classList.remove('flex'); }
+        drawCanvas.style.zIndex = '';
         drawCanvas.style.pointerEvents = 'none';
         drawCanvas.classList.add('pointer-events-none');
         drawCanvas.classList.remove('cursor-crosshair');
@@ -3185,6 +3201,11 @@ const editorStrings = {
 
     function setStudioMode(mode) {
       syncModeTabOnly(mode);
+
+      if (mode !== 'text' && textDetectLayer) {
+        textDetectLayer.classList.add('hidden');
+        textDetectLayer.style.display = 'none';
+      }
 
       if (mode === 'text') {
         setTool('text');
