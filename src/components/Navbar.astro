@@ -390,6 +390,21 @@ const translate = useTranslatedPath();
         const isOpen = !toolsStrip.classList.contains('hidden');
         setToolsStripOpen(!isOpen);
       });
+
+      // Close the strip when clicking anywhere outside the navbar or the strip itself
+      document.addEventListener('click', (e) => {
+        if (toolsStrip.classList.contains('hidden')) return;
+        const target = e.target;
+        if (toolsStrip.contains(target) || toolsTrigger.contains(target)) return;
+        setToolsStripOpen(false);
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !toolsStrip.classList.contains('hidden')) {
+          setToolsStripOpen(false);
+        }
+      });
     }
 
     // Functional Upload PDF Navbar CTA Button — works in default (/) and any /<lang>/ route
@@ -492,7 +507,7 @@ const translate = useTranslatedPath();
 
     function updatePrivacyStats() {
       if (privacyRamEl) {
-        const perfMemory = (performance as any)?.memory;
+        const perfMemory = window.performance && window.performance.memory;
         if (perfMemory?.usedJSHeapSize) {
           const mb = (perfMemory.usedJSHeapSize / (1024 * 1024)).toFixed(1);
           privacyRamEl.textContent = `${mb} MB (Local)`;

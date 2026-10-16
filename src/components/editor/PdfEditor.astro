@@ -903,11 +903,9 @@ const editorStrings = {
             dropzoneView.classList.remove('hidden');
           }
 
-          // Hide secondary tools strip when returning to dropzone view
+          // Reset secondary tools strip to closed
           const toolsStrip = document.getElementById('tools-strip');
-          if (toolsStrip) {
-            toolsStrip.classList.add('hidden');
-          }
+          if (toolsStrip) toolsStrip.classList.add('hidden');
           const toolsTrigger = document.getElementById('tools-menu-trigger');
           const toolsChevron = document.getElementById('tools-menu-chevron');
           toolsTrigger?.setAttribute('aria-expanded', 'false');
@@ -981,16 +979,8 @@ const editorStrings = {
           studioView.classList.add('flex');
         }
 
-        // Reveal secondary tools strip after loading PDF
-        const toolsStrip = document.getElementById('tools-strip');
-        if (toolsStrip) {
-          toolsStrip.classList.remove('hidden');
-          toolsStrip.classList.remove('!hidden');
-        }
+        // Secondary tools strip is toggled on demand via the navbar Tools button
         const toolsTrigger = document.getElementById('tools-menu-trigger');
-        const toolsChevron = document.getElementById('tools-menu-chevron');
-        toolsTrigger?.setAttribute('aria-expanded', 'true');
-        toolsChevron?.classList.add('rotate-180');
 
         // Collapse hero intro header to give studio maximum vertical room
         const heroHeader = document.getElementById('hero-intro-header');
