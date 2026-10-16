@@ -151,26 +151,7 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
         offCtx.restore();
       }
 
-      // 1b. Freehand pen / highlighters
-      const drawAnnots = pageAnnots.filter((a) => a.type === 'draw');
-      drawAnnots.forEach((drawItem) => {
-        if (!drawItem.points || drawItem.points.length < 2) return;
-        offCtx.save();
-        offCtx.beginPath();
-        offCtx.strokeStyle = drawItem.color || '#171717';
-        offCtx.lineWidth = (drawItem.lineWidth || 2) * scaleToCanvasX;
-        offCtx.globalAlpha = drawItem.opacity !== undefined ? drawItem.opacity : 1.0;
-        offCtx.lineCap = 'round';
-        offCtx.lineJoin = 'round';
-        offCtx.moveTo(drawItem.points[0].x * scaleToCanvasX, drawItem.points[0].y * scaleToCanvasY);
-        for (let pt = 1; pt < drawItem.points.length; pt++) {
-          offCtx.lineTo(drawItem.points[pt].x * scaleToCanvasX, drawItem.points[pt].y * scaleToCanvasY);
-        }
-        offCtx.stroke();
-        offCtx.restore();
-      });
-
-      // 1c. Texts, shapes, images, stamps, signatures, over-watermarks
+      // 1b. Texts, shapes, images, stamps, signatures, over-watermarks
       for (const annot of pageAnnots) {
         if (annot.type === 'watermark' && annot.underText === false) {
           offCtx.save();
@@ -349,6 +330,25 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
         }
       }
 
+      // 1c. Freehand pen / highlighters (rendered on top of edited text and whiteout backgrounds)
+      const drawAnnots = pageAnnots.filter((a) => a.type === 'draw');
+      drawAnnots.forEach((drawItem) => {
+        if (!drawItem.points || drawItem.points.length < 2) return;
+        offCtx.save();
+        offCtx.beginPath();
+        offCtx.strokeStyle = drawItem.color || '#171717';
+        offCtx.lineWidth = (drawItem.lineWidth || 2) * scaleToCanvasX;
+        offCtx.globalAlpha = drawItem.opacity !== undefined ? drawItem.opacity : 1.0;
+        offCtx.lineCap = 'round';
+        offCtx.lineJoin = 'round';
+        offCtx.moveTo(drawItem.points[0].x * scaleToCanvasX, drawItem.points[0].y * scaleToCanvasY);
+        for (let pt = 1; pt < drawItem.points.length; pt++) {
+          offCtx.lineTo(drawItem.points[pt].x * scaleToCanvasX, drawItem.points[pt].y * scaleToCanvasY);
+        }
+        offCtx.stroke();
+        offCtx.restore();
+      });
+
       // 1d. Burn solid black redaction boxes directly into canvas pixels (top-level overlay)
       const redactAnnots = pageAnnots.filter((a) => a.type === 'redact');
       for (const redact of redactAnnots) {
@@ -410,49 +410,7 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
         page.setCropBox(cropPdfX, cropPdfY, cropPdfW, cropPdfH);
       }
 
-      // 1. Embed Freehand drawings and highlights layer for this page
-      const drawAnnots = pageAnnots.filter((a) => a.type === 'draw');
-      if (drawAnnots.length > 0) {
-        const offscreenCanvas = document.createElement('canvas');
-        offscreenCanvas.width = pWidth * 2;
-        offscreenCanvas.height = pHeight * 2;
-        const offCtx = offscreenCanvas.getContext('2d');
-
-        if (offCtx) {
-          const scaleToExportX = (pWidth * 2) / displayWidth;
-          const scaleToExportY = (pHeight * 2) / displayHeight;
-
-          drawAnnots.forEach((drawItem) => {
-            if (!drawItem.points || drawItem.points.length < 2) return;
-            offCtx.save();
-            offCtx.beginPath();
-            offCtx.strokeStyle = drawItem.color || '#171717';
-            offCtx.lineWidth = (drawItem.lineWidth || 2) * scaleToExportX;
-            offCtx.globalAlpha = drawItem.opacity !== undefined ? drawItem.opacity : 1.0;
-            offCtx.lineCap = 'round';
-            offCtx.lineJoin = 'round';
-
-            offCtx.moveTo(drawItem.points[0].x * scaleToExportX, drawItem.points[0].y * scaleToExportY);
-            for (let pt = 1; pt < drawItem.points.length; pt++) {
-              offCtx.lineTo(drawItem.points[pt].x * scaleToExportX, drawItem.points[pt].y * scaleToExportY);
-            }
-            offCtx.stroke();
-            offCtx.restore();
-          });
-
-          const drawPngDataUrl = offscreenCanvas.toDataURL('image/png');
-          const drawPngBytes = await fetch(drawPngDataUrl).then((r) => r.arrayBuffer());
-          const embeddedDrawLayer = await pdfDoc.embedPng(drawPngBytes);
-          page.drawImage(embeddedDrawLayer, {
-            x: 0,
-            y: 0,
-            width: pWidth,
-            height: pHeight,
-          });
-        }
-      }
-
-      // 1b. Embed Watermarks positioned UNDER original PDF text
+      // 1. Embed Watermarks positioned UNDER original PDF text
       const underWatermarks = pageAnnots.filter(
         (a) => a.type === 'watermark' && a.underText !== false
       );
@@ -783,6 +741,48 @@ export async function exportPdfWithAnnotations(options: ExportPdfOptions): Promi
           } catch (nativeErr) {
             console.warn('Native PDF text annotation export:', nativeErr);
           }
+        }
+      }
+
+      // 3. Embed Freehand drawings and highlights layer on top of text annotations
+      const drawAnnots = pageAnnots.filter((a) => a.type === 'draw');
+      if (drawAnnots.length > 0) {
+        const offscreenCanvas = document.createElement('canvas');
+        offscreenCanvas.width = pWidth * 2;
+        offscreenCanvas.height = pHeight * 2;
+        const offCtx = offscreenCanvas.getContext('2d');
+
+        if (offCtx) {
+          const scaleToExportX = (pWidth * 2) / displayWidth;
+          const scaleToExportY = (pHeight * 2) / displayHeight;
+
+          drawAnnots.forEach((drawItem) => {
+            if (!drawItem.points || drawItem.points.length < 2) return;
+            offCtx.save();
+            offCtx.beginPath();
+            offCtx.strokeStyle = drawItem.color || '#171717';
+            offCtx.lineWidth = (drawItem.lineWidth || 2) * scaleToExportX;
+            offCtx.globalAlpha = drawItem.opacity !== undefined ? drawItem.opacity : 1.0;
+            offCtx.lineCap = 'round';
+            offCtx.lineJoin = 'round';
+
+            offCtx.moveTo(drawItem.points[0].x * scaleToExportX, drawItem.points[0].y * scaleToExportY);
+            for (let pt = 1; pt < drawItem.points.length; pt++) {
+              offCtx.lineTo(drawItem.points[pt].x * scaleToExportX, drawItem.points[pt].y * scaleToExportY);
+            }
+            offCtx.stroke();
+            offCtx.restore();
+          });
+
+          const drawPngDataUrl = offscreenCanvas.toDataURL('image/png');
+          const drawPngBytes = await fetch(drawPngDataUrl).then((r) => r.arrayBuffer());
+          const embeddedDrawLayer = await pdfDoc.embedPng(drawPngBytes);
+          page.drawImage(embeddedDrawLayer, {
+            x: 0,
+            y: 0,
+            width: pWidth,
+            height: pHeight,
+          });
         }
       }
     }

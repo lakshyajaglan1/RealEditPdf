@@ -178,11 +178,11 @@ const editorStrings = {
           <!-- Detected Text Runs Interactive Overlay Layer (When in Text Mode) -->
           <div id="pdf-text-detect-layer" class="absolute inset-0 z-22 pointer-events-none hidden overflow-hidden"></div>
 
-          <!-- Freehand Drawing Canvas Layer -->
-          <canvas id="pdf-draw-canvas" class="absolute inset-0 z-10 touch-none pointer-events-none"></canvas>
-
           <!-- Interactive Annotations Container (Text, Shapes, Signatures, Stamps, Redactions) -->
           <div id="pdf-annotations-layer" class="absolute inset-0 z-20 overflow-visible"></div>
+
+          <!-- Freehand Drawing Canvas Layer (Pen and Highlighter strokes rendered above edited text whiteout) -->
+          <canvas id="pdf-draw-canvas" class="absolute inset-0 z-28 touch-none pointer-events-none"></canvas>
 
           <!-- Floating Contextual Popover Pill (Positions 12px dynamically above selected canvas element) -->
           <div
@@ -3210,14 +3210,21 @@ const editorStrings = {
       if (mode === 'text') {
         setTool('text');
       } else if (mode === 'draw') {
-        if (state.activeTool !== 'draw' && state.activeTool !== 'highlight' && state.activeTool !== 'sticky' && !state.activeTool?.startsWith('shape-')) {
+        deselectAnnotation();
+        if (state.activeTool === 'highlight') {
+          setTool('highlight');
+        } else if (state.activeTool === 'sticky' || state.activeTool?.startsWith('shape-')) {
+          // keep sticky or shape tool active
+        } else {
           setTool('draw');
         }
       } else if (mode === 'sign') {
+        deselectAnnotation();
         if (state.activeTool !== 'redact') {
           setTool('select');
         }
       } else if (mode === 'pages') {
+        deselectAnnotation();
         setTool('select');
         const sidebar = document.getElementById('thumbnail-sidebar');
         if (sidebar && sidebar.classList.contains('hidden')) {
