@@ -690,16 +690,28 @@ const modeLabels = {
 </div>
 
 <style>
-  .tool-btn.active {
-    background-color: var(--color-canvas-elevated);
-    color: var(--color-ink);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-hairline);
+  :global(.tool-btn.active) {
+    background-color: #ffffff;
+    color: #09090b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.08);
     font-weight: 600;
   }
-  .studio-mode-tab.active {
-    background-color: var(--color-canvas-elevated);
-    color: var(--color-ink);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-hairline);
+  :global(.dark .tool-btn.active),
+  :global([data-theme="dark"] .tool-btn.active) {
+    background-color: #27272a;
+    color: #f4f4f5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+  :global(.studio-mode-tab.active) {
+    background-color: #ffffff;
+    color: #09090b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.06);
     font-weight: 600;
+  }
+  :global(.dark .studio-mode-tab.active),
+  :global([data-theme="dark"] .studio-mode-tab.active) {
+    background-color: #27272a;
+    color: #f4f4f5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   }
 </style>

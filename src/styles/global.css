@@ -48,6 +48,20 @@
 
 :root {
   color-scheme: light;
+  --color-primary: #0f172a;
+  --color-on-primary: #ffffff;
+  --color-ink: #09090b;
+  --color-body: #52525b;
+  --color-mute: #71717a;
+  --color-faint: #a1a1aa;
+  --color-hairline: #e4e4e7;
+  --color-hairline-soft: #f4f4f5;
+  --color-canvas: #fafafa;
+  --color-canvas-elevated: #ffffff;
+  --color-link: #2563eb;
+  --color-link-deep: #1d4ed8;
+  --color-link-soft: #dbeafe;
+
   --border-subtle: rgba(0, 0, 0, 0.07);
   --glass-bg: rgba(255, 255, 255, 0.82);
   --glass-border: rgba(0, 0, 0, 0.08);
@@ -241,4 +255,55 @@ body {
 
 .touch-scroll {
   -webkit-overflow-scrolling: touch;
+}
+
+/* Studio Segmented Mode Tabs */
+.studio-mode-tab {
+  position: relative;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-mute);
+  font-weight: 500;
+  user-select: none;
+}
+
+.studio-mode-tab:hover:not(.active) {
+  color: var(--color-ink);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+:is(.dark, [data-theme="dark"]) .studio-mode-tab:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-ink);
+}
+
+.studio-mode-tab.active {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
+}
+
+:is(.dark, [data-theme="dark"]) .studio-mode-tab.active {
+  background-color: #27272a !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Studio Subtoolbar Tool Buttons */
+.tool-btn {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.tool-btn.active {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+}
+
+:is(.dark, [data-theme="dark"]) .tool-btn.active {
+  background-color: #27272a !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
 }
