@@ -77,7 +77,16 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
             <span id="comp-filename" class="font-semibold text-ink truncate block">{defaultFilenameText}</span>
             <div class="text-xs font-mono text-mute mt-0.5">{t('compress.original')}: <span id="comp-orig-size" class="text-emerald-600 dark:text-emerald-400 font-semibold">0 MB</span></div>
           </div>
-          <span class="shrink-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400">{readyText}</span>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              id="btn-comp-change-file"
+              type="button"
+              class="rounded-lg border border-hairline bg-canvas-elevated hover:bg-hairline-soft px-2.5 py-1 text-[11px] font-medium text-ink transition-colors cursor-pointer"
+            >
+              Change PDF
+            </button>
+            <span class="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400">{readyText}</span>
+          </div>
         </div>
 
         <!-- Mode Selector: Two Distinct Modes -->
@@ -376,7 +385,7 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
       return null;
     }
 
-    function handleFile(file) {
+    function handleFile(file, syncToSession = true) {
       if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
         currentFile = file;
         filenameSpan.textContent = file.name;
@@ -387,19 +396,31 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
         progressBox.classList.add('hidden');
         executeBtn.disabled = false;
         executeBtn.textContent = executeText;
+
+        if (syncToSession) {
+          getSessionStore().then(async (store) => {
+            if (!store) return;
+            try {
+              const buf = await file.arrayBuffer();
+              await store.savePdfToSession(buf, file.name);
+            } catch (e) {
+              console.warn('[CompressPdf] Session sync error:', e);
+            }
+          });
+        }
       }
     }
 
-    // Auto-load PDF from cross-tool session if ?from=session is present
+    // Auto-load PDF from cross-tool session store
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('from') === 'session') {
+    if (urlParams.get('new') !== '1') {
       getSessionStore().then(async (store) => {
         if (!store) return;
         try {
           const record = await store.getPdfFromSession();
           if (record && record.bytes && record.bytes.length > 0) {
             const sessionFile = new File([record.bytes], record.fileName || 'Document.pdf', { type: 'application/pdf' });
-            handleFile(sessionFile);
+            handleFile(sessionFile, false);
           }
         } catch (err) {
           console.warn('[CompressPdf] Could not auto-load session PDF:', err);
@@ -408,6 +429,7 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
     }
 
     dropzone.addEventListener('click', () => fileInput.click());
+    document.getElementById('btn-comp-change-file')?.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -855,4 +877,8 @@ const alreadyOptimalWarningText = t('compress.alreadyOptimalWarning') || 'This P
 
     executeBtn.addEventListener('click', startCompression);
   });
+</script>
+
+<script>
+  import '../../lib/pdfSessionStore';
 </script>

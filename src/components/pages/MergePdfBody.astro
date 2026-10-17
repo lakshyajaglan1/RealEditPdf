@@ -96,17 +96,19 @@ const removeText = t('merge.remove');
       return null;
     }
 
-    // Auto-load PDF from cross-tool session if ?from=session is present
+    // Auto-load PDF from cross-tool session store
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('from') === 'session') {
+    if (urlParams.get('new') !== '1') {
       getSessionStore().then(async (store) => {
         if (!store) return;
         try {
           const record = await store.getPdfFromSession();
           if (record && record.bytes && record.bytes.length > 0) {
             const sessionFile = new File([record.bytes], record.fileName || 'Document.pdf', { type: 'application/pdf' });
-            files.push(sessionFile);
-            renderFileList();
+            if (!files.some(f => f.name === sessionFile.name && f.size === sessionFile.size)) {
+              files.push(sessionFile);
+              renderFileList();
+            }
           }
         } catch (err) {
           console.warn('[MergePdf] Could not auto-load session PDF:', err);
@@ -117,10 +119,24 @@ const removeText = t('merge.remove');
     dropzone.addEventListener('click', () => fileInput.click());
     addMoreBtn.addEventListener('click', () => fileInput.click());
 
-    fileInput.addEventListener('change', (e) => {
+    fileInput.addEventListener('change', async (e) => {
       const newFiles = Array.from(e.target.files).filter(f => f.type === 'application/pdf');
       files = [...files, ...newFiles];
       renderFileList();
+
+      // If user uploaded a primary file, sync it to session store
+      if (files.length > 0) {
+        getSessionStore().then(async (store) => {
+          if (!store) return;
+          try {
+            const primary = files[0];
+            const buf = await primary.arrayBuffer();
+            await store.savePdfToSession(buf, primary.name);
+          } catch (e) {
+            console.warn('[MergePdf] Session sync error:', e);
+          }
+        });
+      }
     });
 
     clearBtn.addEventListener('click', () => {
@@ -209,4 +225,8 @@ const removeText = t('merge.remove');
       }
     });
   });
+</script>
+
+<script>
+  import '../../lib/pdfSessionStore';
 </script>

@@ -49,8 +49,17 @@ const defaultFilenameText = t('split.defaultFilename');
 
       <div id="split-controls" class="mt-8 space-y-4 hidden">
         <div class="flex items-center justify-between p-3.5 rounded-xl bg-canvas border border-hairline text-[13px]">
-          <span id="split-filename" class="font-semibold text-ink truncate">{defaultFilenameText}</span>
-          <span id="split-page-count" class="font-mono text-mute text-xs">{totalPagesLabel}: 0</span>
+          <div class="min-w-0 pr-3">
+            <span id="split-filename" class="font-semibold text-ink truncate block">{defaultFilenameText}</span>
+            <span id="split-page-count" class="font-mono text-mute text-xs">{totalPagesLabel}: 0</span>
+          </div>
+          <button
+            id="btn-split-change-file"
+            type="button"
+            class="rounded-lg border border-hairline bg-canvas-elevated hover:bg-hairline-soft px-2.5 py-1 text-[11px] font-medium text-ink transition-colors cursor-pointer shrink-0"
+          >
+            Change PDF
+          </button>
         </div>
 
         <div>
@@ -96,7 +105,7 @@ const defaultFilenameText = t('split.defaultFilename');
       return null;
     }
 
-    async function loadPdfBuffer(buffer, fileName) {
+    async function loadPdfBuffer(buffer, fileName, syncToSession = true) {
       filenameSpan.textContent = fileName || defaultFilenameText;
       currentPdfBytes = buffer;
       const { PDFDocument } = window.PDFLib;
@@ -106,17 +115,28 @@ const defaultFilenameText = t('split.defaultFilename');
       rangeInput.value = `1-${totalPages}`;
       dropzone.classList.add('hidden');
       controls.classList.remove('hidden');
+
+      if (syncToSession) {
+        getSessionStore().then(async (store) => {
+          if (!store) return;
+          try {
+            await store.savePdfToSession(buffer, fileName || defaultFilenameText);
+          } catch (e) {
+            console.warn('[SplitPdf] Session sync error:', e);
+          }
+        });
+      }
     }
 
-    // Auto-load PDF from cross-tool session if ?from=session is present
+    // Auto-load PDF from cross-tool session store
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('from') === 'session') {
+    if (urlParams.get('new') !== '1') {
       getSessionStore().then(async (store) => {
         if (!store) return;
         try {
           const record = await store.getPdfFromSession();
           if (record && record.bytes && record.bytes.length > 0) {
-            await loadPdfBuffer(record.bytes, record.fileName);
+            await loadPdfBuffer(record.bytes, record.fileName, false);
           }
         } catch (err) {
           console.warn('[SplitPdf] Could not auto-load session PDF:', err);
@@ -125,6 +145,7 @@ const defaultFilenameText = t('split.defaultFilename');
     }
 
     dropzone.addEventListener('click', () => fileInput.click());
+    document.getElementById('btn-split-change-file')?.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -195,4 +216,8 @@ const defaultFilenameText = t('split.defaultFilename');
       }
     });
   });
+</script>
+
+<script>
+  import '../../lib/pdfSessionStore';
 </script>

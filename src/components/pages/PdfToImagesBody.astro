@@ -522,9 +522,9 @@ const lockProportionalText = t('images.lockProportional');
       }
     }
 
-    // Auto-load PDF from cross-tool session if ?from=session is present
+    // Auto-load PDF from cross-tool session store
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('from') === 'session') {
+    if (urlParams.get('new') !== '1') {
       getSessionStore().then(async (store) => {
         if (!store) return;
         try {
@@ -538,11 +538,43 @@ const lockProportionalText = t('images.lockProportional');
       });
     }
 
-    fileInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (file && file.type === 'application/pdf') {
+    async function handleIncomingFile(file) {
+      if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
         const buffer = await file.arrayBuffer();
         await renderPdfFromBuffer(buffer, file.name);
+
+        getSessionStore().then(async (store) => {
+          if (!store) return;
+          try {
+            await store.savePdfToSession(buffer, file.name);
+          } catch (e) {
+            console.warn('[PdfToImages] Session sync error:', e);
+          }
+        });
+      }
+    }
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) handleIncomingFile(file);
+    });
+
+    // Drag and drop support on dropzone
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-amber-500', 'bg-amber-500/5');
+    });
+
+    ['dragleave', 'drop'].forEach((evt) => {
+      dropzone.addEventListener(evt, () => {
+        dropzone.classList.remove('border-amber-500', 'bg-amber-500/5');
+      });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleIncomingFile(e.dataTransfer.files[0]);
       }
     });
   });

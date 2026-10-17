@@ -65,7 +65,7 @@ export async function savePdfToSession(
 
   try {
     const db = await openSessionDB();
-    return new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
       const request = store.put(record, RECORD_KEY);
@@ -76,12 +76,38 @@ export async function savePdfToSession(
   } catch (err) {
     console.warn('[pdfSessionStore] IndexedDB put failed, falling back to in-memory store:', err);
   }
+
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent('realeditpdf:session-updated', { detail: { fileName: record.fileName } }));
+    } catch {}
+  }
 }
 
 /**
  * Retrieve the active PDF session record from IndexedDB or memory
  */
 export async function getPdfFromSession(): Promise<PdfSessionRecord | null> {
+  const MAX_SESSION_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+  function normalizeRecord(rec: any): PdfSessionRecord | null {
+    if (!rec || !rec.bytes) return null;
+    if (rec.updatedAt && Date.now() - rec.updatedAt > MAX_SESSION_AGE_MS) {
+      clearPdfSession();
+      return null;
+    }
+    if (!(rec.bytes instanceof Uint8Array)) {
+      if (rec.bytes instanceof ArrayBuffer) {
+        rec.bytes = new Uint8Array(rec.bytes);
+      } else if (rec.bytes.buffer instanceof ArrayBuffer) {
+        rec.bytes = new Uint8Array(rec.bytes.buffer, rec.bytes.byteOffset || 0, rec.bytes.byteLength);
+      } else {
+        rec.bytes = new Uint8Array(Object.values(rec.bytes));
+      }
+    }
+    return rec as PdfSessionRecord;
+  }
+
   try {
     const db = await openSessionDB();
     return new Promise((resolve) => {
@@ -90,26 +116,23 @@ export async function getPdfFromSession(): Promise<PdfSessionRecord | null> {
       const request = store.get(RECORD_KEY);
 
       request.onsuccess = () => {
-        const result = request.result as PdfSessionRecord | undefined;
-        if (result && result.bytes) {
-          // If stored as ArrayBuffer or serialized by structuredClone, wrap as Uint8Array
-          if (!(result.bytes instanceof Uint8Array)) {
-            result.bytes = new Uint8Array(result.bytes);
-          }
-          inMemoryRecord = result;
-          resolve(result);
+        const result = request.result;
+        const normalized = normalizeRecord(result);
+        if (normalized) {
+          inMemoryRecord = normalized;
+          resolve(normalized);
         } else {
-          resolve(inMemoryRecord);
+          resolve(normalizeRecord(inMemoryRecord));
         }
       };
 
       request.onerror = () => {
-        resolve(inMemoryRecord);
+        resolve(normalizeRecord(inMemoryRecord));
       };
     });
   } catch (err) {
     console.warn('[pdfSessionStore] IndexedDB get failed, using in-memory store:', err);
-    return inMemoryRecord;
+    return normalizeRecord(inMemoryRecord);
   }
 }
 
@@ -120,7 +143,7 @@ export async function clearPdfSession(): Promise<void> {
   inMemoryRecord = null;
   try {
     const db = await openSessionDB();
-    return new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
       const request = store.delete(RECORD_KEY);
@@ -130,6 +153,12 @@ export async function clearPdfSession(): Promise<void> {
     });
   } catch (err) {
     console.warn('[pdfSessionStore] IndexedDB delete error:', err);
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent('realeditpdf:session-cleared'));
+    } catch {}
   }
 }
 

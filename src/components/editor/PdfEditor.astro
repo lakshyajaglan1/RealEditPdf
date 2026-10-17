@@ -441,6 +441,7 @@ const editorStrings = {
   import {
     savePdfToSession,
     getPdfFromSession,
+    clearPdfSession,
     openExportCompleteModal,
   } from '../../lib/pdfSessionStore';
 
@@ -454,6 +455,7 @@ const editorStrings = {
     // State management
     const state = {
       pdfBytes: null,
+      currentFileName: 'Document.pdf',
       pdfDocProxy: null,
       totalPages: 0,
       currentPage: 1,
@@ -845,8 +847,14 @@ const editorStrings = {
         confirmText: editorStrings.newSessionConfirm,
         confirmStyle: 'primary',
         onConfirm: () => {
+          try {
+            clearPdfSession();
+          } catch (e) {
+            console.warn('[PdfEditor] clearPdfSession error:', e);
+          }
           // Reset internal state
           state.pdfBytes = null;
+          state.currentFileName = 'Document.pdf';
           state.pdfDocProxy = null;
           state.totalPages = 0;
           state.currentPage = 1;
@@ -941,9 +949,13 @@ const editorStrings = {
     document.getElementById('btn-new-session')?.addEventListener('click', startNewSession);
 
     // Load PDF ArrayBuffer or Uint8Array
-    async function loadPdfBuffer(inputData) {
+    async function loadPdfBuffer(inputData, fileName) {
       showLoading(editorStrings.rendering);
       try {
+        if (fileName) {
+          state.currentFileName = fileName;
+        }
+
         if (inputData instanceof Uint8Array) {
           state.pdfBytes = inputData.slice();
         } else if (inputData instanceof ArrayBuffer) {
@@ -1003,6 +1015,15 @@ const editorStrings = {
 
         // Default studio mode to 'Edit Text'
         setStudioMode('text');
+
+        // Seamlessly sync active PDF to cross-tool session store
+        if (state.pdfBytes && state.pdfBytes.length > 0) {
+          try {
+            await savePdfToSession(state.pdfBytes, state.currentFileName || 'Document.pdf');
+          } catch (sessionErr) {
+            console.warn('[PdfEditor] Could not save PDF to session store:', sessionErr);
+          }
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const pendingTool = urlParams.get('tool');
@@ -3548,13 +3569,14 @@ const editorStrings = {
     // File Input Upload, Drag/Drop & Clipboard Paste Handling
     async function handleSelectedFile(file) {
       if (!file) return;
+      state.currentFileName = file.name || 'Document.pdf';
       const isPdf = file.type === 'application/pdf' || file.type.includes('pdf') || (file.name && file.name.toLowerCase().endsWith('.pdf'));
       const isImage = file.type.startsWith('image/');
 
       if (isPdf) {
         const reader = new FileReader();
-        reader.onload = (ev) => {
-          loadPdfBuffer(ev.target.result);
+        reader.onload = async (ev) => {
+          await loadPdfBuffer(ev.target.result, file.name);
         };
         reader.readAsArrayBuffer(file);
       } else if (isImage) {
@@ -3603,7 +3625,8 @@ const editorStrings = {
                   height: dims.height,
                 });
                 const pdfBytes = await pdfDoc.save();
-                await loadPdfBuffer(pdfBytes);
+                const convertedName = file.name ? file.name.replace(/\.[^/.]+$/, "") + ".pdf" : 'Image.pdf';
+                await loadPdfBuffer(pdfBytes, convertedName);
                 showToast('Image converted to PDF successfully!', 'success');
               } catch (err) {
                 console.error('Failed to convert image to PDF:', err);
@@ -3985,7 +4008,8 @@ const editorStrings = {
         });
 
         const pdfBytes = await pdfDoc.save();
-        await loadPdfBuffer(pdfBytes);
+        state.currentFileName = 'Sample-Invoice.pdf';
+        await loadPdfBuffer(pdfBytes, 'Sample-Invoice.pdf');
         showToast('Sample Invoice loaded! Click any text to edit inline.', 'success', 3500);
       } catch (err) {
         console.error('Error generating sample invoice:', err);
@@ -4021,22 +4045,26 @@ const editorStrings = {
         const blob = new Blob([finalBytes], { type: 'application/pdf' });
         const downloadUrl = URL.createObjectURL(blob);
 
+        const outName = state.currentFileName
+          ? (state.currentFileName.toLowerCase().endsWith('.pdf') ? state.currentFileName : `${state.currentFileName}.pdf`)
+          : 'RealEditPDF-Document.pdf';
+
         const a = document.createElement('a');
         a.href = downloadUrl;
-        a.download = 'RealEditPDF-Document.pdf';
+        a.download = outName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
         // Save output to shared IndexedDB session store and open Export Complete modal
         try {
-          await savePdfToSession(finalBytes, 'RealEditPDF-Document.pdf');
+          await savePdfToSession(finalBytes, outName);
         } catch (sessionErr) {
           console.warn('[PdfEditor] Session save error:', sessionErr);
         }
 
         openExportCompleteModal({
-          fileName: 'RealEditPDF-Document.pdf',
+          fileName: outName,
           fileSizeBytes: finalBytes.byteLength,
           downloadUrl,
           blob,
@@ -5393,6 +5421,7 @@ const editorStrings = {
         saveHistory();
         await renderThumbnails();
         await renderCurrentPage();
+        savePdfToSession(state.pdfBytes, state.currentFileName || 'Document.pdf').catch(() => {});
       } catch (err) {
         console.error('Failed to insert blank page:', err);
         alert('Failed to insert blank page: ' + err.message);
@@ -5412,7 +5441,7 @@ const editorStrings = {
 
       if (!state.pdfBytes) {
         const buffer = await file.arrayBuffer();
-        await loadPdfBuffer(buffer);
+        await loadPdfBuffer(buffer, file.name);
         return;
       }
 
@@ -5454,6 +5483,7 @@ const editorStrings = {
         saveHistory();
         await renderThumbnails();
         await renderCurrentPage();
+        savePdfToSession(state.pdfBytes, state.currentFileName || 'Document.pdf').catch(() => {});
       } catch (err) {
         console.error('Failed to append PDF:', err);
         alert('Failed to append PDF: ' + err.message);
@@ -5517,13 +5547,14 @@ const editorStrings = {
       applyToolFromQuery(initialTool);
     }
 
-    // Auto-load PDF from session store when chaining from another tool (?from=session)
-    if (initialParams.get('from') === 'session') {
+    // Auto-load PDF from session store
+    if (initialParams.get('new') !== '1') {
       (async () => {
         try {
           const record = await getPdfFromSession();
           if (record && record.bytes && record.bytes.length > 0) {
-            await loadPdfBuffer(record.bytes);
+            state.currentFileName = record.fileName || 'Document.pdf';
+            await loadPdfBuffer(record.bytes, record.fileName);
             showToast(`Loaded ${record.fileName || 'PDF'} from session`, 'info', 2500);
           }
         } catch (err) {
@@ -5541,23 +5572,72 @@ const editorStrings = {
       }
     });
 
-    // Intercept clicks on links with ?tool= on the current page to activate immediately without full page reload
-    document.addEventListener('click', (e) => {
+    // Intercept clicks on links: handle ?tool= and auto-bake modifications when navigating to other tools
+    document.addEventListener('click', async (e) => {
       const target = e.target;
       if (!target || typeof target.closest !== 'function') return;
-      const link = target.closest('a[href*="tool="]');
-      if (!link) return;
 
-      try {
-        const targetUrl = new URL(link.href, window.location.origin);
-        const toolParam = targetUrl.searchParams.get('tool');
-        if (toolParam && targetUrl.pathname === window.location.pathname) {
-          e.preventDefault();
-          window.history.pushState({}, '', targetUrl.href);
-          applyToolFromQuery(toolParam);
+      // 1. In-page ?tool= activation
+      const toolLink = target.closest('a[href*="tool="]');
+      if (toolLink) {
+        try {
+          const targetUrl = new URL(toolLink.href, window.location.origin);
+          const toolParam = targetUrl.searchParams.get('tool');
+          if (toolParam && targetUrl.pathname === window.location.pathname) {
+            e.preventDefault();
+            window.history.pushState({}, '', targetUrl.href);
+            applyToolFromQuery(toolParam);
+            return;
+          }
+        } catch {
+          // Fallback to default link navigation
         }
-      } catch {
-        // Fallback to default link navigation
+      }
+
+      // 2. Intercept tool links (compress, merge, split, images, sign) to preserve active modifications
+      const navLink = target.closest('a[href]');
+      if (!navLink) return;
+      const href = navLink.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+      const toolKeywords = [
+        'compress', 'comprimir', 'compresser', 'komprimieren', 'compactar',
+        'merge', 'combinar', 'fusionner', 'zusammenfuegen', 'unisci',
+        'split', 'dividir', 'diviser', 'teilen', 'dividi',
+        'image', 'imagen', 'bilder', 'immagin',
+        'sign', 'firmar', 'signer', 'signieren', 'assinar', 'firma'
+      ];
+      const isOtherToolLink = toolKeywords.some(k => href.includes(k));
+
+      if (isOtherToolLink && state.pdfBytes) {
+        const hasAnnotations = Object.values(state.annotations || {}).some(arr => arr && arr.length > 0);
+        const hasRotations = Object.values(state.pageRotations || {}).some(r => r && r !== 0);
+        const hasCrops = Object.values(state.pageCrops || {}).some(c => c && c.croppedSrc);
+
+        if (hasAnnotations || hasRotations || hasCrops) {
+          e.preventDefault();
+          try {
+            showLoading('Saving changes for next tool...');
+            const finalBytes = await exportPdfWithAnnotations({
+              pdfBytes: state.pdfBytes,
+              pdfDocProxy: state.pdfDocProxy,
+              annotations: state.annotations,
+              pageRotations: state.pageRotations,
+              pageCrops: state.pageCrops,
+              currentPageNumber: state.currentPage,
+              currentPageDisplaySize: {
+                width: renderCanvas.width / 1.5,
+                height: renderCanvas.height / 1.5,
+              },
+              scale: state.scale,
+            });
+            await savePdfToSession(finalBytes, state.currentFileName || 'Document.pdf');
+          } catch (err) {
+            console.warn('[PdfEditor] Could not pre-compile annotations before navigating:', err);
+          } finally {
+            window.location.href = navLink.href;
+          }
+        }
       }
     });
   }
