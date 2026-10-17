@@ -60,6 +60,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{html,js,css,svg,png,ico,woff,woff2,webmanifest,json}'],
         navigateFallback: '/',
+        navigateFallbackDenylist: [/^\/sitemap.*\.xml$/, /^\/robots\.txt$/, /.*\.xml$/],
         runtimeCaching: [
           // Google Fonts Stylesheets
           {

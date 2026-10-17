@@ -59,6 +59,10 @@ self.addEventListener('fetch', (event) => {
   // Only handle http and https requests
   if (!request.url.startsWith('http://') && !request.url.startsWith('https://')) return;
 
+  // Bypass XML sitemaps and robots.txt from Service Worker handling
+  const requestUrl = new URL(request.url);
+  if (requestUrl.pathname.endsWith('.xml') || requestUrl.pathname === '/robots.txt') return;
+
   // Stale-While-Revalidate caching strategy
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
