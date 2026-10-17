@@ -48,12 +48,48 @@ export function formatBytes(bytes: number, decimals = 2): string {
 }
 
 /**
+ * Detect whether the current page load is a reload (browser refresh)
+ */
+export function isPageReload(): boolean {
+  if (typeof window === 'undefined' || !window.performance) return false;
+  try {
+    const navEntries = window.performance.getEntriesByType('navigation');
+    if (navEntries.length > 0) {
+      return (navEntries[0] as PerformanceNavigationTiming).type === 'reload';
+    }
+    return (window.performance as any).navigation?.type === 1;
+  } catch {
+    return false;
+  }
+}
+
+// Track if a reload-clear operation is pending on page startup
+let reloadClearPromise: Promise<void> | null = null;
+
+if (typeof window !== 'undefined' && isPageReload()) {
+  inMemoryRecord = null;
+  reloadClearPromise = (async () => {
+    try {
+      await clearPdfSession();
+    } catch (e) {
+      console.warn('[pdfSessionStore] Error clearing session on reload:', e);
+    }
+  })();
+}
+
+/**
  * Save a PDF buffer to the shared IndexedDB session store
  */
 export async function savePdfToSession(
   inputBytes: Uint8Array | ArrayBuffer,
   fileName = 'Document.pdf'
 ): Promise<void> {
+  // If a reload-triggered clear is currently executing, wait for it to finish first
+  if (reloadClearPromise) {
+    await reloadClearPromise;
+    reloadClearPromise = null;
+  }
+
   const bytes = inputBytes instanceof Uint8Array ? inputBytes : new Uint8Array(inputBytes);
   const record: PdfSessionRecord = {
     bytes,
@@ -88,6 +124,16 @@ export async function savePdfToSession(
  * Retrieve the active PDF session record from IndexedDB or memory
  */
 export async function getPdfFromSession(): Promise<PdfSessionRecord | null> {
+  // If this page was loaded via a browser reload/refresh, do not continue previous session
+  if (reloadClearPromise) {
+    await reloadClearPromise;
+    reloadClearPromise = null;
+    return null;
+  }
+  if (typeof window !== 'undefined' && isPageReload()) {
+    await clearPdfSession();
+    return null;
+  }
   const MAX_SESSION_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
   function normalizeRecord(rec: any): PdfSessionRecord | null {
@@ -231,6 +277,7 @@ if (typeof window !== 'undefined') {
     clearPdfSession,
     hasSessionPdf,
     formatBytes,
+    isPageReload,
     openExportCompleteModal,
     closeExportCompleteModal,
   };
