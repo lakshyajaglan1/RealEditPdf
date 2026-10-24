@@ -5,6 +5,9 @@ import pwa from '@vite-pwa/astro';
 
 // https://astro.build/config
 export default defineConfig({
+  server: {
+    port: 1111,
+  },
   site: 'https://realeditpdf.com',
   trailingSlash: 'always',
   integrations: [

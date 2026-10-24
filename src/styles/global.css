@@ -93,12 +93,20 @@ html.dark {
   --card-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
+html {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-canvas);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  max-width: 100%;
+  position: relative;
 }
 
 /* Geist Typography Tracking */

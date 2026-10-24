@@ -102,7 +102,7 @@ const editorStrings = {
   <div id="editor-dropzone-view" class="w-full flex flex-col items-center justify-center py-4 sm:py-8 transition-all duration-300">
     <div
       id="editor-dropzone-card"
-      class="relative w-full max-w-2xl mx-auto rounded-3xl border-2 border-dashed border-hairline bg-canvas-elevated/95 backdrop-blur-2xl p-6 xs:p-8 sm:p-12 text-center shadow-floating transition-all duration-300 cursor-pointer group hover:border-blue-500/60 dark:hover:border-cyan-400/60 hover:shadow-glow-cyan hover:scale-[1.008]"
+      class="relative w-full max-w-2xl mx-auto rounded-3xl border-2 border-dashed border-hairline bg-canvas-elevated/95 backdrop-blur-2xl p-5 sm:p-10 md:p-12 text-center shadow-floating transition-all duration-300 cursor-pointer group hover:border-blue-500/60 dark:hover:border-cyan-400/60 hover:shadow-glow-cyan hover:scale-[1.008]"
     >
       <!-- Empty state container anchor -->
       <div id="editor-empty-state" class="w-full flex flex-col items-center justify-center">
@@ -187,7 +187,7 @@ const editorStrings = {
           <!-- Floating Contextual Popover Pill (Positions 12px dynamically above selected canvas element) -->
           <div
             id="element-popover-pill"
-            class="absolute z-40 hidden items-center gap-1.5 rounded-2xl bg-canvas-elevated/95 backdrop-blur-xl border border-hairline/90 p-1.5 shadow-floating text-ink text-[12px] select-none transition-all duration-75 pointer-events-auto ring-1 ring-black/5 dark:ring-white/10"
+            class="absolute z-40 hidden items-center gap-1.5 rounded-2xl bg-canvas-elevated/95 backdrop-blur-xl border border-hairline/90 p-1.5 shadow-floating text-ink text-[12px] select-none transition-all duration-75 pointer-events-auto ring-1 ring-black/5 dark:ring-white/10 max-w-[calc(100vw-24px)] overflow-x-auto no-scrollbar touch-scroll"
             style="will-change: left, top;"
           >
             <!-- Element Type Badge -->
@@ -349,7 +349,7 @@ const editorStrings = {
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span class="hidden xs:inline sm:inline">{editorStrings.rotate}</span>
+            <span class="hidden sm:inline">{editorStrings.rotate}</span>
           </button>
           <button id="btn-floating-crop" class="flex h-7 items-center gap-1 rounded-full px-2 sm:px-2.5 text-[11px] sm:text-[12px] font-medium text-body hover:bg-hairline-soft hover:text-ink transition-colors cursor-pointer" title={editorStrings.cropPage}>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

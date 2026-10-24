@@ -121,16 +121,16 @@ const modeLabels = {
   <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
     
     <!-- Left: 4 Clean Mode Tabs -->
-    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-0.5 max-w-full">
-      <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-1 border border-hairline/70 shadow-sm gap-1 shrink-0">
+    <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-0.5 max-w-full">
+      <div class="flex items-center rounded-xl bg-hairline-soft/80 dark:bg-zinc-900/80 p-0.5 sm:p-1 border border-hairline/70 shadow-sm gap-0.5 sm:gap-1 shrink-0">
         <!-- Tab 1: Edit Text -->
         <button
           id="mode-tab-text"
           type="button"
-          class="studio-mode-tab active flex h-8 items-center gap-2 rounded-lg px-3 text-[13px] font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap"
+          class="studio-mode-tab active flex h-8 items-center gap-1.5 sm:gap-2 rounded-lg px-2.5 sm:px-3 text-[12px] sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap"
           data-mode="text"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
           <span>{modeLabels.text}</span>
@@ -140,10 +140,10 @@ const modeLabels = {
         <button
           id="mode-tab-draw"
           type="button"
-          class="studio-mode-tab flex h-8 items-center gap-2 rounded-lg px-3 text-[13px] font-medium text-body hover:text-ink transition-all duration-150 cursor-pointer whitespace-nowrap"
+          class="studio-mode-tab flex h-8 items-center gap-1.5 sm:gap-2 rounded-lg px-2.5 sm:px-3 text-[12px] sm:text-[13px] font-medium text-body hover:text-ink transition-all duration-150 cursor-pointer whitespace-nowrap"
           data-mode="draw"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
           </svg>
           <span>{modeLabels.draw}</span>
@@ -153,10 +153,10 @@ const modeLabels = {
         <button
           id="mode-tab-sign"
           type="button"
-          class="studio-mode-tab flex h-8 items-center gap-2 rounded-lg px-3 text-[13px] font-medium text-body hover:text-ink transition-all duration-150 cursor-pointer whitespace-nowrap"
+          class="studio-mode-tab flex h-8 items-center gap-1.5 sm:gap-2 rounded-lg px-2.5 sm:px-3 text-[12px] sm:text-[13px] font-medium text-body hover:text-ink transition-all duration-150 cursor-pointer whitespace-nowrap"
           data-mode="sign"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
           <span>{modeLabels.sign}</span>
@@ -166,10 +166,10 @@ const modeLabels = {
         <button
           id="mode-tab-pages"
           type="button"
-          class="studio-mode-tab flex h-8 items-center gap-2 rounded-lg px-3 text-[13px] font-medium text-body hover:text-ink transition-all duration-150 cursor-pointer whitespace-nowrap"
+          class="studio-mode-tab flex h-8 items-center gap-1.5 sm:gap-2 rounded-lg px-2.5 sm:px-3 text-[12px] sm:text-[13px] font-medium text-body hover:text-ink transition-all duration-150 cursor-pointer whitespace-nowrap"
           data-mode="pages"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
           </svg>
           <span>{modeLabels.pages}</span>
@@ -254,7 +254,7 @@ const modeLabels = {
   </div>
 
   <!-- Row 2: Contextual Mode Subtoolbars (Persistent Select/Pointer + Active Mode Tools) -->
-  <div id="studio-subtoolbar-ribbon" class="mt-2 flex items-center gap-2 border-t border-hairline/70 pt-2 overflow-visible">
+  <div id="studio-subtoolbar-ribbon" class="mt-2 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-hairline/70 pt-2 overflow-visible">
     <!-- Persistent Select / Pointer Mode -->
     <div class="flex items-center gap-1.5 shrink-0">
       <button
@@ -271,7 +271,7 @@ const modeLabels = {
     </div>
 
     <!-- Mode 1: Edit Text Subtoolbar -->
-    <div id="subtoolbar-text" class="flex items-center gap-2 shrink-0">
+    <div id="subtoolbar-text" class="flex flex-wrap items-center gap-2 shrink-0">
       <button
         id="tool-text"
         class="tool-btn flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-body transition-all duration-150 hover:bg-canvas-elevated hover:text-ink cursor-pointer"
@@ -289,7 +289,7 @@ const modeLabels = {
     </div>
 
     <!-- Mode 2: Annotate & Draw Subtoolbar -->
-    <div id="subtoolbar-draw" class="hidden items-center gap-1.5 shrink-0">
+    <div id="subtoolbar-draw" class="hidden flex-wrap items-center gap-1.5 shrink-0">
       <!-- Freehand Pen with Dropdown / Size & Options -->
       <div class="relative flex items-center">
         <button
@@ -573,7 +573,7 @@ const modeLabels = {
     </div>
 
     <!-- Mode 3: Sign & Redact Subtoolbar -->
-    <div id="subtoolbar-sign" class="hidden items-center gap-1.5 shrink-0">
+    <div id="subtoolbar-sign" class="hidden flex-wrap items-center gap-1.5 shrink-0">
       <!-- E-Signature Modal Trigger -->
       <button
         id="btn-open-sign-modal"
@@ -618,7 +618,7 @@ const modeLabels = {
     </div>
 
     <!-- Mode 4: Organize Pages Subtoolbar -->
-    <div id="subtoolbar-pages" class="hidden items-center gap-1.5 shrink-0">
+    <div id="subtoolbar-pages" class="hidden flex-wrap items-center gap-1.5 shrink-0">
       <!-- Page Sidebar Toggle -->
       <button
         id="btn-toggle-sidebar"

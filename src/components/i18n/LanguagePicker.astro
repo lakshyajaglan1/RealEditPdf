@@ -49,11 +49,11 @@ function buildHrefForLang(lang: LangCode): string {
     })}
   </nav>
 ) : (
-  <div class:list={["relative", className]} id="lang-picker">
+  <div class:list={["relative shrink-0", className]} id="lang-picker">
     <button
       type="button"
       id="lang-picker-trigger"
-      class="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-hairline bg-canvas-elevated/80 px-2.5 sm:px-3 text-[12px] font-semibold text-ink shadow-whisper transition-all hover:bg-hairline-soft hover:scale-105 active:scale-95"
+      class="flex h-8.5 sm:h-9 items-center justify-center gap-1 sm:gap-1.5 rounded-xl border border-hairline bg-canvas-elevated/80 px-2 sm:px-3 text-[11px] sm:text-[12px] font-semibold text-ink shadow-whisper transition-all hover:bg-hairline-soft active:scale-95"
       aria-haspopup="listbox"
       aria-expanded="false"
       aria-label="Select language"
@@ -63,7 +63,7 @@ function buildHrefForLang(lang: LangCode): string {
         <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
       </svg>
       <span class="font-mono uppercase tracking-wider">{currentLang}</span>
-      <svg id="lang-picker-chevron" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <svg id="lang-picker-chevron" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 sm:h-3 sm:w-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
       </svg>
     </button>
@@ -72,7 +72,7 @@ function buildHrefForLang(lang: LangCode): string {
       id="lang-picker-menu"
       role="listbox"
       aria-label="Available languages"
-      class="hidden absolute right-0 top-full mt-2 z-50 min-w-[200px] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-2xl p-1.5 shadow-floating"
+      class="hidden absolute right-0 top-full mt-2 z-50 min-w-[180px] max-w-[calc(100vw-20px)] rounded-xl border border-hairline bg-canvas-elevated/95 backdrop-blur-2xl p-1.5 shadow-floating"
     >
       {Object.values(languages).map((l) => {
         const href = buildHrefForLang(l.code as LangCode);
